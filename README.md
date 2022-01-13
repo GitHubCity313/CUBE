@@ -1,43 +1,80 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Projet CUBE
+## _Projet RILL 2021-2022_
 
-## Lib 
-    
-    - Axios
-    - Material-UI
+[![N|Solid](https://cldup.com/dTxpPi9lDf.thumb.png)](https://nodesource.com/products/nsolid)
+
+[![Build Status](https://travis-ci.org/joemccann/dillinger.svg?branch=master)](https://travis-ci.org/joemccann/dillinger)
+
+Le Ministère des Solidarités et de la Cohésion Sociale envisage d'augmenter la visibilité de ses actions en mettant à disposition de tous les citoyens une plateforme permettant de partager des ressources en rapport avec les problématiques de ses champs actions : la cohésion sociale, la famille et la santé.
+
+- Type some Markdown on the left
+- See HTML in the right
+- ✨Magic ✨
+
+## Features
+
+- Import a HTML file and watch it magically convert to Markdown
+- Drag and drop images (requires your Dropbox account be linked)
+- Import and save files from GitHub, Dropbox, Google Drive and One Drive
+- Drag and drop markdown and HTML files into Dillinger
+- Export documents as Markdown, HTML and PDF
 
 
-## Getting Started
+> The overriding design goal for Markdown's
+> formatting syntax is to make it as readable
+> as possible. The idea is that a
+> Markdown-formatted document should be
+> publishable as-is, as plain text, without
+> looking like it's been marked up with tags
+> or formatting instructions.
 
-First, run the development server:
+This text you see here is *actually- written in Markdown! To get a feel
+for Markdown's syntax, type some text into the left window and
+watch the results in the right.
 
-```bash
+## Tech
+
+Dillinger uses a number of open source projects to work properly:
+
+- [ReactJS] - HTML enhanced for web apps!
+- [NextJS] - hybrid static & server rendering, TypeScript support, smart bundling, route pre-fetching, and more.
+- [markdown-it] - Markdown parser done right. Fast and easy to extend.
+- [node.js] - evented I/O for the backend
+- [mongodb] - datatbase
+
+And of course CUBE itself is open source with a [public repository][dill]
+ on GitHub.
+ 
+## Plugins
+
+Dillinger is currently extended with the following plugins.
+Instructions on how to use them in your own application are linked below.
+
+| Plugin | README |
+| ------ | ------ |
+| Axios | [https://github.com/axios/axios][PlDb] |
+| MaterialUi | [https://mui.com/][PlGh] |
+
+## Installation
+
+CUBE requires [Node.js](https://nodejs.org/) v10+ to run.
+
+Installer en local.
+
+```sh
+git clone https://github.com/AytoKyto/CUBE.git
+cd cube
+npm i
+
 npm run dev
 # or
 yarn dev
-
-
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## License
 
-You can start editing the page by modifying `pages/index.js`. The page auto-updates as you edit the file.
+MIT
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.js`.
+**Free Software, Hell Yeah!**
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
-# CUBE
+[//]: # (These are reference links used in the body of this note and get stripped out when the markdown processor does its job. There is no need to format nicely because it shouldn't be seen. Thanks SO - http://stackoverflow.com/questions/4823468/store-comments-in-markdown-syntax)
