@@ -1,5 +1,5 @@
 # Projet CUBE
-## _Projet RILL 2021-2022_
+## _Projet RIL 2021-2022_
 
 [![N|Solid](https://cldup.com/dTxpPi9lDf.thumb.png)](https://nodesource.com/products/nsolid)
 
