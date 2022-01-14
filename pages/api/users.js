@@ -21,6 +21,5 @@ export default function users(req, res) {
         return res.status(404).json("Le service demandé n'est pas disponible");
     }
   };
-
   return getRoute(req.method, req, res);
 }
