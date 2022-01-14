@@ -9,7 +9,8 @@ import InputBase from '@mui/material/InputBase';
 import MenuIcon from '@mui/icons-material/Menu';
 import SearchIcon from '@mui/icons-material/Search';
 import Image from 'next/image'
-import Logo from '../public/logoMini.png'
+import Logo from '../public/logoMini.svg'
+import { Button } from '@mui/material';
 
 
 const Search = styled('div')(({ theme }) => ({
@@ -30,6 +31,9 @@ const Search = styled('div')(({ theme }) => ({
 const SearchIconWrapper = styled('div')(({ theme }) => ({
     padding: theme.spacing(0, 2),
     height: '100%',
+    borderRaduis: "10px",
+    backgroundColor: theme.palette.primary.main,
+    color: theme.palette.common.white,
     position: 'absolute',
     pointerEvents: 'none',
     display: 'flex',
@@ -39,6 +43,9 @@ const SearchIconWrapper = styled('div')(({ theme }) => ({
 
 const StyledInputBase = styled(InputBase)(({ theme }) => ({
     color: 'inherit',
+    marginRight: "100px",
+    borderRadius: "0px",
+    textAlign: 'left',
     '& .MuiInputBase-input': {
         padding: theme.spacing(1, 1, 1, 0),
         // vertical padding + font size from searchIcon
@@ -56,7 +63,7 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 
 export default function SearchAppBar() {
     return (
-        <Box style={{ marginBottom: 100 }} sx={{ flexGrow: 1 }}>
+        <Box style={{ marginBottom: 150 }} sx={{ flexGrow: 1 }}>
             <AppBar variant="header" position="fixed">
                 <Toolbar>
                     <Image
@@ -72,14 +79,14 @@ export default function SearchAppBar() {
                         style={{ marginLeft: 50 }}
                         sx={{ flexGrow: 1, display: { xs: 'none', sm: 'block' } }}
                     >
-                        MUI
+                        Nom de l'application
                     </Typography>
-                    <Search style={{display:"flex", flexDirection: "row-reverse"}}>
+                    <Search variant="searchHeader" style={{ borderBottom: "2px solid #000091", display: "flex", flexDirection: "row-reverse", justifyContent: "space-between", backgroundColor: "#EEEEEE", width: "300px" }}>
                         <SearchIconWrapper>
                             <SearchIcon />
                         </SearchIconWrapper>
                         <StyledInputBase
-                            placeholder="Search…"
+                            placeholder="Rechercher"
                             inputProps={{ 'aria-label': 'search' }}
                         />
                     </Search>

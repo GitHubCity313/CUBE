@@ -213,10 +213,35 @@ const theme = createTheme({
             paddingRight: "100px",
             boxShadow: "0px 16px 16px -16px rgba(0, 0, 0, 0.32), 0px 8px 16px rgba(0, 0, 0, 0.1)",
           },
-    },
+        },
       ],
     },
-
+    MuiSearch: {
+      variants: [
+        {
+          props: { variant: 'searchHeader' },
+          style: {
+            display: "flex",
+            flexDirection: "row-reverse",
+            alignItems: "center",
+            backgroundColor: "red",
+          }
+        },
+      ],
+    },
+    MuiInputBase: {
+      variants: [
+        {
+          props: { variant: 'searchHeader' },
+          style: {
+            backgroundColor: "red",
+            borderRadius: "0px",
+            border: "1px solid #3A3A3A",
+            
+          },
+        },
+      ],
+    },
   },
 });
 
