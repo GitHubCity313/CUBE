@@ -29,6 +29,12 @@ export default function users(req, res) {
         role: ObjectId("61e165463d88f191f3f4e0d4"),
         isValidated: false
       });
+  const deleteUser = async (res) => {
+    try {
+      const client = await clientPromise;
+      const db = await client.db(process.env.MONGO_DB_NAME);
+      const user = await db.collection("users")
+          .deleteOne({_id: ObjectId("61e1d3286334f038c10c5c04")});
       return res.status(200).json({ user });
     } catch (err) {
       return res.status(404).json({ err });
@@ -41,7 +47,9 @@ export default function users(req, res) {
         return await getUsers(res);
       }
       case "POST": {
-        return await addUser(res);
+        return await addUser(res);}
+      case "DELETE": {
+        return await deleteUser(res);
       }
       default:
         return res.status(404).json("Le service demandé n'est pas disponible");
