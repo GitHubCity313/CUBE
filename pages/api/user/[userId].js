@@ -17,11 +17,15 @@ export default function userId(req, res) {
                 .deleteOne({
                     _id: ObjectId(id)
                 });
-            console.log(`[SUCCESS] DELETE user with id : ${req.query.userId}`);
-            console.log(res.status(200).json({ user }))
+            // [server_logs] confirm 200 from db
+            console.log(`[200] DELETE user with id : ${req.query.userId}`);
+            // [server_logs] confirm if the item has been deleted ifnot show a warning
+            user.result.n > 0 ? console.log(`[SUCCESS] deletion confirmed`) : console.log(`[WARNING] No item deleted. Bad userId ? (${id})`);
             return res.status(200).json({ user });
         } catch (err) {
-            console.log(`[FAILED] DELETE user with id : ${req.query.userId}`);
+            // [server_logs]
+            console.log(`[FAILED] DELETE user with id : ${id} : `);
+            console.log(`Error response : \n${err}`)
             return res.status(404).json({ err });
         }
     };
