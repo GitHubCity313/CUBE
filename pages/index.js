@@ -2,7 +2,7 @@ import React from "react";
 import { Box, TextField } from "@mui/material";
 import Card from "../components/Card";
 import SelectVariants from "../components/SelectVariants";
-import Layout from "../components/Layout";
+import Layout from "../components/Layout/Layout";
 
 export default function Home() {
   return (
