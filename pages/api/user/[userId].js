@@ -32,9 +32,6 @@ export default function userId(req, res) {
 
     const getRoute = async (req, res) => {
         switch (req.method) {
-            case 'GET':
-                res.end(`UserId: ${req.query.userId}`)
-                break;
             case 'DELETE':
                 return await deleteUser((req.query.userId).toString());
             default:
