@@ -1,9 +1,3 @@
-// export default function handler(req, res) {
-//     const { slug } = req.query
-//     // console.log(req.query)
-//     console.log(req.method)
-//     res.end(`User: ${ req.query.userId }`)
-// }
 import clientPromise from "../../../lib/mongodb";
 import {ObjectId} from "mongodb";
 
