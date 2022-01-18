@@ -25,7 +25,7 @@ export default function userId(req, res) {
         } catch (err) {
             // [server_logs]
             console.log(`[FAILED] DELETE user with id : ${id} : `);
-            console.log(`Error response : \n${err}`)
+            console.log(`Error response : \n${err}`);
             return res.status(404).json({ err });
         }
     };
