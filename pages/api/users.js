@@ -29,6 +29,11 @@ export default function users(req, res) {
         role: ObjectId("61e165463d88f191f3f4e0d4"),
         isValidated: false
       });
+      return res.status(200).json({ user });
+    } catch (err) {
+      return res.status(404).json({ err });
+    }
+  };
   const deleteUser = async (res) => {
     try {
       const client = await clientPromise;
