@@ -1,54 +1,57 @@
 import React from "react";
 import PropTypes from "prop-types";
 import Head from "next/head";
-import { Grid } from "@mui/material";
+import { Grid, Container, Drawer } from "@mui/material";
 import Header from "./Header";
 import Sidebar from "./Sidebar";
 import Footer from "./Footer";
 
 const Layout = (props) => {
-  const { title, withSidebar, children } = props;
+  const { title, withSidebar, withFooter, children } = props;
 
   return (
-    <Grid container sx={{ minHeight: "100vh" }}>
+    <>
       <Head>
         <title>{title} </title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <Header />
-      <Grid container flexDirection="row" alignItems="center">
-        {withSidebar && (
-          <Grid item xs>
-            <Sidebar />
+      <Container
+        maxWidth="lg"
+        disableGutters
+        flexDirection="row"
+        justifyContent="center"
+        alignItems="center"
+      >
+        <Grid container xs={12}>
+          {withSidebar && (
+            <Grid item xs={2}>
+              <Drawer variant="permanent" open>
+                <Sidebar />
+              </Drawer>
+            </Grid>
+          )}
+
+          {withFooter && <Footer />}
+
+          <Grid item xs={withSidebar ? 10 : 12}>
+            {children}
           </Grid>
-        )}
-        <Grid
-          item
-          xs={withSidebar ? 9 : 12}
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            justifyContent: "space-between",
-            minHeight: "100vh",
-            pt: 18
-          }}
-        >
-          {children}
-          <Footer />
         </Grid>
-      </Grid>
-    </Grid>
+      </Container>
+    </>
   );
 };
 
 Layout.defaultProps = {
   withSidebar: true,
+  withFooter: false,
   title: "Cube",
 };
 
 Layout.propTypes = {
   withSidebar: PropTypes.bool,
+  withFooter: PropTypes.bool,
   title: PropTypes.string,
 };
 

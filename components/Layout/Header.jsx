@@ -8,6 +8,21 @@ import InputBase from "@mui/material/InputBase";
 import SearchIcon from "@mui/icons-material/Search";
 import Image from "next/image";
 import Logo from "../../public/logoMini.svg";
+import useScrollTrigger from '@mui/material/useScrollTrigger';
+
+function ElevationScroll(props) {
+  const { children, window } = props;
+  const trigger = useScrollTrigger({
+    disableHysteresis: true,
+    threshold: 0,
+    target: window ? window() : undefined,
+  });
+
+  return React.cloneElement(children, {
+    elevation: trigger ? 4 : 0,
+  });
+}
+
 
 const Search = styled("div")(({ theme }) => ({
   position: "relative",
@@ -57,10 +72,11 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
   },
 }));
 
-export default function SearchAppBar() {
+export default function SearchAppBar(props) {
   return (
     <Box sx={{ flexGrow: 1 }}>
-      <AppBar variant="header" position="fixed">
+        <ElevationScroll {...props}>
+      <AppBar variant="header" position="fixed"  >
         <Toolbar>
           <Image
             src={Logo}
@@ -98,6 +114,7 @@ export default function SearchAppBar() {
           </Search>
         </Toolbar>
       </AppBar>
+      </ElevationScroll>
     </Box>
   );
 }

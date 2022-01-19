@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Box, ListItem, ListItemText, Button } from "@mui/material";
+import { Box, Grid, ListItem, ListItemText, Button } from "@mui/material";
 import Link from "next/link";
 import SettingsIcon from "@mui/icons-material/Settings";
 import HomeIcon from "@mui/icons-material/Home";
@@ -8,14 +8,11 @@ export default function Sidebar() {
   return (
     <Box
       sx={{
-        width: "15.5vw",
-        height: "100vh",
+        height: "calc(100vh-126)",
         position: "fixed",
-        top: 0,
+        top: 126,
         left: 0,
-        zIndex: 2,
-        backgroundColor: "white",
-        paddingLeft: "-3vw",
+        backgroundColor: "transparent",
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
