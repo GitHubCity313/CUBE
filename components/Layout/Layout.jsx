@@ -23,20 +23,19 @@ const Layout = (props) => {
         justifyContent="center"
         alignItems="center"
       >
-        <Grid container xs={12}>
-          {withSidebar && (
-            <Grid item xs={2}>
+        <Grid container xs={12} sx={{ minHeight: `calc(100vh - 16px)` }}>
+          <Grid item xs={2}>
+            {withSidebar && (
               <Drawer variant="permanent" open>
                 <Sidebar />
               </Drawer>
-            </Grid>
-          )}
-
-          {withFooter && <Footer />}
+            )}
+          </Grid>
 
           <Grid item xs={withSidebar ? 10 : 12}>
             {children}
           </Grid>
+          {withFooter && <Footer />}
         </Grid>
       </Container>
     </>

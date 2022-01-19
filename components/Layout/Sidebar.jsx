@@ -8,10 +8,9 @@ export default function Sidebar() {
   return (
     <Box
       sx={{
-        height: "calc(100vh-126)",
         position: "fixed",
         top: 126,
-        left: 0,
+        p: 4,
         backgroundColor: "transparent",
         display: "flex",
         flexDirection: "column",
@@ -19,7 +18,7 @@ export default function Sidebar() {
         justifyContent: "space-between",
       }}
     >
-      <Box sx={{ paddingTop: "190px", width: "80%" }}>
+      <Box>
         <ListItem>
           <HomeIcon sx={{ marginRight: "20px" }} color="primary" />
           <ListItemText primary="Item 1" />

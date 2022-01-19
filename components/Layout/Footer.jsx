@@ -5,9 +5,8 @@ export default function Footer() {
   return (
     <Grid
       xs={12}
-      p={4}
       sx={{
-        backgroundColor: "pink",
+        backgroundColor: "lightgreen",
         textAlign: "center",
       }}
     >
