@@ -9,6 +9,7 @@ import SearchIcon from "@mui/icons-material/Search";
 import Image from "next/image";
 import Logo from "../../public/logoMini.svg";
 import useScrollTrigger from '@mui/material/useScrollTrigger';
+import { Link } from "@mui/material";
 
 function ElevationScroll(props) {
   const { children, window } = props;
@@ -78,12 +79,14 @@ export default function SearchAppBar(props) {
         <ElevationScroll {...props}>
       <AppBar variant="header" position="fixed"  >
         <Toolbar>
+          <Link href="/">
           <Image
             src={Logo}
             width={120}
             height={102}
             alt="Picture of the author"
           />
+          </Link>
           <Typography
             variant="h6"
             noWrap
