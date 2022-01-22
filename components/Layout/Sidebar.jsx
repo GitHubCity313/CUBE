@@ -21,6 +21,8 @@ export default function Sidebar() {
         flexDirection: "column",
         alignItems: "center",
         justifyContent: "space-between",
+        width: "15.5vw",
+        height: "100vh",
       }}
     >
       <Box>
