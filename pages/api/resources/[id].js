@@ -64,7 +64,6 @@ export default function ressources(req, res) {
       }
       case "PUT": {
         return await updateResource(id, db, resource, res);
-        break;
       }
       default:
         return res.status(404).json("Le service demandé n'est pas disponible");
