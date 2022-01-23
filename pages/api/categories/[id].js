@@ -33,9 +33,28 @@ export default function categories(req, res) {
     }
   };
 
+  const updateCategory = async (id, db, category, res) => {
+    const objectId = new ObjectId(id);
+    try {
+      const filter = { _id: objectId };
+      const updatedResource = {
+        $set: {
+          ...category,
+        },
+      };
+      const update = await db
+        .collection("categories")
+        .updateOne(filter, updatedResource);
+      return res.status(204).json({ update });
+    } catch (err) {
+      return res.status(404).json({ err });
+    }
+  };
+
   const getRoute = async (req, res) => {
     const db = await connect();
     const id = req.query.id.trim();
+    const category = req?.body ? req.body : null;
 
     switch (req.method) {
       case "GET": {
@@ -44,11 +63,9 @@ export default function categories(req, res) {
       }
       case "DELETE": {
         return await deleteCategory(id, db, res);
-        break;
       }
       case "PUT": {
-        //return await updateCategory(db, res);
-        break;
+        return await updateCategory(id, db, category, res);
       }
       default:
         return res.status(404).json("Le service demandé n'est pas disponible");

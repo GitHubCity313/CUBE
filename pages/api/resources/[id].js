@@ -32,9 +32,28 @@ export default function ressources(req, res) {
     }
   };
 
+  const updateResource = async (id, db, resource, res) => {
+    const objectId = new ObjectId(id);
+    try {
+      const filter = { _id: objectId };
+      const updatedResource = {
+        $set: {
+          ...resource,
+        }
+      }
+      const update = await db
+        .collection("resources")
+        .updateOne(filter, updatedResource);
+      return res.status(204).json({ update });
+    } catch (err) {
+      return res.status(404).json({ err });
+    }
+  }
+
   const getRoute = async (req, res) => {
     const db = await connect();
     const id = req.query.id.trim();
+    const resource = req?.body ? req.body : null;
 
     switch (req.method) {
       case "GET": {
@@ -44,7 +63,7 @@ export default function ressources(req, res) {
         return await deleteResource(id, db, res);
       }
       case "PUT": {
-        //return await updateResource(db, res);
+        return await updateResource(id, db, resource, res);
         break;
       }
       default:
