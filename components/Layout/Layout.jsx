@@ -19,11 +19,14 @@ const Layout = (props) => {
       <Container
         maxWidth="lg"
         disableGutters
-        flexDirection="row"
-        justifyContent="center"
-        alignItems="center"
+        sx={{
+          display: " flex",
+          flexDirection: "row",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
       >
-        <Grid container xs={12} sx={{ minHeight: `calc(100vh - 16px)` }}>
+        <Grid container sx={{ minHeight: `calc(100vh - 16px)` }}>
           <Grid item xs={2}>
             {withSidebar && (
               <Drawer variant="permanent" open>
