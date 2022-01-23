@@ -1,107 +1,14 @@
-import React from "react";
-import { Grid, TextField } from "@mui/material";
-import Card from "../components/Card";
-import SelectVariants from "../components/SelectVariants";
-import Layout from "../components/Layout/Layout";
+import { useEffect } from "react";
+import Router from "next/router";
 
-export default function Home() {
-  return (
-    <Layout title="Cube | Home">
-   <Grid container flexDirection="column">
-        <TextField
-          hiddenLabel
-          id="filled-hidden-label-normal"
-          defaultValue="Normal"
-          variant="filled"
-        />
+// Redirection vers un component Home pour eviter un affichage de ce qui est sur index.js a la fin des autres pages
+export default function App() {
+  useEffect(() => {
+    const { pathname } = Router;
+    if (pathname === "/") {
+      Router.push("/home");
+    }
+  }, [Router]);
 
-        <SelectVariants />
-        <Card />
-        <TextField
-          hiddenLabel
-          id="filled-hidden-label-normal"
-          defaultValue="Normal"
-          variant="filled"
-        />
- 
- <TextField
-          hiddenLabel
-          id="filled-hidden-label-normal"
-          defaultValue="Normal"
-          variant="filled"
-        />
-
-        <SelectVariants />
-        <Card />
-        <TextField
-          hiddenLabel
-          id="filled-hidden-label-normal"
-          defaultValue="Normal"
-          variant="filled"
-        />
-                <TextField
-          hiddenLabel
-          id="filled-hidden-label-normal"
-          defaultValue="Normal"
-          variant="filled"
-        />
-
-        <SelectVariants />
-        <Card />
-        <TextField
-          hiddenLabel
-          id="filled-hidden-label-normal"
-          defaultValue="Normal"
-          variant="filled"
-        />
-
-<TextField
-          hiddenLabel
-          id="filled-hidden-label-normal"
-          defaultValue="Normal"
-          variant="filled"
-        />
-
-        <SelectVariants />
-        <Card />
-        <TextField
-          hiddenLabel
-          id="filled-hidden-label-normal"
-          defaultValue="Normal"
-          variant="filled"
-        />
-                <TextField
-          hiddenLabel
-          id="filled-hidden-label-normal"
-          defaultValue="Normal"
-          variant="filled"
-        />
-
-        <SelectVariants />
-        <Card />
-        <TextField
-          hiddenLabel
-          id="filled-hidden-label-normal"
-          defaultValue="Normal"
-          variant="filled"
-        />
-                <TextField
-          hiddenLabel
-          id="filled-hidden-label-normal"
-          defaultValue="Normal"
-          variant="filled"
-        />
-
-        <SelectVariants />
-        <Card />
-        <TextField
-          hiddenLabel
-          id="filled-hidden-label-normal"
-          defaultValue="Normal"
-          variant="filled"
-        />
-        <SelectVariants />
-      </Grid>
-    </Layout>
-  );
+  return null;
 }
