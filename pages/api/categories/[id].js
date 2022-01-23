@@ -21,8 +21,21 @@ export default function categories(req, res) {
     }
   };
 
+  const deleteCategory = async (id, db, res) => {
+    const objectId = new ObjectId(id);
+    try {
+      const category = await db
+        .collection("categories")
+        .deleteOne({ _id: objectId });
+      return res.status(204).json({ category });
+    } catch (err) {
+      return res.status(404).json({ err });
+    }
+  };
+
   const getRoute = async (req, res) => {
     const db = await connect();
+    const id = req.query.id.trim();
 
     switch (req.method) {
       case "GET": {
@@ -30,7 +43,7 @@ export default function categories(req, res) {
         return await getCategory(id, db, res);
       }
       case "DELETE": {
-        //return await deleteCategory(db, res);
+        return await deleteCategory(id, db, res);
         break;
       }
       case "PUT": {

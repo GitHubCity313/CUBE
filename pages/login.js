@@ -44,7 +44,11 @@ const Login = () => {
         },
         likes: 0,
       };
-      const test = await APIService.createItem("resources", mockedResource);
+      //const test = await APIService.createItem("resources", mockedResource);
+      //const test = await APIService.getItems("resources");
+      const test = await APIService.deleteItem("resources", " 61ed5159e3ef3961950be0fb");
+     
+      console.log(test)
     } catch (err) {
       console.log(" deso");
       console.log(err);
