@@ -112,7 +112,7 @@ const Login = () => {
                 <Button variant="bleuBtn">Se connecter</Button>
                 <Typography>
                   {`Pas de compte? `}
-                  <Link href="signIn">
+                  <Link href="/signIn">
                     <a>S'inscrire </a>
                   </Link>
                 </Typography>
