@@ -1,4 +1,4 @@
-import clientPromise from "../../lib/mongodb";
+import clientPromise from "../../../lib/mongodb";
 import { ObjectId } from "mongodb";
 
 export default function ressources(req, res) {
@@ -10,34 +10,61 @@ export default function ressources(req, res) {
 
   const getRessource = async (id, db, res) => {
     try {
-      const category = await db
+      const resource = await db
         .collection("resources")
         .find({ _id: ObjectId(id) })
         .toArray();
-      return res.status(200).json({ category });
+      return res.status(200).json({ resource });
     } catch (err) {
-      console.log(err);
       return res.status(404).json({ err });
     }
   };
 
+  const deleteResource = async (id, db, res) => {
+    const objectId = new ObjectId(id);
+    try {
+      const resource = await db
+        .collection("resources")
+        .deleteOne({ _id: objectId });
+      return res.status(204).json({ resource });
+    } catch (err) {
+      return res.status(404).json({ err });
+    }
+  };
+
+  const updateResource = async (id, db, resource, res) => {
+    const objectId = new ObjectId(id);
+    try {
+      const filter = { _id: objectId };
+      const updatedResource = {
+        $set: {
+          ...resource,
+        }
+      }
+      const update = await db
+        .collection("resources")
+        .updateOne(filter, updatedResource);
+      return res.status(204).json({ update });
+    } catch (err) {
+      return res.status(404).json({ err });
+    }
+  }
+
   const getRoute = async (req, res) => {
     const db = await connect();
-    console.log(" plop");
+    const id = req.query.id.trim();
+    const resource = req?.body ? req.body : null;
+
     switch (req.method) {
       case "GET": {
-        const id = req.query.id;
         return await getRessource(id, db, res);
       }
       case "DELETE": {
-        //return await deleteResource(db, res);
-        break;
+        return await deleteResource(id, db, res);
       }
       case "PUT": {
-        //return await updateResource(db, res);
-        break;
+        return await updateResource(id, db, resource, res);
       }
-
       default:
         return res.status(404).json("Le service demandé n'est pas disponible");
     }

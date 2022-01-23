@@ -32,7 +32,7 @@ export default function Home() {
         />
 
         <SelectVariants />
-        <Card />
+        {/* <Card /> */}
         <TextField
           hiddenLabel
           id="filled-hidden-label-normal"
@@ -47,60 +47,13 @@ export default function Home() {
         />
 
         <SelectVariants />
-        <Card />
+        {/* <Card /> */}
         <TextField
           hiddenLabel
           id="filled-hidden-label-normal"
           defaultValue="Normal"
           variant="filled"
         />
-
-        <TextField
-          hiddenLabel
-          id="filled-hidden-label-normal"
-          defaultValue="Normal"
-          variant="filled"
-        />
-
-        <SelectVariants />
-        <Card />
-        <TextField
-          hiddenLabel
-          id="filled-hidden-label-normal"
-          defaultValue="Normal"
-          variant="filled"
-        />
-        <TextField
-          hiddenLabel
-          id="filled-hidden-label-normal"
-          defaultValue="Normal"
-          variant="filled"
-        />
-
-        <SelectVariants />
-        <Card />
-        <TextField
-          hiddenLabel
-          id="filled-hidden-label-normal"
-          defaultValue="Normal"
-          variant="filled"
-        />
-        <TextField
-          hiddenLabel
-          id="filled-hidden-label-normal"
-          defaultValue="Normal"
-          variant="filled"
-        />
-
-        <SelectVariants />
-        <Card />
-        <TextField
-          hiddenLabel
-          id="filled-hidden-label-normal"
-          defaultValue="Normal"
-          variant="filled"
-        />
-        <SelectVariants />
       </Grid>
     </Layout>
   );

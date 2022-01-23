@@ -15,7 +15,7 @@ const APIService = {
     axiosInstance.post(`${item}`, JSON.stringify(data)),
   updateItem: (item, id, data) =>
     axiosInstance.put(`${item}/${id}`, JSON.stringify(data)),
-  deleteItem: (id) => axiosInstance.delete(`${item}/${id}`),
+  deleteItem: (item, id) => axiosInstance.delete(`${item}/${id}`),
 };
 
 export default APIService;
