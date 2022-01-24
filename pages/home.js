@@ -5,13 +5,13 @@ import Card from "../components/Card";
 import SelectVariants from "../components/SelectVariants";
 import Layout from "../components/Layout/Layout";
 
-
 export default function Home({ resources, categories }) {
   // console.log("test staticProps (resources) : ")
   // console.log(resources)
 
   // console.log("test staticProps (categories) : ")
   // console.log(categories)
+
   return (
     <Layout title="Cube | Home">
       <Grid container flexDirection="column">
@@ -89,11 +89,11 @@ export default function Home({ resources, categories }) {
 export async function getStaticProps() {
   const fetchedResources = await fetch("http://localhost:3000/api/resources/");
   const JsonResources = await fetchedResources.json();
-  const resources = JsonResources.resources;
 
   const fetchedCategories = await fetch("http://localhost:3000/api/categories/");
   const JsonCategories = await fetchedCategories.json();
   const categories = JsonCategories.categories;
+  const resources = JsonResources.resources
 
   return {
     props: {
