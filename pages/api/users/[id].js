@@ -43,9 +43,30 @@ export default function userId(req, res) {
         }
     };
 
+    const updateUser = async (id, db, user, res) => {
+        const objectId = new ObjectId(id);
+        try {
+            const filter = { _id: objectId};
+            const updatedUser = {
+                $set: {
+                    ...user,
+                },
+            };
+            const update = await db
+                .collection("users")
+                .updateOne(filter, updatedUser);
+            return res.status(204).json({ update });
+        } catch (err) {
+            console.log("erro in updateUser");
+            console.log(err);
+            return res.status(404).json({ err });
+        }
+    }
+
     const getRoute = async (req, res) => {
         const db = await connect();
         const id = req.query.id.trim();
+        const user = req?.body ? req.body : null;
 
         switch (req.method) {
             case "GET": {
@@ -54,6 +75,8 @@ export default function userId(req, res) {
             }
             case "DELETE":
                 return await deleteUser(id.toString());
+            case "PUT":
+                return await updateUser(id, db, user, res);
             default:
                 res.status(405).end('Method Not Allowed');
                 break;
