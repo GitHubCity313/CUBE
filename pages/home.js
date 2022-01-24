@@ -5,13 +5,13 @@ import Card from "../components/Card";
 import SelectVariants from "../components/SelectVariants";
 import Layout from "../components/Layout/Layout";
 
+
 export default function Home({ resources, categories }) {
   // console.log("test staticProps (resources) : ")
   // console.log(resources)
 
   // console.log("test staticProps (categories) : ")
   // console.log(categories)
-
   return (
     <Layout title="Cube | Home">
       <Grid container flexDirection="column">
