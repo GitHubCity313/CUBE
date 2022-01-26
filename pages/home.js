@@ -15,6 +15,7 @@ export default function Home({ resources, categories }) {
           id="filled-hidden-label-normal"
           defaultValue="Normal"
           variant="filled"
+          sx={{ margin: 7 }}
         />
 
         <SelectVariants />
