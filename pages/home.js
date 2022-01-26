@@ -23,15 +23,6 @@ export default function Home({ resources, categories }) {
         />
 
         <SelectVariants />
-        <Card />
-
-        {resources.map(resource => {
-          console.log(resource);
-          return (
-              <Card key={resource._id} resourceData={resource} categories={categories}/>
-          )
-        })}
-=======
         <ul>
           {resources.map(resource => {
             return (

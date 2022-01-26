@@ -13,6 +13,8 @@ const styles = () => ({
 export default function MultiActionAreaCard({ resourceData, categories }) {
   // console.log("test MultiActionAreaCard (categories) : ")
   // console.log(categories)
+  console.log("resourceData")
+  console.log(resourceData)
   return (
     <Card
       sx={{ maxWidth: 700, height: "fit-content" }}
@@ -22,23 +24,23 @@ export default function MultiActionAreaCard({ resourceData, categories }) {
         <CardMedia
           variant="imageCard"
           component="img"
-          image={resourceData.thumbnail.url}
-          alt={resourceData.thumbnail.alt}
+          image={resourceData?.thumbnail.url}
+          alt={resourceData?.thumbnail.alt}
         />
       </CardContent>
       <CardContent variant="wrapperContentCard">
         <Typography variant="categoryTypo">
           {
-            resourceData.categories.map(resourceCategory => {
+            resourceData?.categories.map(resourceCategory => {
               return getMatchingCategories(resourceCategory, categories);
             })
           }
         </Typography>
         <Typography gutterBottom variant="TitreCard" component="div">
-          {resourceData.name}
+          {resourceData?.name}
         </Typography>
         <Typography variant="DesCard">
-          {resourceData.description}
+          {resourceData?.description}
         </Typography>
         <CardActions>
           <Button variant="borderBtn" size="small" color="primary">
