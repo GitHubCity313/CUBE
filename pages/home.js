@@ -1,25 +1,39 @@
 import React, { useContext } from "react";
 import Link from "next/link";
-import AuthContext from "./../context/authContext"
-import { Grid, TextField } from "@mui/material";
+
+import AuthContext from "./../context/authContext";
+import { Box, Grid, TextField } from "@mui/material";
 import Card from "../components/Card";
 import SelectVariants from "../components/SelectVariants";
 import Layout from "../components/Layout/Layout";
 import apiService from "../services/apiService";
+import MenuItem from "@mui/material/MenuItem";
 
 export default function Home({ resources, categories }) {
   return (
     <Layout title="Cube | Home">
       <Grid container flexDirection="column">
-        <TextField
-          hiddenLabel
-          id="filled-hidden-label-normal"
-          defaultValue="Normal"
-          variant="filled"
-          sx={{ margin: 7 }}
-        />
+        {/*<TextField*/}
+        {/*    // hiddenLabel*/}
+        {/*    // id="filled-hidden-label-normal"*/}
+        {/*    defaultValue="Normal"*/}
+        {/*    variant="filled"*/}
+        {/*    sx={{ margin: 7 }}*/}
+        {/*/>*/}
 
-        <SelectVariants />
+        {/*<SelectVariants />*/}
+
+        <Box component="form" sx={{ mt: 21 }}>
+          <div>
+            <TextField select label="select" value={categories}>
+              {categories.map((category) => (
+                <MenuItem key={category._id} value={category._id}>
+                  {category.name}
+                </MenuItem>
+              ))}
+            </TextField>
+          </div>
+        </Box>
         <ul>
           {resources.map((resource) => {
             return (
@@ -74,10 +88,10 @@ export default function Home({ resources, categories }) {
     </Layout>
   );
 }
+
 export async function getServerSideProps(user) {
   let resources = [];
   let categories = [];
-
 
   try {
     const fetchedResources = await apiService.getItems("resources");
