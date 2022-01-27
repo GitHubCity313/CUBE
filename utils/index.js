@@ -9,14 +9,3 @@ export function getMatchingCategories(resourceCategory, categories) {
     }
   });
 }
-export function isCategoryChecked(category, checkedCategories) {
-  console.log("isCategoryChecked checkedCategories");
-  console.log(typeof checkedCategories);
-  console.log(checkedCategories);
-  console.log("isCategoryChecked category");
-  console.log(category);
-  return (
-    checkedCategories.find((categoryId) => categoryId === category._id) !==
-    undefined
-  );
-}

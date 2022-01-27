@@ -8,7 +8,6 @@ import {
   TextField,
   Checkbox,
   InputLabel,
-  ListItemText,
   OutlinedInput,
   Select,
   Chip,
@@ -18,7 +17,6 @@ import SelectVariants from "../components/SelectVariants";
 import Layout from "../components/Layout/Layout";
 import apiService from "../services/apiService";
 import MenuItem from "@mui/material/MenuItem";
-import { isCategoryChecked } from "../utils";
 import FormControl from "@mui/material/FormControl";
 import theme from "../theme";
 
@@ -43,35 +41,7 @@ function getStyles(name, personName, theme) {
 }
 
 export default function Home({ resources, categories }) {
-  // console.log("test staticProps (resources) : ")
-  // console.log(resources)
-
-  // console.log("test staticProps (categories) : ")
-  console.log(categories);
-  const _checkedCategories = categories.map((category) => {
-    return { ...category, checked: false };
-  });
-
-  // const [checkedCategories, setCheckCategory] = useState(_checkedCategories);
   const [categoriesName, setCategory] = useState([]);
-  console.log("in Home");
-  //console.log(checkedCategories)
-
-  // const updateCheckedCategories = (event) => {
-  //   // console.log("event")
-  //   // console.log(event.target.value)
-  //   // checkedCategories.push(event.target.value)
-  //   console.log("checkedCategories in updateCC")
-  //   console.log(checkedCategories)
-  //   console.log(typeof checkedCategories)
-  //   console.log(`pushing : ${event.target.value}`)
-  //
-  //   setCheckCategory(checkedCategories => checkedCategories.push(event.target.value))
-  //
-  //   console.log("checkedCategories in updateCC")
-  //   console.log(checkedCategories)
-  //   console.log(typeof checkedCategories)
-  // }
 
   const handleChange = (event) => {
     const {
@@ -83,15 +53,6 @@ export default function Home({ resources, categories }) {
   return (
     <Layout title="Cube | Home">
       <Grid container flexDirection="column">
-        {/*<TextField*/}
-        {/*    // hiddenLabel*/}
-        {/*    // id="filled-hidden-label-normal"*/}
-        {/*    defaultValue="Normal"*/}
-        {/*    variant="filled"*/}
-        {/*    sx={{ margin: 7 }}*/}
-        {/*/>*/}
-
-        {/*<SelectVariants />*/}
         <div>
           <FormControl sx={{ mt: 20, width: 300 }}>
             <InputLabel id="demo-multiple-chip-label">Catégories</InputLabel>
