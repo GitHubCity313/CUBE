@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, { useState } from "react";
 import Link from "next/link";
 import {
   Grid,
@@ -31,108 +31,108 @@ const MenuProps = {
 function getStyles(name, personName, theme) {
   return {
     fontWeight:
-        personName.indexOf(name) === -1
-            ? theme.typography.fontWeightRegular
-            : theme.typography.fontWeightMedium,
+      personName.indexOf(name) === -1
+        ? theme.typography.fontWeightRegular
+        : theme.typography.fontWeightMedium,
   };
 }
 
-export default function Home({resources, categories}) {
+export default function Home({ resources, categories }) {
   const [categoriesName, setCategory] = useState([]);
 
   const handleChange = (event) => {
     const {
-      target: {value},
+      target: { value },
     } = event;
     setCategory(typeof value === "string" ? value.split(",") : value);
   };
 
   return (
-      <Layout title="Cube | Home">
-        <Grid container flexDirection="column">
-          <div>
-            <FormControl sx={{mt: 20, width: 300}}>
-              <InputLabel id="demo-multiple-chip-label">Catégories</InputLabel>
-              <Select
-                  labelId="demo-multiple-chip-label"
-                  id="demo-multiple-chip"
-                  multiple
-                  value={categoriesName}
-                  onChange={handleChange}
-                  input={<OutlinedInput id="select-multiple-chip" label="Chip"/>}
-                  renderValue={(selected) => (
-                      <Box sx={{display: "flex", flexWrap: "wrap", gap: 0.5}}>
-                        {selected.map((value) => (
-                            <Chip key={value} label={value}/>
-                        ))}
-                      </Box>
-                  )}
-                  MenuProps={MenuProps}
-              >
-                {categories.map((category) => (
-                    <MenuItem
-                        key={category._id}
-                        value={category.name}
-                        style={getStyles(category.name, categoriesName, theme)}
-                    >
-                      {category.name}
-                    </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-          </div>
-          <ul>
-            {resources.map((resource) => {
-              return (
-                  <li key={resource._id}>
-                    <Link href={`./resource/${resource._id}`}>
-                      <a>
-                        <Card resourceData={resource} categories={categories}/>
-                      </a>
-                    </Link>
-                  </li>
-              );
-            })}
-          </ul>
-          <TextField
-              hiddenLabel
-              id="filled-hidden-label-normal"
-              defaultValue="Normal"
-              variant="filled"
-          />
+    <Layout title="Cube | Home">
+      <Grid container flexDirection="column">
+        <div>
+          <FormControl sx={{ mt: 20, width: 300 }}>
+            <InputLabel id="demo-multiple-chip-label">Catégories</InputLabel>
+            <Select
+              labelId="demo-multiple-chip-label"
+              id="demo-multiple-chip"
+              multiple
+              value={categoriesName}
+              onChange={handleChange}
+              input={<OutlinedInput id="select-multiple-chip" label="Chip" />}
+              renderValue={(selected) => (
+                <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
+                  {selected.map((value) => (
+                    <Chip key={value} label={value} />
+                  ))}
+                </Box>
+              )}
+              MenuProps={MenuProps}
+            >
+              {categories.map((category) => (
+                <MenuItem
+                  key={category._id}
+                  value={category.name}
+                  style={getStyles(category.name, categoriesName, theme)}
+                >
+                  {category.name}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+        </div>
+        <ul>
+          {resources.map((resource) => {
+            return (
+              <li key={resource._id}>
+                <Link href={`./resource/${resource._id}`}>
+                  <a>
+                    <Card resourceData={resource} categories={categories} />
+                  </a>
+                </Link>
+              </li>
+            );
+          })}
+        </ul>
+        <TextField
+          hiddenLabel
+          id="filled-hidden-label-normal"
+          defaultValue="Normal"
+          variant="filled"
+        />
 
-          <TextField
-              hiddenLabel
-              id="filled-hidden-label-normal"
-              defaultValue="Normal"
-              variant="filled"
-          />
+        <TextField
+          hiddenLabel
+          id="filled-hidden-label-normal"
+          defaultValue="Normal"
+          variant="filled"
+        />
 
-          <SelectVariants/>
-          {/* <Card /> */}
-          <TextField
-              hiddenLabel
-              id="filled-hidden-label-normal"
-              defaultValue="Normal"
-              variant="filled"
-          />
-          <TextField
-              hiddenLabel
-              id="filled-hidden-label-normal"
-              defaultValue="Normal"
-              variant="filled"
-          />
+        <SelectVariants />
+        {/* <Card /> */}
+        <TextField
+          hiddenLabel
+          id="filled-hidden-label-normal"
+          defaultValue="Normal"
+          variant="filled"
+        />
+        <TextField
+          hiddenLabel
+          id="filled-hidden-label-normal"
+          defaultValue="Normal"
+          variant="filled"
+        />
 
-          <SelectVariants/>
-          {/* <Card /> */}
-          <TextField
-              hiddenLabel
-              id="filled-hidden-label-normal"
-              defaultValue="Normal"
-              variant="filled"
-          />
-        </Grid>
-      </Layout>
+        <SelectVariants />
+        {/* <Card /> */}
+        <TextField
+          hiddenLabel
+          id="filled-hidden-label-normal"
+          defaultValue="Normal"
+          variant="filled"
+        />
+      </Grid>
+    </Layout>
   );
 }
 
