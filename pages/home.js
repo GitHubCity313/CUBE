@@ -19,6 +19,7 @@ import apiService from "../services/apiService";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import theme from "../theme";
+import PropTypes from "prop-types";
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -149,6 +150,9 @@ export async function getServerSideProps(user) {
 
     resources = await fetchedResources.data.resources;
     categories = await fetchedCategories.data.categories;
+    console.log("getStaticProps() types:");
+    console.log(typeof resources);
+    console.log(typeof categories);
   } catch (err) {
     console.log(err);
   }
@@ -160,3 +164,8 @@ export async function getServerSideProps(user) {
     },
   };
 }
+
+Home.propTypes = {
+  resources: PropTypes.object,
+  categories: PropTypes.object,
+};
