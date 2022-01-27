@@ -39,8 +39,8 @@ export default function ressources(req, res) {
       const updatedResource = {
         $set: {
           ...resource,
-        }
-      }
+        },
+      };
       const update = await db
         .collection("resources")
         .updateOne(filter, updatedResource);
@@ -48,7 +48,7 @@ export default function ressources(req, res) {
     } catch (err) {
       return res.status(404).json({ err });
     }
-  }
+  };
 
   const getRoute = async (req, res) => {
     const db = await connect();
