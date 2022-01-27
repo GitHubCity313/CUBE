@@ -4,7 +4,7 @@ import CardContent from "@mui/material/CardContent";
 import CardMedia from "@mui/material/CardMedia";
 import Typography from "@mui/material/Typography";
 import { Button, CardActions } from "@mui/material";
-import getMatchingCategories from "../utils";
+import { getMatchingCategories } from "../utils";
 
 const styles = () => ({
   default: {},

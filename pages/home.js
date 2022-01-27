@@ -1,15 +1,65 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import Link from "next/link";
 
 import AuthContext from "./../context/authContext";
-import { Box, Grid, TextField } from "@mui/material";
+import {
+  Box,
+  Grid,
+  TextField,
+  Checkbox,
+  InputLabel,
+  ListItemText,
+  OutlinedInput,
+  Select,
+} from "@mui/material";
 import Card from "../components/Card";
 import SelectVariants from "../components/SelectVariants";
 import Layout from "../components/Layout/Layout";
 import apiService from "../services/apiService";
 import MenuItem from "@mui/material/MenuItem";
+import { isCategoryChecked } from "../utils";
+import FormControl from "@mui/material/FormControl";
 
 export default function Home({ resources, categories }) {
+  // console.log("test staticProps (resources) : ")
+  // console.log(resources)
+
+  // console.log("test staticProps (categories) : ")
+  console.log(categories);
+  const _checkedCategories = categories.map((category) => {
+    return { ...category, checked: false };
+  });
+
+  const [checkedCategories, setCheckCategory] = useState(_checkedCategories);
+
+  console.log("in Home");
+  //console.log(checkedCategories)
+
+  // const updateCheckedCategories = (event) => {
+  //   // console.log("event")
+  //   // console.log(event.target.value)
+  //   // checkedCategories.push(event.target.value)
+  //   console.log("checkedCategories in updateCC")
+  //   console.log(checkedCategories)
+  //   console.log(typeof checkedCategories)
+  //   console.log(`pushing : ${event.target.value}`)
+  //
+  //   setCheckCategory(checkedCategories => checkedCategories.push(event.target.value))
+  //
+  //   console.log("checkedCategories in updateCC")
+  //   console.log(checkedCategories)
+  //   console.log(typeof checkedCategories)
+  // }
+
+  const handleChange = (event) => {
+    const {
+      target: { value, id },
+    } = event;
+    console.log(value, id, checkedCategories);
+    //update array
+    //setCheckCategory([...category, ])
+  };
+
   return (
     <Layout title="Cube | Home">
       <Grid container flexDirection="column">
@@ -22,18 +72,29 @@ export default function Home({ resources, categories }) {
         {/*/>*/}
 
         {/*<SelectVariants />*/}
-
-        <Box component="form" sx={{ mt: 21 }}>
-          <div>
-            <TextField select label="select" value={categories}>
+        <div>
+          <FormControl sx={{ mt: 20, width: 300 }}>
+            <InputLabel id="demo-multiple-chip-label">Catégories</InputLabel>
+            <Select
+              label="demos"
+              //id="demo-multiple-checkbox"
+              multiple
+              value={checkedCategories.filter(
+                (categorie) => categorie.checked === true
+              )}
+              onChange={handleChange}
+              input={<OutlinedInput label="Tag" />}
+              renderValue={(selected) => selected.join(", ")}
+            >
               {categories.map((category) => (
-                <MenuItem key={category._id} value={category._id}>
-                  {category.name}
+                <MenuItem key={category._id} value={category.name}>
+                  <Checkbox checked={checkedCategories.checked} />
+                  <ListItemText primary={category.name} />
                 </MenuItem>
               ))}
-            </TextField>
-          </div>
-        </Box>
+            </Select>
+          </FormControl>
+        </div>
         <ul>
           {resources.map((resource) => {
             return (
