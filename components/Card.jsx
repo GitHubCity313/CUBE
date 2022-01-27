@@ -13,8 +13,8 @@ const styles = () => ({
 export default function MultiActionAreaCard({ resourceData, categories }) {
   // console.log("test MultiActionAreaCard (categories) : ")
   // console.log(categories)
-  console.log("resourceData")
-  console.log(resourceData)
+  // console.log("resourceData")
+  // console.log(resourceData)
   return (
     <Card
       sx={{ maxWidth: 700, height: "fit-content" }}

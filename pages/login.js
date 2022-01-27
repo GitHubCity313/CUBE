@@ -21,7 +21,7 @@ const Login = () => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
-  //! Pour demo - a virer ensuite 
+  //! Pour demo - a virer ensuite
   //! Pour utiliser, decommenter le bouton en commentaire dans le composant
   const add = async () => {
     try {
@@ -52,11 +52,7 @@ const Login = () => {
       };
       //const test = await APIService.createItem("resources", mockedResource);
       // const plop = await APIService.getItems("resources");
-      const test = await APIService.updateItem(
-        "resources",
-        id,
-        mockedResource
-      );
+      const test = await APIService.updateItem("resources", id, mockedResource);
 
       console.log(test);
     } catch (err) {
