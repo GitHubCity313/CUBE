@@ -11,6 +11,7 @@ import {
   ListItemText,
   OutlinedInput,
   Select,
+  Chip,
 } from "@mui/material";
 import Card from "../components/Card";
 import SelectVariants from "../components/SelectVariants";
@@ -19,6 +20,27 @@ import apiService from "../services/apiService";
 import MenuItem from "@mui/material/MenuItem";
 import { isCategoryChecked } from "../utils";
 import FormControl from "@mui/material/FormControl";
+import theme from "../theme";
+
+const ITEM_HEIGHT = 48;
+const ITEM_PADDING_TOP = 8;
+const MenuProps = {
+  PaperProps: {
+    style: {
+      maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+      width: 250,
+    },
+  },
+};
+
+function getStyles(name, personName, theme) {
+  return {
+    fontWeight:
+      personName.indexOf(name) === -1
+        ? theme.typography.fontWeightRegular
+        : theme.typography.fontWeightMedium,
+  };
+}
 
 export default function Home({ resources, categories }) {
   // console.log("test staticProps (resources) : ")
@@ -30,8 +52,8 @@ export default function Home({ resources, categories }) {
     return { ...category, checked: false };
   });
 
-  const [checkedCategories, setCheckCategory] = useState(_checkedCategories);
-
+  // const [checkedCategories, setCheckCategory] = useState(_checkedCategories);
+  const [categoriesName, setCategory] = useState([]);
   console.log("in Home");
   //console.log(checkedCategories)
 
@@ -53,11 +75,9 @@ export default function Home({ resources, categories }) {
 
   const handleChange = (event) => {
     const {
-      target: { value, id },
+      target: { value },
     } = event;
-    console.log(value, id, checkedCategories);
-    //update array
-    //setCheckCategory([...category, ])
+    setCategory(typeof value === "string" ? value.split(",") : value);
   };
 
   return (
@@ -76,20 +96,28 @@ export default function Home({ resources, categories }) {
           <FormControl sx={{ mt: 20, width: 300 }}>
             <InputLabel id="demo-multiple-chip-label">Catégories</InputLabel>
             <Select
-              label="demos"
-              //id="demo-multiple-checkbox"
+              labelId="demo-multiple-chip-label"
+              id="demo-multiple-chip"
               multiple
-              value={checkedCategories.filter(
-                (categorie) => categorie.checked === true
-              )}
+              value={categoriesName}
               onChange={handleChange}
-              input={<OutlinedInput label="Tag" />}
-              renderValue={(selected) => selected.join(", ")}
+              input={<OutlinedInput id="select-multiple-chip" label="Chip" />}
+              renderValue={(selected) => (
+                <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
+                  {selected.map((value) => (
+                    <Chip key={value} label={value} />
+                  ))}
+                </Box>
+              )}
+              MenuProps={MenuProps}
             >
               {categories.map((category) => (
-                <MenuItem key={category._id} value={category.name}>
-                  <Checkbox checked={checkedCategories.checked} />
-                  <ListItemText primary={category.name} />
+                <MenuItem
+                  key={category._id}
+                  value={category.name}
+                  style={getStyles(category.name, categoriesName, theme)}
+                >
+                  {category.name}
                 </MenuItem>
               ))}
             </Select>
