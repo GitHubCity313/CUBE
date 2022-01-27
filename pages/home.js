@@ -11,6 +11,7 @@ import {
 } from "@mui/material";
 import Card from "../components/Card";
 import SelectVariants from "../components/SelectVariants";
+import DefaultSelect from "../components/DefautlSelect";
 import Layout from "../components/Layout/Layout";
 import APIService from "../services/APIService";
 import MenuItem from "@mui/material/MenuItem";
@@ -82,6 +83,7 @@ export default function Home({ resources, categories }) {
             </Select>
           </FormControl>
         </div>
+        <DefaultSelect />
         <ul>
           {resources.map((resource) => {
             return (
