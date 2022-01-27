@@ -1,10 +1,8 @@
-import React, { useState } from "react";
+import React, {useState} from "react";
 import Link from "next/link";
 import {
   Grid,
-  Checkbox,
   InputLabel,
-  ListItemText,
   OutlinedInput,
   Select,
   TextField,
@@ -16,7 +14,6 @@ import SelectVariants from "../components/SelectVariants";
 import Layout from "../components/Layout/Layout";
 import APIService from "../services/APIService";
 import MenuItem from "@mui/material/MenuItem";
-import { isCategoryChecked } from "../utils";
 import FormControl from "@mui/material/FormControl";
 import theme from "../theme";
 
@@ -34,146 +31,108 @@ const MenuProps = {
 function getStyles(name, personName, theme) {
   return {
     fontWeight:
-      personName.indexOf(name) === -1
-        ? theme.typography.fontWeightRegular
-        : theme.typography.fontWeightMedium,
+        personName.indexOf(name) === -1
+            ? theme.typography.fontWeightRegular
+            : theme.typography.fontWeightMedium,
   };
 }
 
-export default function Home({ resources, categories }) {
-  // console.log("test staticProps (resources) : ")
-  // console.log(resources)
-
-  // console.log("test staticProps (categories) : ")
-  console.log(categories);
-  const _checkedCategories = categories.map((category) => {
-    return { ...category, checked: false };
-  });
-
-  // const [checkedCategories, setCheckCategory] = useState(_checkedCategories);
+export default function Home({resources, categories}) {
   const [categoriesName, setCategory] = useState([]);
-  console.log("in Home");
-  //console.log(checkedCategories)
-
-  // const updateCheckedCategories = (event) => {
-  //   // console.log("event")
-  //   // console.log(event.target.value)
-  //   // checkedCategories.push(event.target.value)
-  //   console.log("checkedCategories in updateCC")
-  //   console.log(checkedCategories)
-  //   console.log(typeof checkedCategories)
-  //   console.log(`pushing : ${event.target.value}`)
-  //
-  //   setCheckCategory(checkedCategories => checkedCategories.push(event.target.value))
-  //
-  //   console.log("checkedCategories in updateCC")
-  //   console.log(checkedCategories)
-  //   console.log(typeof checkedCategories)
-  // }
 
   const handleChange = (event) => {
     const {
-      target: { value },
+      target: {value},
     } = event;
     setCategory(typeof value === "string" ? value.split(",") : value);
   };
 
   return (
-    <Layout title="Cube | Home">
-      <Grid container flexDirection="column">
-        {/*<TextField*/}
-        {/*    // hiddenLabel*/}
-        {/*    // id="filled-hidden-label-normal"*/}
-        {/*    defaultValue="Normal"*/}
-        {/*    variant="filled"*/}
-        {/*    sx={{ margin: 7 }}*/}
-        {/*/>*/}
+      <Layout title="Cube | Home">
+        <Grid container flexDirection="column">
+          <div>
+            <FormControl sx={{mt: 20, width: 300}}>
+              <InputLabel id="demo-multiple-chip-label">Catégories</InputLabel>
+              <Select
+                  labelId="demo-multiple-chip-label"
+                  id="demo-multiple-chip"
+                  multiple
+                  value={categoriesName}
+                  onChange={handleChange}
+                  input={<OutlinedInput id="select-multiple-chip" label="Chip"/>}
+                  renderValue={(selected) => (
+                      <Box sx={{display: "flex", flexWrap: "wrap", gap: 0.5}}>
+                        {selected.map((value) => (
+                            <Chip key={value} label={value}/>
+                        ))}
+                      </Box>
+                  )}
+                  MenuProps={MenuProps}
+              >
+                {categories.map((category) => (
+                    <MenuItem
+                        key={category._id}
+                        value={category.name}
+                        style={getStyles(category.name, categoriesName, theme)}
+                    >
+                      {category.name}
+                    </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          </div>
+          <ul>
+            {resources.map((resource) => {
+              return (
+                  <li key={resource._id}>
+                    <Link href={`./resource/${resource._id}`}>
+                      <a>
+                        <Card resourceData={resource} categories={categories}/>
+                      </a>
+                    </Link>
+                  </li>
+              );
+            })}
+          </ul>
+          <TextField
+              hiddenLabel
+              id="filled-hidden-label-normal"
+              defaultValue="Normal"
+              variant="filled"
+          />
 
-        {/*<SelectVariants />*/}
+          <TextField
+              hiddenLabel
+              id="filled-hidden-label-normal"
+              defaultValue="Normal"
+              variant="filled"
+          />
 
-        <div>
-          <FormControl sx={{ mt: 20, width: 300 }}>
-            <InputLabel id="demo-multiple-chip-label">Catégories</InputLabel>
-            <Select
-              labelId="demo-multiple-chip-label"
-              id="demo-multiple-chip"
-              multiple
-              value={categoriesName}
-              onChange={handleChange}
-              input={<OutlinedInput id="select-multiple-chip" label="Chip" />}
-              renderValue={(selected) => (
-                <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
-                  {selected.map((value) => (
-                    <Chip key={value} label={value} />
-                  ))}
-                </Box>
-              )}
-              MenuProps={MenuProps}
-            >
-              {categories.map((category) => (
-                <MenuItem
-                  key={category._id}
-                  value={category.name}
-                  style={getStyles(category.name, categoriesName, theme)}
-                >
-                  {category.name}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-        </div>
-        <ul>
-          {resources.map((resource) => {
-            return (
-              <li key={resource._id}>
-                <Link href={`./resource/${resource._id}`}>
-                  <a>
-                    <Card resourceData={resource} categories={categories} />
-                  </a>
-                </Link>
-              </li>
-            );
-          })}
-        </ul>
-        <TextField
-          hiddenLabel
-          id="filled-hidden-label-normal"
-          defaultValue="Normal"
-          variant="filled"
-        />
+          <SelectVariants/>
+          {/* <Card /> */}
+          <TextField
+              hiddenLabel
+              id="filled-hidden-label-normal"
+              defaultValue="Normal"
+              variant="filled"
+          />
+          <TextField
+              hiddenLabel
+              id="filled-hidden-label-normal"
+              defaultValue="Normal"
+              variant="filled"
+          />
 
-        <TextField
-          hiddenLabel
-          id="filled-hidden-label-normal"
-          defaultValue="Normal"
-          variant="filled"
-        />
-
-        <SelectVariants />
-        {/* <Card /> */}
-        <TextField
-          hiddenLabel
-          id="filled-hidden-label-normal"
-          defaultValue="Normal"
-          variant="filled"
-        />
-        <TextField
-          hiddenLabel
-          id="filled-hidden-label-normal"
-          defaultValue="Normal"
-          variant="filled"
-        />
-
-        <SelectVariants />
-        {/* <Card /> */}
-        <TextField
-          hiddenLabel
-          id="filled-hidden-label-normal"
-          defaultValue="Normal"
-          variant="filled"
-        />
-      </Grid>
-    </Layout>
+          <SelectVariants/>
+          {/* <Card /> */}
+          <TextField
+              hiddenLabel
+              id="filled-hidden-label-normal"
+              defaultValue="Normal"
+              variant="filled"
+          />
+        </Grid>
+      </Layout>
   );
 }
 
