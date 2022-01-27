@@ -150,9 +150,6 @@ export async function getServerSideProps(user) {
 
     resources = await fetchedResources.data.resources;
     categories = await fetchedCategories.data.categories;
-    console.log("getStaticProps() types:");
-    console.log(typeof resources);
-    console.log(typeof categories);
   } catch (err) {
     console.log(err);
   }
@@ -166,6 +163,6 @@ export async function getServerSideProps(user) {
 }
 
 Home.propTypes = {
-  resources: PropTypes.object,
-  categories: PropTypes.object,
+  resources: PropTypes.array,
+  categories: PropTypes.array,
 };
