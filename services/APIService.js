@@ -1,7 +1,10 @@
 import axios from "axios";
+import config from "../config";
+
+const { API_URL } = config.dev;
 
 const axiosInstance = axios.create({
-  baseURL: "http://localhost:3000/api/",
+  baseURL: API_URL,
   timeout: 5000,
   headers: {
     "Content-Type": "application/json",
