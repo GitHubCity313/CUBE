@@ -1,6 +1,14 @@
-import React, {useState} from "react";
+import React, { useState } from "react";
 import Link from "next/link";
-import {Grid, Checkbox, InputLabel, ListItemText, OutlinedInput, Select, TextField} from "@mui/material";
+import {
+  Grid,
+  Checkbox,
+  InputLabel,
+  ListItemText,
+  OutlinedInput,
+  Select,
+  TextField,
+} from "@mui/material";
 import Card from "../components/Card";
 import SelectVariants from "../components/SelectVariants";
 import Layout from "../components/Layout/Layout";
@@ -14,13 +22,14 @@ export default function Home({ resources, categories }) {
   // console.log(resources)
 
   // console.log("test staticProps (categories) : ")
-  console.log(categories)
-  const _checkedCategories = categories.map((category) => { return {...category, checked: false}});
+  console.log(categories);
+  const _checkedCategories = categories.map((category) => {
+    return { ...category, checked: false };
+  });
 
   const [checkedCategories, setCheckCategory] = useState(_checkedCategories);
 
-
-  console.log("in Home")
+  console.log("in Home");
   //console.log(checkedCategories)
 
   // const updateCheckedCategories = (event) => {
@@ -62,22 +71,24 @@ export default function Home({ resources, categories }) {
         {/*<SelectVariants />*/}
 
         <div>
-          <FormControl sx={{ mt: 20, width: 300}}>
+          <FormControl sx={{ mt: 20, width: 300 }}>
             <InputLabel id="demo-multiple-chip-label">Catégories</InputLabel>
             <Select
-                label="demos"
-                //id="demo-multiple-checkbox"
-                multiple
-                value={checkedCategories.filter((categorie) => categorie.checked === true)}
-                onChange={handleChange}
-                input={<OutlinedInput label="Tag" />}
-                renderValue={(selected) => selected.join(', ')}
+              label="demos"
+              //id="demo-multiple-checkbox"
+              multiple
+              value={checkedCategories.filter(
+                (categorie) => categorie.checked === true
+              )}
+              onChange={handleChange}
+              input={<OutlinedInput label="Tag" />}
+              renderValue={(selected) => selected.join(", ")}
             >
               {categories.map((category) => (
-                  <MenuItem key={category._id} value={category.name}>
-                    <Checkbox checked={checkedCategories.checked} />
-                    <ListItemText primary={category.name} />
-                  </MenuItem>
+                <MenuItem key={category._id} value={category.name}>
+                  <Checkbox checked={checkedCategories.checked} />
+                  <ListItemText primary={category.name} />
+                </MenuItem>
               ))}
             </Select>
           </FormControl>
@@ -136,6 +147,7 @@ export default function Home({ resources, categories }) {
     </Layout>
   );
 }
+
 export async function getStaticProps() {
   let resources = [];
   let categories = [];
