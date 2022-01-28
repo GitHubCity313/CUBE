@@ -5,6 +5,7 @@ import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
+import { array } from "prop-types";
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -17,19 +18,6 @@ const MenuProps = {
   },
 };
 
-const names = [
-  "Oliver Hansen",
-  "Van Henry",
-  "April Tucker",
-  "Ralph Hubbard",
-  "Omar Alexander",
-  "Carlos Abbott",
-  "Miriam Wagner",
-  "Bradley Wilkerson",
-  "Virginia Andrews",
-  "Kelly Snyder",
-];
-
 function getStyles(name, personName, theme) {
   return {
     fontWeight:
@@ -39,15 +27,18 @@ function getStyles(name, personName, theme) {
   };
 }
 
-export default function MultipleSelect() {
+export default function ResourceTypeSelect({ types }) {
   const theme = useTheme();
-  const [personName, setPersonName] = React.useState([]);
+  const [typesSelected, setTypesSelected] = React.useState([
+    "association",
+    "event",
+  ]);
 
   const handleChange = (event) => {
     const {
       target: { value },
     } = event;
-    setPersonName(
+    setTypesSelected(
       // On autofill we get a stringified value.
       typeof value === "string" ? value.split(",") : value
     );
@@ -56,23 +47,23 @@ export default function MultipleSelect() {
   return (
     <div>
       <FormControl sx={{ m: 1, width: 300 }}>
-        <InputLabel id="demo-multiple-name-label">Name</InputLabel>
+        <InputLabel id="demo-multiple-name-label">Type de Ressource</InputLabel>
         <Select
           labelId="demo-multiple-name-label"
           id="demo-multiple-name"
           multiple
-          value={personName}
+          value={typesSelected}
           onChange={handleChange}
-          input={<OutlinedInput label="Name" />}
+          input={<OutlinedInput label="Type de Ressource" />}
           MenuProps={MenuProps}
         >
-          {names.map((name) => (
+          {types.map((type) => (
             <MenuItem
-              key={name}
-              value={name}
-              style={getStyles(name, personName, theme)}
+              key={type}
+              value={type}
+              style={getStyles(type, typesSelected, theme)}
             >
-              {name}
+              {type}
             </MenuItem>
           ))}
         </Select>
@@ -80,3 +71,7 @@ export default function MultipleSelect() {
     </div>
   );
 }
+
+ResourceTypeSelect.propTypes = {
+  types: array,
+};
