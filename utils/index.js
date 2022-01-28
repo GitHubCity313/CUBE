@@ -9,3 +9,13 @@ export function getMatchingCategories(resourceCategory, categories) {
     }
   });
 }
+
+export function indexResourceTypes(resources) {
+  const types = [];
+  resources.map((resource) => {
+    if (!types.find((element) => element === resource.resourceType)) {
+      types.push(resource.resourceType);
+    }
+  });
+  return types;
+}
