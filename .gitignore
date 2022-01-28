@@ -2,8 +2,6 @@
 
 .idea/
 
-config.js
-
 .env.local
 # dependencies
 /node_modules
