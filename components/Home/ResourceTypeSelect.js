@@ -29,10 +29,7 @@ function getStyles(name, personName, theme) {
 
 export default function ResourceTypeSelect({ types }) {
   const theme = useTheme();
-  const [typesSelected, setTypesSelected] = React.useState([
-    "association",
-    "event",
-  ]);
+  const [typesSelected, setTypesSelected] = React.useState(types);
 
   const handleChange = (event) => {
     const {
