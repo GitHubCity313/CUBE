@@ -1,6 +1,7 @@
-import React from "react";
-import PropTypes from "prop-types";
-import { parse } from "date-fns";
+// Pour appeler un contexte, on importe le useContext de React
+import React, { useState, useContext } from "react";
+// Et le contexte aue l'on souhaite consommer (il peut en avoir plus d'un)
+import AuthContext from "../context/authContext";
 import {
   Grid,
   Stack,
@@ -8,57 +9,28 @@ import {
   Button,
   Typography,
   useMediaQuery,
-  Box,
 } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import Layout from "../components/Layout/Layout";
 import Image from "next/image";
 import Logo from "../public/logoMini.svg";
 import Link from "next/link";
-import APIService from "../services/APIService";
 
 const Login = () => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+  // Ensuite, on recupere les infos qui nous interesse dans le contexte. 
+  // Pour les connaitre -> GO context/authProvider -- En bas dans le useMemo
+  const { signIn, error, resetError } = useContext(AuthContext);
+  const [fields, setFields] = useState({ email: "", password: "" });
 
-  //! Pour demo - a virer ensuite
-  //! Pour utiliser, decommenter le bouton en commentaire dans le composant
-  const add = async () => {
-    try {
-      // const mockedResource = {
-      //   resourceType: "event",
-      //   categories: ["61e17b033d88f191f3f9226f"],
-      //   author: "61e17a1d3d88f191f3f8f6fc",
-      //   hasParticipants: [],
-      //   moderationValidation: false,
-      //   publicationStatus: "public",
-      //   name: "Distribution de fournitures scolaires pour la rentrée",
-      //   contentId: "1",
-      //   createdAt: Date.now(),
-      //   //startDate: parse("2022-01-06").getTime(),
-      //   //endDate: parse("2022-03-06").getTime(),
-      //   place: {
-      //     city: "Lille",
-      //     zipCode: "59000",
-      //     region: "Hauts-de-France",
-      //   },
-      //   likes: 0,
-      // };
-      // Pour l'update - retirer l'id de l'objet et ne donner a l'API que les champs a modifier
-      const id = "61e177193d88f191f3f8589c";
-
-      const mockedResource = {
-        name: "Distribution de fournitures scolaires",
-      };
-      //const test = await APIService.createItem("resources", mockedResource);
-      // const plop = await APIService.getItems("resources");
-      const test = await APIService.updateItem("resources", id, mockedResource);
-
-      console.log(test);
-    } catch (err) {
-      console.log(" deso");
-      console.log(err);
+  // Met a jour le state qui controle la valeur des champs du formulaire
+  // Et vide l'erreur histoire au'elle ne reste pas 15 ans apres modification
+  const updateField = (e) => {
+    if (error.length > 0) {
+      resetError();
     }
+    return setFields({ ...fields, [e.target.id]: e.target.value });
   };
 
   return (
@@ -94,18 +66,32 @@ const Login = () => {
           >
             <Stack spacing={3}>
               <Typography variant="h2">Connexion</Typography>
+              {error !== null && (
+                <Typography sx={{ color: "red" }}>{error}</Typography>
+              )}
               <TextField
-                id="filled-basic"
-                label="Nom d'utilisateur"
+                id="email"
+                label="Email"
                 variant="filled"
+                type="email"
+                value={fields.username}
+                onChange={updateField}
               />
               <TextField
-                id="filled-basic"
+                id="password"
                 label="Mot de passe"
                 variant="filled"
+                type="password"
+                value={fields.password}
+                onChange={updateField}
               />
               <Stack sx={{ alignSelf: "end" }}>
-                <Button variant="bleuBtn">Se connecter</Button>
+                <Button
+                  variant="bleuBtn"
+                  onClick={() => signIn(fields, "/profile")}
+                >
+                  Se connecter
+                </Button>
                 <Typography>
                   {`Pas de compte? `}
                   <Link href="/signIn">
@@ -114,12 +100,6 @@ const Login = () => {
                 </Typography>
               </Stack>
             </Stack>
-
-            <Box sx={{ alignSelf: "end" }}>
-              {/* <Button onClick={add} variant="bleuBtn">
-                Add resources
-              </Button> */}
-            </Box>
           </Grid>
         </Grid>
       </Grid>

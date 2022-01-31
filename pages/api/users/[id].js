@@ -16,8 +16,6 @@ export default function userId(req, res) {
         .toArray();
       return res.status(200).json({ user });
     } catch (err) {
-      console.log("error : ");
-      console.log(err);
       return res.status(404).json({ err });
     }
   };
