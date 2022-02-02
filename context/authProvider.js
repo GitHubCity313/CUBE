@@ -21,13 +21,13 @@ const AuthProvider = (props) => {
 
   // Les fonctions si dessous sont en callback pour actualiser le contexte a chaque fois qu'on les utilise
   // Genere une session utilisateur avec les infos du token
-  const getSession = (token) => {
+  const getSession = useCallback((token) => {
     const decoded = jwt.decode(token);
     const { lastName, firstName, role } = decoded.data;
     setSession({ lastName, firstName });
     setRole(role);
     return setIsAuthenticated(true);
-  };
+  }, []);
 
   // Efface toutes les infos
   const shutSession = useCallback((token) => {
@@ -40,13 +40,13 @@ const AuthProvider = (props) => {
   // Si oui -> Cree un session avec les infos
   // Si non, clean le tout un petit coup pour le fun
   useEffect(() => {
-    // Verifie dans le local storage si un token est deja present
+    // Verifie dans le local storage si un token est deja present a chaque refresh
     const token = authService.get();
+
     if (commonUtils.isValid(JSON.stringify(token))) {
-      return getSession(JSON.stringify(token));
+      return getSession(token);
     }
-    return shutSession();
-  }, []);
+  }, [children]);
 
   // Authentifie l'utilisateur -- Communiaue avec l'API pour generer un token
   const authenticate = async (credentials, callbackUrl) => {
@@ -61,10 +61,16 @@ const AuthProvider = (props) => {
       // Redirige vers le callback souhaité
       return router.push(callbackUrl);
     } catch (err) {
-      // Recupere la reponse de l'API
-      const { message } = err.response.data;
-      // Actualise le state pour permettre de la recuperer depuis le front
-      setError(message);
+      if (err.response !== undefined) {
+        // Recupere la reponse de l'API
+        const { message } = err.response.data;
+        // Actualise le state pour permettre de la recuperer depuis le front
+
+        setError(message);
+      } else {
+        setError("Une erreur est survenue");
+      }
+
       return shutSession();
     }
   };
@@ -105,8 +111,6 @@ const AuthProvider = (props) => {
     }),
     [isAuthenticated, error]
   );
-
-  console.log(authData);
 
   return (
     <AuthContext.Provider value={authData}>{children}</AuthContext.Provider>

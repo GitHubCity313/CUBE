@@ -1,5 +1,5 @@
 // Pour appeler un contexte, on importe le useContext de React
-import React, { useState, useContext } from "react";
+import React, { useState, useEffect, useContext } from "react";
 // Et le contexte aue l'on souhaite consommer (il peut en avoir plus d'un)
 import AuthContext from "../context/authContext";
 import {
@@ -19,11 +19,13 @@ import Link from "next/link";
 const Login = () => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
-  // Ensuite, on recupere les infos qui nous interesse dans le contexte. 
+  // Ensuite, on recupere les infos qui nous interesse dans le contexte.
   // Pour les connaitre -> GO context/authProvider -- En bas dans le useMemo
   const { signIn, error, resetError } = useContext(AuthContext);
   const [fields, setFields] = useState({ email: "", password: "" });
 
+  // C'est moche mais ca fixe un bug dans mon contexte -- temporaire
+  useEffect(() => resetError(), []);
   // Met a jour le state qui controle la valeur des champs du formulaire
   // Et vide l'erreur histoire au'elle ne reste pas 15 ans apres modification
   const updateField = (e) => {

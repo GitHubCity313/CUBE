@@ -23,10 +23,7 @@ export default function auth(req, res) {
           { data: { id: _id, firstName, lastName, role } },
           process.env.JWT_SECRET,
           {
-            expiresIn: "1d",
-          },
-          (err) => {
-            throw Error;
+            expiresIn: 1400,
           }
         );
 
@@ -37,7 +34,9 @@ export default function auth(req, res) {
         throw Error;
       }
     } catch (err) {
-      return res.status(404).json({ message: "User or password is incorrect" });
+      return res
+        .status(404)
+        .json({ message: "Adresse mail ou mot de passe incorrect" });
     }
   };
 
