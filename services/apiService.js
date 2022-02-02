@@ -4,11 +4,17 @@ const apiService = {
   getItems: (item) => axiosInstance.get(item),
   getItem: (item, id) => axiosInstance.get(`${item}/${id}`),
   createItem: (item, data) =>
-    axiosInstance.post(`${item}`, JSON.stringify(data)),
+    axiosInstance.post(`${item}`, JSON.stringify(data), {
+      headers: { Authorization: `Bearer ${token}` },
+    }),
   updateItem: (item, id, data) =>
-    axiosInstance.put(`${item}/${id}`, JSON.stringify(data)),
-  deleteItem: (item, id) => axiosInstance.delete(`${item}/${id}`),
-  login: (user) => axiosInstance.post(`/auth/test`, JSON.stringify(user)),
+    axiosInstance.put(`${item}/${id}`, JSON.stringify(data), {
+      headers: { Authorization: `Bearer ${token}` },
+    }),
+  deleteItem: (item, id) =>
+    axiosInstance.delete(`${item}/${id}`, {
+      headers: { Authorization: `Bearer ${token}` },
+    }),
 };
 
 export default apiService;

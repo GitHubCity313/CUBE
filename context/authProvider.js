@@ -65,12 +65,11 @@ const AuthProvider = (props) => {
         // Recupere la reponse de l'API
         const { message } = err.response.data;
         // Actualise le state pour permettre de la recuperer depuis le front
-
         setError(message);
       } else {
+        // Si l'erreur attrapee n'est pas standard, affiche une erreur generique
         setError("Une erreur est survenue");
       }
-
       return shutSession();
     }
   };
