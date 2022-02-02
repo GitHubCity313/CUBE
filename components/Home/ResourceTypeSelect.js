@@ -29,7 +29,7 @@ function getStyles(name, personName, theme) {
 
 export default function ResourceTypeSelect({ types }) {
   const theme = useTheme();
-  const [typesSelected, setTypesSelected] = React.useState(types);
+  const [typesSelected, setTypesSelected] = React.useState([]);
 
   const handleChange = (event) => {
     const {
@@ -44,14 +44,16 @@ export default function ResourceTypeSelect({ types }) {
   return (
     <div>
       <FormControl sx={{ m: 1, width: 300 }}>
-        <InputLabel id="demo-multiple-name-label">Type de Ressource</InputLabel>
+        <InputLabel id="demo-multiple-name-label">
+          Types de Ressources
+        </InputLabel>
         <Select
           labelId="demo-multiple-name-label"
           id="demo-multiple-name"
           multiple
           value={typesSelected}
           onChange={handleChange}
-          input={<OutlinedInput label="Type de Ressource" />}
+          input={<OutlinedInput label="Types de Ressources" />}
           MenuProps={MenuProps}
         >
           {types.map((type) => (
