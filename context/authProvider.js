@@ -11,6 +11,7 @@ const AuthProvider = (props) => {
   const { refetchInterval, children } = props;
   // Les states sont les etats par defaut du contexte. Donc de base, personne n'est connecte + 0 infos
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [currentToken, setCurrentToken] = useState(null);
   const [session, setSession] = useState({});
   // Je mets les rôles a part pour le moment
   const [role, setRole] = useState(null);
@@ -30,9 +31,10 @@ const AuthProvider = (props) => {
   }, []);
 
   // Efface toutes les infos
-  const shutSession = useCallback((token) => {
+  const shutSession = useCallback(() => {
     setRole("");
     setSession({});
+    setCurrentToken(null);
     return setIsAuthenticated(false);
   }, []);
 
@@ -42,9 +44,29 @@ const AuthProvider = (props) => {
   useEffect(() => {
     // Verifie dans le local storage si un token est deja present a chaque refresh
     const token = authService.get();
+    // A l'arrivee sur la page, verifie le token present dans le local storage
+    // S'il a expire, l'utilisateur est deconnecte
+    const verifyToken = async () => authService.checkToken(token);
 
     if (commonUtils.isValid(JSON.stringify(token))) {
-      return getSession(token);
+      const check = async () => {
+        try {
+          const check = await verifyToken();
+          if (check.status === 200) {
+            setCurrentToken(token);
+            return getSession(token);
+          } else {
+            logOut();
+          }
+        } catch (err) {
+          logOut();
+        }
+      };
+
+      check();
+    } else {
+      authService.clear();
+      return shutSession();
     }
   }, [children]);
 
@@ -78,16 +100,17 @@ const AuthProvider = (props) => {
   const logOut = async (callbackUrl) => {
     try {
       // Revoaue le token -- a faire
-      const check = await authService.signOut();
+      const check = await authService.signOut(token);
       // Enleve le token du local storage
       authService.clear();
       // Reinitialise le contexte
       shutSession();
+      setCurrentToken(null);
       // Redirige vers le callback souhaite. Par defaut home
-      router.push(callbackUrl ? callbackUrl : "/");
+      return router.push(callbackUrl ? callbackUrl : "/");
     } catch (err) {
-      console.log(err);
-      //setIsAuthenticated(false);
+      authService.clear();
+      shutSession();
     }
   };
 

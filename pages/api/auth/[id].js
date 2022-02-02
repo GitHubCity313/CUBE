@@ -23,7 +23,7 @@ export default function auth(req, res) {
           { data: { id: _id, firstName, lastName, role } },
           process.env.JWT_SECRET,
           {
-            expiresIn: 1400,
+            expiresIn: 1440,
           }
         );
 
@@ -46,16 +46,34 @@ export default function auth(req, res) {
     return res.status(200).json();
   };
 
+  const checkToken = async (token) => {
+    // Verifie si le token est valide
+    jwt.verify(token, process.env.JWT_SECRET, function (err) {
+      if (err) {
+        return res.status(401).json({
+          name: err.name,
+          expiredAt: err.expiredAt,
+        });
+      }
+    });
+    // Faire expirer le token a la deco
+    return res.status(200).json();
+  };
+
   const getRoute = async (req, res) => {
     const credentials = req.body;
     const id = req.query.id;
+    const token = req.body.headers?.Authorization
+      ? req.body.headers.Authorization
+      : null;
 
     switch (id) {
       case "signIn":
         return await signIn(credentials);
       case "signOut":
         return await signOut();
-
+      case "checkToken":
+        return await checkToken(token);
       default:
         return res.status(405).end(`Method ${req.method} Not Allowed`);
     }

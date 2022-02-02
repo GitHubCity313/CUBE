@@ -7,10 +7,15 @@ const authService = {
     axiosInstance.post(`/auth/signOut`, {
       headers: { Authorization: `Bearer ${token}` },
     }),
+  // Verifie la validite du token a la premiere connexion
+  checkToken: (token) =>
+    axiosInstance.post(`/auth/checkToken`, {
+      headers: { Authorization: token },
+    }),
   // Local storage
   store: (token) => localStorage.setItem("JWT", token),
   get: () => localStorage.getItem("JWT"),
-  delete: () => localStorage.removeItem("JWT"),
+  delete: async () => localStorage.removeItem("JWT"),
   clear: () => localStorage.clear(),
 };
 
