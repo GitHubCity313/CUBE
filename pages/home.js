@@ -1,6 +1,6 @@
 import React from "react";
 import Link from "next/link";
-import {Grid, TextField} from "@mui/material";
+import { Grid, TextField } from "@mui/material";
 import Card from "../components/Card";
 import SelectVariants from "../components/SelectVariants";
 import CategoriesSelect from "../components/Home/CategoriesSelect";
@@ -8,66 +8,68 @@ import ResourceTypeSelect from "../components/Home/ResourceTypeSelect";
 import Layout from "../components/Layout/Layout";
 import APIService from "../services/APIService";
 import PropTypes from "prop-types";
-import {indexResourceTypes} from "../utils";
+import { indexResourceTypes } from "../utils";
 
-export default function Home({resources, categories, resourceTypes}) {
+export default function Home({ resources, categories, resourceTypes }) {
   return (
-      <Layout title="Cube | Home">
-        <Grid container flexDirection="column">
-          <CategoriesSelect categories={categories}/>
-          <ResourceTypeSelect types={resourceTypes}/>
-          <ul>
-            {resources.map((resource) => {
-              return (
-                  <li key={resource._id}>
-                    <Link href={`./resource/${resource._id}`}>
-                      <a>
-                        <Card resourceData={resource} categories={categories}/>
-                      </a>
-                    </Link>
-                  </li>
-              );
-            })}
-          </ul>
-          <TextField
-              hiddenLabel
-              id="filled-hidden-label-normal"
-              defaultValue="Normal"
-              variant="filled"
-          />
-
-          <TextField
-              hiddenLabel
-              id="filled-hidden-label-normal"
-              defaultValue="Normal"
-              variant="filled"
-          />
-
-          <SelectVariants/>
-          {/* <Card /> */}
-          <TextField
-              hiddenLabel
-              id="filled-hidden-label-normal"
-              defaultValue="Normal"
-              variant="filled"
-          />
-          <TextField
-              hiddenLabel
-              id="filled-hidden-label-normal"
-              defaultValue="Normal"
-              variant="filled"
-          />
-
-          <SelectVariants/>
-          {/* <Card /> */}
-          <TextField
-              hiddenLabel
-              id="filled-hidden-label-normal"
-              defaultValue="Normal"
-              variant="filled"
-          />
+    <Layout title="Cube | Home">
+      <Grid container flexDirection="column">
+        <Grid container sx={{ mt: 22 }}>
+          <CategoriesSelect categories={categories} />
+          <ResourceTypeSelect types={resourceTypes} />
         </Grid>
-      </Layout>
+        <div className="resourcesContainer">
+          {resources.map((resource) => {
+            return (
+              <div className="resourceItem" key={resource._id}>
+                <Link href={`./resource/${resource._id}`}>
+                  <a>
+                    <Card resourceData={resource} categories={categories} />
+                  </a>
+                </Link>
+              </div>
+            );
+          })}
+        </div>
+        <TextField
+          hiddenLabel
+          id="filled-hidden-label-normal"
+          defaultValue="Normal"
+          variant="filled"
+        />
+
+        <TextField
+          hiddenLabel
+          id="filled-hidden-label-normal"
+          defaultValue="Normal"
+          variant="filled"
+        />
+
+        <SelectVariants />
+        {/* <Card /> */}
+        <TextField
+          hiddenLabel
+          id="filled-hidden-label-normal"
+          defaultValue="Normal"
+          variant="filled"
+        />
+        <TextField
+          hiddenLabel
+          id="filled-hidden-label-normal"
+          defaultValue="Normal"
+          variant="filled"
+        />
+
+        <SelectVariants />
+        {/* <Card /> */}
+        <TextField
+          hiddenLabel
+          id="filled-hidden-label-normal"
+          defaultValue="Normal"
+          variant="filled"
+        />
+      </Grid>
+    </Layout>
   );
 }
 
@@ -83,7 +85,6 @@ export async function getStaticProps() {
     resources = await fetchedResources.data.resources;
     categories = await fetchedCategories.data.categories;
     resourceTypes = indexResourceTypes(resources);
-
   } catch (err) {
     console.log(err);
   }
