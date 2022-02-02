@@ -11,7 +11,6 @@ const AuthProvider = (props) => {
   const { refetchInterval, children } = props;
   // Les states sont les etats par defaut du contexte. Donc de base, personne n'est connecte + 0 infos
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [currentToken, setCurrentToken] = useState(null);
   const [session, setSession] = useState({});
   // Je mets les rôles a part pour le moment
   const [role, setRole] = useState(null);
@@ -34,7 +33,7 @@ const AuthProvider = (props) => {
   const shutSession = useCallback(() => {
     setRole("");
     setSession({});
-    setCurrentToken(null);
+    setError("");
     return setIsAuthenticated(false);
   }, []);
 
@@ -53,7 +52,6 @@ const AuthProvider = (props) => {
         try {
           const check = await verifyToken();
           if (check.status === 200) {
-            setCurrentToken(token);
             return getSession(token);
           } else {
             logOut();
@@ -74,7 +72,7 @@ const AuthProvider = (props) => {
   const authenticate = async (credentials, callbackUrl) => {
     try {
       // Genere le token
-      const check = await authService.signIn(credentials);
+      const check = await authService.signIn(credentials, refetchInterval);
       const { token } = check.data;
       // Store l'info dans le local storage
       authService.store(token);
@@ -105,7 +103,6 @@ const AuthProvider = (props) => {
       authService.clear();
       // Reinitialise le contexte
       shutSession();
-      setCurrentToken(null);
       // Redirige vers le callback souhaite. Par defaut home
       return router.push(callbackUrl ? callbackUrl : "/");
     } catch (err) {

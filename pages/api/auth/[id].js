@@ -8,7 +8,7 @@ export default function auth(req, res) {
     return db;
   };
 
-  const signIn = async (credentials) => {
+  const signIn = async (credentials, refetchInterval) => {
     try {
       const { email, password } = credentials;
       const db = await connect();
@@ -23,7 +23,7 @@ export default function auth(req, res) {
           { data: { id: _id, firstName, lastName, role } },
           process.env.JWT_SECRET,
           {
-            expiresIn: 1440,
+            expiresIn: refetchInterval,
           }
         );
 
@@ -38,12 +38,6 @@ export default function auth(req, res) {
         .status(404)
         .json({ message: "Adresse mail ou mot de passe incorrect" });
     }
-  };
-
-  const signOut = async () => {
-    console.log("out");
-    // Faire expirer le token a la deco
-    return res.status(200).json();
   };
 
   const checkToken = async (token) => {
@@ -61,7 +55,7 @@ export default function auth(req, res) {
   };
 
   const getRoute = async (req, res) => {
-    const credentials = req.body;
+    const {credentials, refetchInterval } = req.body;
     const id = req.query.id;
     const token = req.body.headers?.Authorization
       ? req.body.headers.Authorization
@@ -69,9 +63,7 @@ export default function auth(req, res) {
 
     switch (id) {
       case "signIn":
-        return await signIn(credentials);
-      case "signOut":
-        return await signOut();
+        return await signIn(credentials, refetchInterval);
       case "checkToken":
         return await checkToken(token);
       default:

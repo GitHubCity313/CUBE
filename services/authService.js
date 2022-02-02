@@ -2,7 +2,8 @@ import axiosInstance from "./instance";
 
 const authService = {
   // API
-  signIn: (credentials) => axiosInstance.post(`/auth/signIn`, credentials),
+  signIn: (credentials, refetchInterval) =>
+    axiosInstance.post(`/auth/signIn`, { credentials, refetchInterval }),
   signOut: (token) =>
     axiosInstance.post(`/auth/signOut`, {
       headers: { Authorization: `Bearer ${token}` },
