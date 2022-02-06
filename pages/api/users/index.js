@@ -62,3 +62,113 @@ export default function users(req, res) {
   };
   return getRoute(req.method, req, res);
 }
+
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     User:
+ *       type: object
+ *       properties:
+ *         id:
+ *           type: uuid
+ *           description: l'id de l"utilisateur.
+ *           example: trouver un truc
+ *         lastName:
+ *           type: string
+ *           description: Le nom de l'utilisateur.
+ *           example: Levasseur
+ *         firstName:
+ *           type: string
+ *           description: Le prénom de l'utilisateur.
+ *           example: Alain
+ *         email:
+ *           type: string
+ *           description: L'adresse mail utilisée pour l'inscription.
+ *           example: alain.levasseur@dayrep.com
+ *         password:
+ *           type: string
+ *           description: Le hash du mot de passe.
+ *           example: 8745de6abbc5a0b632fccdae08e53b3f
+ *         enabled:
+ *           type: boolean
+ *           description: L'utilisateur est actif.
+ *           example: true
+ *         profilePic:
+ *           type: string
+ *           description: Le hash du mot de passe.
+ *           example: https://media.giphy.com/media/HoM16cP7vaYU/giphy.gif
+ *         seen:
+ *           type: array
+ *           description: Je sais pas ce que c'est.
+ *           example: ["uuid wanted"]
+ *         hasEvents:
+ *           type: array
+ *           description: Les evenements auxquels l'utilisateur participe.
+ *           example: ["uuid wanted"]
+ *         hasEventsCreated:
+ *           type: array
+ *           description: Les evenements crées par l'utilisateur.
+ *           example: ["uuid wanted"]
+ *         likes:
+ *           type: array
+ *           description: Les ressources favorites de l'utilisateur.
+ *           example: ["uuid wanted"]
+ *         role:
+ *           type: string
+ *           description: Le rôle de l'utilisateur.
+ *           example: 8745de6abbc5a0b632fccdae08e53b3f
+ *         isValidated:
+ *           type: boolean
+ *           description: Le compte de l'utilisateur a été confirmé.
+ *           example: true
+ */
+
+/**
+ * @swagger
+ * /users:
+ *   get:
+ *     tags : [users]
+ *     description: Retrouve la liste des utilisateurs.
+ *     responses:
+ *       200:
+ *         description: L'ensemble des utilisateurs
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/User'
+ *       404:
+ *         description: Echec de la requête.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *             example:
+ *               message: "fdkjsfjd"
+ *   post:
+ *     tags : [users]
+ *     description: Créé une nouvel utilisateur.
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/User'
+ *     responses:
+ *       201:
+ *         description: La catégorie nouvellement crée
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/User'
+ *       404:
+ *         description: Echec de la requête.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *             example:
+ *               message: "fdkjsfjd"
+ */

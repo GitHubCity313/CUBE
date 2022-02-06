@@ -107,6 +107,12 @@ export default function categories(req, res) {
    *   put:
    *     tags : [categories]
    *     description: Modifie les informations d'une catégorie.
+   *     requestBody:
+   *       required: true
+   *       content:
+   *         application/json:
+   *           schema: 
+   *             $ref: '#/components/schemas/Category'
    *     responses:
    *       200:
    *         description: La catégorie avec les informations mises à jour
