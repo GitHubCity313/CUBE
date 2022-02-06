@@ -1,18 +1,16 @@
-import { GetStaticProps, InferGetStaticPropsType } from "next";
-
 import { createSwaggerSpec } from "next-swagger-doc";
+import config from "../swagger";
 import SwaggerUI from "swagger-ui-react";
 import "swagger-ui-react/swagger-ui.css";
 
 const ApiDoc = ({ spec }) => {
-  return <SwaggerUI spec={spec} />;
+  return <SwaggerUI spec={spec} filter={true} />;
 };
 
 export const getStaticProps = () => {
-  const spec = createSwaggerSpec({
-    title: "Ressources relationnelles",
-    version: "0.1.0",
-  });
+  const APIPaths = createSwaggerSpec(config);
+  const { paths, components } = APIPaths;
+  const spec = {...config, paths, components}
   return {
     props: {
       spec,

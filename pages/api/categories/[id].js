@@ -2,12 +2,12 @@ import clientPromise from "../../../lib/mongodb";
 import { ObjectId } from "mongodb";
 
 export default function categories(req, res) {
-  // connexion a la db
   const connect = async () => {
     const client = await clientPromise;
     const db = await client.db(process.env.MONGO_DB_NAME);
     return db;
   };
+
 
   const getCategory = async (id, db, res) => {
     try {
@@ -27,7 +27,7 @@ export default function categories(req, res) {
       const category = await db
         .collection("categories")
         .deleteOne({ _id: objectId });
-      return res.status(204).json({ category });
+      return res.status(200).json({ category });
     } catch (err) {
       return res.status(404).json({ err });
     }
@@ -74,3 +74,70 @@ export default function categories(req, res) {
 
   return getRoute(req, res);
 }
+
+
+  /**
+   * @swagger
+   * /categories/{id}:
+   *   parameters:
+   *     - in: path
+   *       name: id
+   *       required: true
+   *       description: L'id de la categorie demandée.
+   *       schema:
+   *         type: integer
+   *   get:
+   *     tags : [categories]
+   *     description: Retrouve une categorie selon l'id demande.
+   *     responses:
+   *       200:
+   *         description: La catégorie demandée
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: '#/components/schemas/Category'
+   *       404:
+   *         description: Echec de la requête.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: '#/components/schemas/Error'
+   *             example:
+   *               message: "fdkjsfjd"
+   *   put:
+   *     tags : [categories]
+   *     description: Modifie les informations d'une catégorie.
+   *     responses:
+   *       200:
+   *         description: La catégorie avec les informations mises à jour
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: '#/components/schemas/Category'
+   *       404:
+   *         description: Echec de la requête.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: '#/components/schemas/Error'
+   *             example:
+   *               message: "fdkjsfjd"
+   *   delete:
+   *     tags : [categories]
+   *     description: Supprime une categorie spécifique.
+   *     responses:
+   *       204:
+   *         description: 
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: '#/components/schemas/Category'
+   *       404:
+   *         description: Echec de la requête.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: '#/components/schemas/Error'
+   *             example:
+   *               message: "fdkjsfjd"
+   */

@@ -44,3 +44,73 @@ export default function categories(req, res) {
 
   return getRoute(req, res);
 }
+
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     Category:
+ *       type: object
+ *       properties:
+ *         id:
+ *           type: uuid
+ *           description: l'id de la categorie.
+ *           example: trouver un truc
+ *         name:
+ *           type: string
+ *           description: Le nom de la categorie.
+ *           example: national
+ *         color:
+ *           type: string
+ *           description: La couleur associee a la categorie.
+ *           example: "#fff000"
+ */
+
+/**
+ * @swagger
+ * /categories:
+ *   get:
+ *     tags : [categories]
+ *     description: Retrouve une categorie selon l'id demande.
+ *     responses:
+ *       200:
+ *         description: L'ensemble des catégories
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Category'
+ *       404:
+ *         description: Echec de la requête.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *             example:
+ *               message: "fdkjsfjd"
+ *   post:
+ *     tags : [categories]
+ *     description: Créé une nouvelle catégorie.
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema: 
+ *             $ref: '#/components/schemas/Category'
+ *     responses:
+ *       201:
+ *         description: La catégorie nouvellement crée
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Category'
+ *       404:
+ *         description: Echec de la requête.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *             example:
+ *               message: "fdkjsfjd"
+ */
