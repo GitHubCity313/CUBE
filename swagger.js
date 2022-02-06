@@ -4,10 +4,6 @@ const config = {
     title: "Ressources relationnelles",
     version: "1.0.0",
     description: "Documentation de l'API utilisée pour la gestion du site",
-    contact: {
-      name: "Ministère des solidarités et de la santé",
-      url: "https://solidarites-sante.gouv.fr/",
-    },
   },
   servers: [
     {
@@ -25,7 +21,7 @@ const config = {
   ],
   tags: [
     {
-      name: "ressources",
+      name: "resources",
       description: " Gestion des publications sur l'application",
     },
     {

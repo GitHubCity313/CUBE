@@ -64,6 +64,14 @@ export default function categories(req, res) {
  *           type: string
  *           description: La couleur associee a la categorie.
  *           example: "#fff000"
+ *         createdAt:
+ *           type: date
+ *           description: La date de création de la ressource.
+ *           example: 1630792800
+ *         updatedAt:
+ *           type: date
+ *           description: La date de mise à jour de la ressource.
+ *           example: 1630792800
  */
 
 /**

@@ -67,6 +67,27 @@ export default function users(req, res) {
  * @swagger
  * components:
  *   schemas:
+ *     Role:
+ *       type: object
+ *       properties:
+ *         id:
+ *           type: uuid
+ *           description: la description de l'erreur retournée.
+ *           example: uuid wanted
+ *         createdAt:
+ *           type: date
+ *           description: La date de création de la ressource.
+ *           example: 1630792800
+ *         updatedAt:
+ *           type: date
+ *           description: La date de mise à jour de la ressource.
+ *           example: 1630792800
+ */
+
+/**
+ * @swagger
+ * components:
+ *   schemas:
  *     User:
  *       type: object
  *       properties:
@@ -122,6 +143,14 @@ export default function users(req, res) {
  *           type: boolean
  *           description: Le compte de l'utilisateur a été confirmé.
  *           example: true
+ *         createdAt:
+ *           type: date
+ *           description: La date de création de la ressource.
+ *           example: 1630792800
+ *         updatedAt:
+ *           type: date
+ *           description: La date de mise à jour de la ressource.
+ *           example: 1630792800
  */
 
 /**
