@@ -1,10 +1,11 @@
-import React from "react";
+import React, { useContext } from "react";
 import Link from "next/link";
+import AuthContext from "./../context/authContext"
 import { Grid, TextField } from "@mui/material";
 import Card from "../components/Card";
 import SelectVariants from "../components/SelectVariants";
 import Layout from "../components/Layout/Layout";
-import APIService from "../services/APIService";
+import apiService from "../services/apiService";
 
 export default function Home({ resources, categories }) {
   return (
@@ -72,13 +73,14 @@ export default function Home({ resources, categories }) {
     </Layout>
   );
 }
-export async function getStaticProps() {
+export async function getServerSideProps(user) {
   let resources = [];
   let categories = [];
 
+
   try {
-    const fetchedResources = await APIService.getItems("resources");
-    const fetchedCategories = await APIService.getItems("categories");
+    const fetchedResources = await apiService.getItems("resources");
+    const fetchedCategories = await apiService.getItems("categories");
 
     resources = await fetchedResources.data.resources;
     categories = await fetchedCategories.data.categories;

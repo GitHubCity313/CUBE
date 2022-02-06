@@ -68,7 +68,7 @@ export default function categories(req, res) {
         return await updateCategory(id, db, category, res);
       }
       default:
-        return res.status(404).json("Le service demandé n'est pas disponible");
+        return res.status(405).end(`Method ${req.method} Not Allowed`);
     }
   };
 

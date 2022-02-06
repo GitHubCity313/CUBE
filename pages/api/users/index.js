@@ -1,4 +1,3 @@
-import { ObjectId } from "mongodb";
 import clientPromise from "../../../lib/mongodb";
 
 export default function users(req, res) {
@@ -58,7 +57,7 @@ export default function users(req, res) {
         return await addUser(db, res, user);
       }
       default:
-        return res.status(404).json("Le service demandé n'est pas disponible");
+        return res.status(405).end(`Method ${req.method} Not Allowed`);
     }
   };
   return getRoute(req.method, req, res);

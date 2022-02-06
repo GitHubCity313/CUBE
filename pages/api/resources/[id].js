@@ -66,7 +66,7 @@ export default function ressources(req, res) {
         return await updateResource(id, db, resource, res);
       }
       default:
-        return res.status(404).json("Le service demandé n'est pas disponible");
+        return res.status(405).end(`Method ${req.method} Not Allowed`);
     }
   };
 

@@ -1,10 +1,15 @@
-import * as React from "react";
+import React, { useContext } from "react";
 import { Box, Grid, ListItem, ListItemText, Button } from "@mui/material";
 import Link from "next/link";
 import SettingsIcon from "@mui/icons-material/Settings";
 import HomeIcon from "@mui/icons-material/Home";
+import AuthContext from "../../context/authContext";
 
 export default function Sidebar() {
+  const { session, isAuthenticated, signIn, signOut } = useContext(AuthContext);
+
+  console.log(session, isAuthenticated);
+
   return (
     <Box
       sx={{
@@ -19,6 +24,11 @@ export default function Sidebar() {
       }}
     >
       <Box>
+        {isAuthenticated && (
+          <ListItem>
+            <ListItemText primary={`Bonjour ${session?.firstName}`} />
+          </ListItem>
+        )}
         <ListItem>
           <HomeIcon sx={{ marginRight: "20px" }} color="primary" />
           <ListItemText primary="Item 1" />
@@ -29,13 +39,23 @@ export default function Sidebar() {
         <ListItem>
           <ListItemText primary="Item 3" />
         </ListItem>
-        <ListItem>
-          <Link href="/login">
-            <a>
-              <ListItemText primary="Se connecter" />
-            </a>
-          </Link>
-        </ListItem>
+        {!isAuthenticated ? (
+          <ListItem>
+            <Link href="/login">
+              <a>
+                <ListItemText primary="Se connecter" onClick={signIn} />
+              </a>
+            </Link>
+          </ListItem>
+        ) : (
+          <ListItem>
+            <Link href="/home">
+              <a>
+                <ListItemText primary="Se deconnecter" onClick={signOut} />
+              </a>
+            </Link>
+          </ListItem>
+        )}
       </Box>
       <Box sx={{ marginBottom: "100px" }}>
         <Button
