@@ -1,25 +1,13 @@
-import React, { useContext, useState } from "react";
+import React, { useContext } from "react";
 import Link from "next/link";
 import AuthContext from "./../context/authContext";
-import {
-  Box,
-  Grid,
-  TextField,
-  Checkbox,
-  InputLabel,
-  OutlinedInput,
-  Select,
-  Chip,
-} from "@mui/material";
+import { Grid, TextField } from "@mui/material";
 import Card from "../components/Card";
 import SelectVariants from "../components/SelectVariants";
 import CategoriesSelect from "../components/Home/CategoriesSelect";
 import ResourceTypeSelect from "../components/Home/ResourceTypeSelect";
 import Layout from "../components/Layout/Layout";
 import apiService from "../services/apiService";
-import MenuItem from "@mui/material/MenuItem";
-import FormControl from "@mui/material/FormControl";
-import theme from "../theme";
 import PropTypes from "prop-types";
 import { indexResourceTypes } from "../utils";
 
