@@ -84,3 +84,76 @@ export default function userId(req, res) {
 
   return getRoute(req, res);
 }
+
+
+  /**
+   * @swagger
+   * /users/{id}:
+   *   parameters:
+   *     - in: path
+   *       name: id
+   *       required: true
+   *       description: L'id de l'utilisateur.
+   *       schema:
+   *         type: integer
+   *   get:
+   *     tags : [users]
+   *     description: Retrouve un utilisateur selon l'id.
+   *     responses:
+   *       200:
+   *         description: L'utilisateur demandé
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: '#/components/schemas/User'
+   *       404:
+   *         description: Echec de la requête.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: '#/components/schemas/Error'
+   *             example:
+   *               message: "fdkjsfjd"
+   *   put:
+   *     tags : [users]
+   *     description: Modifie les informations d'un utilisateur.
+   *     requestBody:
+   *       required: true
+   *       content:
+   *         application/json:
+   *           schema:
+   *             $ref: '#/components/schemas/User'
+   *     responses:
+   *       200:
+   *         description: L'utilisateur avec les informations mises à jour
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: '#/components/schemas/User'
+   *       404:
+   *         description: Echec de la requête.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: '#/components/schemas/Error'
+   *             example:
+   *               message: "fdkjsfjd"
+   *   delete:
+   *     tags : [users]
+   *     description: Supprime un utilisateur.
+   *     responses:
+   *       204:
+   *         description: 
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: '#/components/schemas/User'
+   *       404:
+   *         description: Echec de la requête.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: '#/components/schemas/Error'
+   *             example:
+   *               message: "fdkjsfjd"
+   */
