@@ -40,7 +40,7 @@ const Login = () => {
         flexDirection={isMobile ? "column-reverse" : "row"}
         justifyContent="center"
         alignItems="center"
-        sx={{ mt: isMobile && 12 }}
+        sx={{ mt: isMobile ? 12 : 16 }}
       >
         <Grid item xs={12} md={6}>
           <Grid

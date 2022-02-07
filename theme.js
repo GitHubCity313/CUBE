@@ -47,7 +47,7 @@ const theme = createTheme({
             textTransform: "capitalize",
             color: "#000091",
             boxShadow: "0px 0px 0px 0px rgba(0,0,0,0.2)",
-            padding: "0.3rem 1.3rem 0.3rem 1.3rem",
+            padding: "0.3rem 0.5rem 0.3rem 0.5rem",
             borderRadius: "0px",
             ":hover": {
               backgroundColor: "#000091",

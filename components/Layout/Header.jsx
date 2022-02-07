@@ -8,7 +8,7 @@ import InputBase from "@mui/material/InputBase";
 import SearchIcon from "@mui/icons-material/Search";
 import Image from "next/image";
 import Logo from "../../public/logoMini.svg";
-import useScrollTrigger from '@mui/material/useScrollTrigger';
+import useScrollTrigger from "@mui/material/useScrollTrigger";
 import { Link } from "@mui/material";
 
 function ElevationScroll(props) {
@@ -23,7 +23,6 @@ function ElevationScroll(props) {
     elevation: trigger ? 4 : 0,
   });
 }
-
 
 const Search = styled("div")(({ theme }) => ({
   position: "relative",
@@ -76,47 +75,47 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 export default function SearchAppBar(props) {
   return (
     <Box sx={{ flexGrow: 1 }}>
-        <ElevationScroll {...props}>
-      <AppBar variant="header" position="fixed"  >
-        <Toolbar>
-          <Link href="/">
-          <Image
-            src={Logo}
-            width={120}
-            height={102}
-            alt="Picture of the author"
-          />
-          </Link>
-          <Typography
-            variant="h6"
-            noWrap
-            component="div"
-            style={{ marginLeft: 50 }}
-            sx={{ flexGrow: 1, display: { xs: "none", sm: "block" } }}
-          >
-            Nom de l'application
-          </Typography>
-          <Search
-            variant="searchHeader"
-            style={{
-              borderBottom: "2px solid #000091",
-              display: "flex",
-              flexDirection: "row-reverse",
-              justifyContent: "space-between",
-              backgroundColor: "#EEEEEE",
-              width: "300px",
-            }}
-          >
-            <SearchIconWrapper>
-              <SearchIcon />
-            </SearchIconWrapper>
-            <StyledInputBase
-              placeholder="Rechercher"
-              inputProps={{ "aria-label": "search" }}
-            />
-          </Search>
-        </Toolbar>
-      </AppBar>
+      <ElevationScroll {...props}>
+        <AppBar variant="header" position="fixed">
+          <Toolbar>
+            <Link href="/">
+              <Image
+                src={Logo}
+                width={120}
+                height={102}
+                alt="Picture of the author"
+              />
+            </Link>
+            <Typography
+              variant="h6"
+              noWrap
+              component="div"
+              style={{ marginLeft: 50 }}
+              sx={{ flexGrow: 1, display: { xs: "none", sm: "block" } }}
+            >
+              Ressources Relationnelles
+            </Typography>
+            <Search
+              variant="searchHeader"
+              style={{
+                borderBottom: "2px solid #000091",
+                display: "flex",
+                flexDirection: "row-reverse",
+                justifyContent: "space-between",
+                backgroundColor: "#EEEEEE",
+                width: "300px",
+              }}
+            >
+              <SearchIconWrapper>
+                <SearchIcon />
+              </SearchIconWrapper>
+              <StyledInputBase
+                placeholder="Rechercher"
+                inputProps={{ "aria-label": "search" }}
+              />
+            </Search>
+          </Toolbar>
+        </AppBar>
       </ElevationScroll>
     </Box>
   );
