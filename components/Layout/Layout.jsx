@@ -17,13 +17,13 @@ const Layout = (props) => {
       </Head>
       <Header />
       <Container
-        maxWidth="lg"
-        disableGutters
+        maxWidth="xl"
         sx={{
           display: " flex",
           flexDirection: "row",
           justifyContent: "center",
           alignItems: "center",
+          backgroundColor: "#FBFBFB",
         }}
       >
         <Grid container sx={{ minHeight: `calc(100vh - 16px)` }}>
