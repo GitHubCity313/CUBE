@@ -1,4 +1,30 @@
 import { createTheme } from "@mui/material/styles";
+import MarianneWoff from "./fonts/Marianne/Marianne-Regular.woff";
+import SpectralWoff from "./fonts/Spectral/Spectral-Regular.woff";
+
+const marianne = {
+  fontFamily: "Marianne",
+  fontStyle: "normal",
+  fontDisplay: "swap",
+  fontWeight: 400,
+  src: `
+    local('Marianne'),
+    local('Marianne-Regular'),
+    url(${MarianneWoff}) format('woff')
+  `,
+};
+
+const spectral = {
+  fontFamily: "Spectral",
+  fontStyle: "normal",
+  fontDisplay: "swap",
+  fontWeight: 400,
+  src: `
+    local('Spectral'),
+    local('Spectral-Regular'),
+    url(${SpectralWoff}) format('woff')
+  `,
+};
 
 const theme = createTheme({
   palette: {
@@ -21,6 +47,12 @@ const theme = createTheme({
       },
     },
     MuiButton: {
+      styleOverrides: {
+        root: {
+          "@font-face": [marianne],
+          fontFamily: "Marianne, Arial, sans-serif",
+        },
+      },
       variants: [
         {
           props: { variant: "bleuBtn" },
@@ -60,13 +92,18 @@ const theme = createTheme({
       ],
     },
     MuiTypography: {
+      styleOverrides: {
+        root: {
+          "@font-face": [marianne],
+          fontFamily: "Marianne, Arial, sans-serif",
+          fontStyle: "normal",
+          fontWeight: "normal",
+        },
+      },
       variants: [
         {
           props: { variant: "h1" },
           style: {
-            fontFamily: "Marianne",
-            fontStyle: "normal",
-            fontWeight: "normal",
             fontSize: "32px",
             lineHeight: "40px",
             marginBottom: "24px",
@@ -75,9 +112,6 @@ const theme = createTheme({
         {
           props: { variant: "h2" },
           style: {
-            fontFamily: "Marianne",
-            fontStyle: "normal",
-            fontWeight: "normal",
             fontSize: "28px",
             lineHeight: "36px",
             marginBottom: "24px",
@@ -86,9 +120,6 @@ const theme = createTheme({
         {
           props: { variant: "h3" },
           style: {
-            fontFamily: "Marianne",
-            fontStyle: "normal",
-            fontWeight: "normal",
             fontSize: "24px",
             lineHeight: "32px",
             marginBottom: "24px",
@@ -97,9 +128,6 @@ const theme = createTheme({
         {
           props: { variant: "h4" },
           style: {
-            fontFamily: "Marianne",
-            fontStyle: "normal",
-            fontWeight: "normal",
             fontSize: "22px",
             lineHeight: "28px",
             marginBottom: "24px",
@@ -108,9 +136,6 @@ const theme = createTheme({
         {
           props: { variant: "categoryTypo" },
           style: {
-            fontFamily: "Marianne",
-            fontStyle: "normal",
-            fontWeight: "normal",
             fontSize: "12px",
             lineHeight: "20px",
             color: "#666666",
@@ -119,8 +144,6 @@ const theme = createTheme({
         {
           props: { variant: "TitreCard" },
           style: {
-            fontFamily: "Marianne",
-            fontStyle: "normal",
             fontWeight: "bold",
             fontSize: "20px",
             lineHeight: "28px",
@@ -130,9 +153,6 @@ const theme = createTheme({
         {
           props: { variant: "DesCard" },
           style: {
-            fontFamily: "Marianne",
-            fontStyle: "normal",
-            fontWeight: "normal",
             fontSize: "13px",
             //lineHeight: "16px",
             color: "black",
@@ -141,9 +161,6 @@ const theme = createTheme({
         {
           props: { variant: "TitreSelect" },
           style: {
-            fontFamily: "Marianne",
-            fontStyle: "normal",
-            fontWeight: "normal",
             fontSize: "16px",
             lineHeight: "20px",
           },
@@ -221,12 +238,17 @@ const theme = createTheme({
             display: "flex",
             flexDirection: "row-reverse",
             alignItems: "center",
-            backgroundColor: "red",
           },
         },
       ],
     },
     MuiInputBase: {
+      styleOverrides: {
+        root: {
+          "@font-face": [marianne],
+          fontFamily: "Marianne, Arial, sans-serif",
+        },
+      },
       variants: [
         {
           props: { variant: "searchHeader" },
@@ -239,6 +261,12 @@ const theme = createTheme({
       ],
     },
     MuiTextField: {
+      styleOverrides: {
+        root: {
+          "@font-face": [marianne],
+          fontFamily: "Marianne, Arial, sans-serif",
+        },
+      },
       variants: [
         {
           props: { variant: "filled" },
