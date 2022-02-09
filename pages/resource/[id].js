@@ -1,4 +1,5 @@
 import Layout from "../../components/Layout/Layout";
+import PropTypes from "prop-types";
 
 export default function Resource({ resource }) {
   return (
@@ -33,4 +34,8 @@ export async function getStaticPaths() {
     })),
     fallback: false,
   };
+}
+
+Resource.propTypes = {
+  resource: PropTypes.array
 }
