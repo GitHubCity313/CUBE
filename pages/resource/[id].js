@@ -1,12 +1,13 @@
 import React from "react";
 import Layout from "../../components/Layout/Layout";
 import PropTypes from "prop-types";
-import {Breadcrumbs, Grid, Link} from "@mui/material";
+import {Breadcrumbs, Grid, Link, Stack} from "@mui/material";
 import Typography from "@mui/material/Typography";
+import apiService from "../../services/apiService";
+import Chip from "@mui/material/Chip";
+import {getMatchingCategories} from "../../utils";
 
-export default function Resource({ resource }) {
-  console.log(typeof resource);
-  console.log(resource);
+export default function Resource({ resource, categories }) {
   return (
     <Layout title={resource.name} withSidebar withFooter>
       <Grid
@@ -17,6 +18,7 @@ export default function Resource({ resource }) {
         <Grid
             container
             flexDirection="row"
+            sx={{mb : 3 }}
         >
           <Breadcrumbs aria-label="breadcrumb">
             <Link underline="hover" color="inherit" href="/">
@@ -26,21 +28,54 @@ export default function Resource({ resource }) {
           </Breadcrumbs>
         </Grid>
         <Typography variant="h1">{resource.name}</Typography>
+        <Grid
+          container
+          flexDirection="row"
+        >
+        <Stack direction="row" spacing={1}>
+          {
+            resource.categories.map(resourceCategory => {
+              const matchedCategory = getMatchingCategories(resourceCategory, categories);
+              if(matchedCategory) {
+                return (
+                    <Chip label={matchedCategory} color="primary"/>
+                )
+              }
+            })
+          }
+        </Stack>
+        </Grid>
       </Grid>
     </Layout>
   );
 }
 
 export async function getStaticProps({ params }) {
-  const resourceRequest = `http://localhost:3000/api/resources/${params.id}`;
-  const fetchedResource = await fetch(resourceRequest);
-  const JsonResource = await fetchedResource.json();
-  //mongo me renvoie le json dans un tableau :|
-  const resource = JsonResource.resource[0];
+  let resource = [];
+
+  try {
+    const apiSResourceRequest = await apiService.getItem("resources", params.id);
+    //mongo sending it back in an array even if there is juste one item :|
+    resource = apiSResourceRequest.data.resource[0];
+  } catch (e) {
+    console.log(e);
+  }
+
+  let categories = [];
+
+  try {
+    const categoriesReq = await apiService.getItems("categories");
+    categories = await categoriesReq.data.categories;
+    console.log("categories");
+    console.log(categories);
+  } catch (e) {
+    console.log(e);
+  }
 
   return {
     props: {
       resource,
+      categories
     },
   };
 }
@@ -59,5 +94,6 @@ export async function getStaticPaths() {
 }
 
 Resource.propTypes = {
-  resource: PropTypes.array
+  resource: PropTypes.array,
+  categories: PropTypes.array
 }
