@@ -1,10 +1,32 @@
+import React from "react";
 import Layout from "../../components/Layout/Layout";
 import PropTypes from "prop-types";
+import {Breadcrumbs, Grid, Link} from "@mui/material";
+import Typography from "@mui/material/Typography";
 
 export default function Resource({ resource }) {
+  console.log(typeof resource);
+  console.log(resource);
   return (
-    <Layout title={resource.name}>
-      <p>{resource._id}</p>
+    <Layout title={resource.name} withSidebar withFooter>
+      <Grid
+          container
+          flexDirection="column"
+          sx={{mt : 20 }}
+      >
+        <Grid
+            container
+            flexDirection="row"
+        >
+          <Breadcrumbs aria-label="breadcrumb">
+            <Link underline="hover" color="inherit" href="/">
+              Accueil
+            </Link>
+            <Typography color="text.primary">{resource.name}</Typography>
+          </Breadcrumbs>
+        </Grid>
+        <Typography variant="h1">{resource.name}</Typography>
+      </Grid>
     </Layout>
   );
 }
