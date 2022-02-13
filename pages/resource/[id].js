@@ -1,7 +1,7 @@
 import React from "react";
 import Layout from "../../components/Layout/Layout";
 import PropTypes from "prop-types";
-import {Breadcrumbs, Divider, Grid, Link, Stack} from "@mui/material";
+import {Breadcrumbs, Divider, Fab, Grid, Link, Stack} from "@mui/material";
 import Typography from "@mui/material/Typography";
 import apiService from "../../services/apiService";
 import Chip from "@mui/material/Chip";
@@ -47,12 +47,16 @@ export default function Resource({ resource, categories }) {
             }
           </Stack>
           <Divider orientation="vertical" flexItem />
-          <Stack direction="row" spacing={1} sx={{ ml : 1.2 }}>
+          <Stack direction="row" spacing={1} sx={{ ml : 1.2, mr : 1.2 }}>
             <div>
               Publié le{" "}
             {resourceCreationDate.getDate()}/{resourceCreationDate.getMonth()}/{resourceCreationDate.getFullYear()}
             </div>
           </Stack>
+          <Fab size="small" variant="extended" color="primary">
+            {/*<NavigationIcon sx={{ mr: 1 }} />*/}
+            + Ajouter aux favoris
+          </Fab>
         </Grid>
       </Grid>
     </Layout>
