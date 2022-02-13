@@ -92,8 +92,8 @@ const Login = () => {
                 >
                   Se connecter
                 </Button>
-                <Typography>
-                  {`Pas de compte? `}
+                <Typography variant="caption" sx={{ p: 0.5 }}>
+                  {`Pas de compte ? `}
                   <Link href="/signIn">
                     <a>S'inscrire </a>
                   </Link>
