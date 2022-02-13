@@ -1,28 +1,18 @@
 import * as React from "react";
 import { styled, alpha } from "@mui/material/styles";
-import AppBar from "@mui/material/AppBar";
-import Box from "@mui/material/Box";
-import Toolbar from "@mui/material/Toolbar";
-import Typography from "@mui/material/Typography";
-import InputBase from "@mui/material/InputBase";
+import {
+  Drawer,
+  AppBar,
+  Box,
+  Typography,
+  InputBase,
+  Toolbar,
+} from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import Image from "next/image";
+import Link from "next/link";
 import Logo from "../../public/logoMini.svg";
-import useScrollTrigger from "@mui/material/useScrollTrigger";
-import { Link } from "@mui/material";
-
-function ElevationScroll(props) {
-  const { children, window } = props;
-  const trigger = useScrollTrigger({
-    disableHysteresis: true,
-    threshold: 0,
-    target: window ? window() : undefined,
-  });
-
-  return React.cloneElement(children, {
-    elevation: trigger ? 4 : 0,
-  });
-}
+import Sidebar from "./Sidebar";
 
 const Search = styled("div")(({ theme }) => ({
   position: "relative",
@@ -72,12 +62,13 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
   },
 }));
 
-export default function SearchAppBar(props) {
+const Test = (props) => {
+  const { withSidebar } = props;
   return (
     <Box sx={{ flexGrow: 1 }}>
-      <ElevationScroll {...props}>
-        <AppBar variant="header" position="fixed">
-          <Toolbar>
+      <AppBar variant="header" position="fixed">
+        <Toolbar>
+          <Box sx={{ cursor: "pointer" }}>
             <Link href="/">
               <Image
                 src={Logo}
@@ -86,37 +77,44 @@ export default function SearchAppBar(props) {
                 alt="Picture of the author"
               />
             </Link>
-            <Typography
-              variant="h6"
-              noWrap
-              component="div"
-              style={{ marginLeft: 50 }}
-              sx={{ flexGrow: 1, display: { xs: "none", sm: "block" } }}
-            >
-              Ressources Relationnelles
-            </Typography>
-            <Search
-              variant="searchHeader"
-              style={{
-                borderBottom: "2px solid #000091",
-                display: "flex",
-                flexDirection: "row-reverse",
-                justifyContent: "space-between",
-                backgroundColor: "#EEEEEE",
-                width: "300px",
-              }}
-            >
-              <SearchIconWrapper>
-                <SearchIcon />
-              </SearchIconWrapper>
-              <StyledInputBase
-                placeholder="Rechercher"
-                inputProps={{ "aria-label": "search" }}
-              />
-            </Search>
-          </Toolbar>
-        </AppBar>
-      </ElevationScroll>
+          </Box>
+          <Typography
+            variant="h6"
+            noWrap
+            component="div"
+            style={{ marginLeft: 50 }}
+            sx={{ flexGrow: 1, display: { xs: "none", sm: "block" } }}
+          >
+            Ressources Relationnelles
+          </Typography>
+          <Search
+            variant="searchHeader"
+            style={{
+              borderBottom: "2px solid #000091",
+              display: "flex",
+              flexDirection: "row-reverse",
+              justifyContent: "space-between",
+              backgroundColor: "#EEEEEE",
+              width: "300px",
+            }}
+          >
+            <SearchIconWrapper>
+              <SearchIcon />
+            </SearchIconWrapper>
+            <StyledInputBase
+              placeholder="Rechercher"
+              inputProps={{ "aria-label": "search" }}
+            />
+          </Search>
+        </Toolbar>
+      </AppBar>
+      {withSidebar && (
+        <Drawer variant="permanent">
+          <Sidebar />
+        </Drawer>
+      )}
     </Box>
   );
-}
+};
+
+export default Test;

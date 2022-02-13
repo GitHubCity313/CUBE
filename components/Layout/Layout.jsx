@@ -1,13 +1,14 @@
 import React from "react";
 import PropTypes from "prop-types";
 import Head from "next/head";
-import { Grid, Container, Drawer } from "@mui/material";
-import Header from "./Header";
-import Sidebar from "./Sidebar";
+import { Grid, Container } from "@mui/material";
+import AppBar from "./Header";
 import Footer from "./Footer";
 
 const Layout = (props) => {
   const { title, withSidebar, withFooter, children } = props;
+
+  console.log(AppBar, Footer);
 
   return (
     <>
@@ -15,7 +16,7 @@ const Layout = (props) => {
         <title>{title} </title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <Header />
+      <AppBar withSidebar={withSidebar} />
       <Container
         maxWidth="xl"
         sx={{
@@ -26,15 +27,11 @@ const Layout = (props) => {
           backgroundColor: "#FBFBFB",
         }}
       >
-        <Grid container sx={{ minHeight: `calc(100vh - 16px)` }}>
-          <Grid item xs={2}>
-            {withSidebar && (
-              <Drawer variant="permanent" open>
-                <Sidebar />
-              </Drawer>
-            )}
-          </Grid>
-
+        <Grid
+          container
+          sx={{ minHeight: `calc(100vh - 16px)` }}
+          justifyContent="flex-end"
+        >
           <Grid item xs={withSidebar ? 10 : 12}>
             {children}
           </Grid>
