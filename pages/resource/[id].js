@@ -1,13 +1,14 @@
 import React from "react";
 import Layout from "../../components/Layout/Layout";
 import PropTypes from "prop-types";
-import {Breadcrumbs, Grid, Link, Stack} from "@mui/material";
+import {Breadcrumbs, Divider, Grid, Link, Stack} from "@mui/material";
 import Typography from "@mui/material/Typography";
 import apiService from "../../services/apiService";
 import Chip from "@mui/material/Chip";
 import {getMatchingCategories} from "../../utils";
 
 export default function Resource({ resource, categories }) {
+  const resourceCreationDate = new Date(resource.createdAt*1000);
   return (
     <Layout title={resource.name} withSidebar withFooter>
       <Grid
@@ -31,19 +32,27 @@ export default function Resource({ resource, categories }) {
         <Grid
           container
           flexDirection="row"
+          alignItems="center"
         >
-        <Stack direction="row" spacing={1}>
-          {
-            resource.categories.map(resourceCategory => {
-              const matchedCategory = getMatchingCategories(resourceCategory, categories);
-              if(matchedCategory) {
-                return (
-                    <Chip label={matchedCategory} color="primary"/>
-                )
-              }
-            })
-          }
-        </Stack>
+          <Stack direction="row" spacing={1} sx={{ mr : 1.2 }}>
+            {
+              resource.categories.map(resourceCategory => {
+                const matchedCategory = getMatchingCategories(resourceCategory, categories);
+                if(matchedCategory) {
+                  return (
+                      <Chip label={matchedCategory} color="primary"/>
+                  )
+                }
+              })
+            }
+          </Stack>
+          <Divider orientation="vertical" flexItem />
+          <Stack direction="row" spacing={1} sx={{ ml : 1.2 }}>
+            <div>
+              Publié le{" "}
+            {resourceCreationDate.getDate()}/{resourceCreationDate.getMonth()}/{resourceCreationDate.getFullYear()}
+            </div>
+          </Stack>
         </Grid>
       </Grid>
     </Layout>
@@ -94,6 +103,6 @@ export async function getStaticPaths() {
 }
 
 Resource.propTypes = {
-  resource: PropTypes.array,
+  resource: PropTypes.object,
   categories: PropTypes.array
 }
