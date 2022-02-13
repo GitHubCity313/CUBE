@@ -6,15 +6,15 @@ const apiService = {
   getItem: (item, id) => axiosInstance.get(`${item}/${id}`),
   createItem: (item, data) =>
     axiosInstance.post(`${item}`, JSON.stringify(data), {
-      headers: { Authorization: `Bearer ${token}` },
+      headers: { Authorization: token },
     }),
   updateItem: (item, id, data) =>
     axiosInstance.put(`${item}/${id}`, JSON.stringify(data), {
-      headers: { Authorization: `Bearer ${token}` },
+      headers: { Authorization: token },
     }),
   deleteItem: (item, id) =>
     axiosInstance.delete(`${item}/${id}`, {
-      headers: { Authorization: `Bearer ${token}` },
+      headers: { Authorization: token },
     }),
   fetchProfile: (token) =>
     axiosInstance.post(`/users/profile`, {
@@ -25,7 +25,7 @@ const apiService = {
       headers: { Authorization: token },
     }),
   fetchEvents: (token, events) =>
-    axiosInstance.post(`/users/profile?data=events`, events, {
+    axiosInstance.post(`/users/profile?data=events`, JSON.stringify(events), {
       headers: { Authorization: token },
     }),
 };

@@ -63,29 +63,14 @@ export default function userId(req, res) {
     }
   };
 
-  const fetchProfile = async (req, db, res, token) => {
+  const fetchProfile = async (db, res, token) => {
     const user = jwt.decode(token);
     const { id } = user.data;
     return await getUser(id, db, res);
   };
 
-  const fetchLikes = async (db, res, body) => {
+  const getEvents = async (db, res, body) => {
     try {
-      const test = await getLikes(res, db, body);
-      console.log("helle", test);
-    } catch (err) {}
-    //return await ressources.getLikes(res, db, id);
-  };
-
-  const fetchEvents = async (db, res, token) => {
-    const user = jwt.decode(token);
-    const { id } = user.data;
-    return await getEvents(res, db, id);
-  };
-
-  const getEvents = async (res, db, id) => {
-    try {
-      console.log(body);
       const likesArr = body.map((i) => ObjectId(i));
       const events = await db
         .collection("resources")
@@ -102,9 +87,8 @@ export default function userId(req, res) {
     }
   };
 
-  const getLikes = async (res, db, body) => {
+  const getLikes = async (db, res, body) => {
     try {
-      console.log(body);
       const likesArr = body.map((i) => ObjectId(i));
       const resources = await db
         .collection("resources")
@@ -114,8 +98,6 @@ export default function userId(req, res) {
           },
         })
         .toArray();
-
-        console.log(resources);
 
       return res.status(200).json({ resources });
     } catch (err) {
@@ -138,43 +120,45 @@ export default function userId(req, res) {
         return await updateUser(id, db, user, res);
       case "POST":
         const query = req.query.data;
-        console.log(req.body.headers?.Authorization);
         const token = req.body.headers?.Authorization
           ? req.body.headers.Authorization
           : null;
-        // // Verifie si le token est valide
-
-        console.log(query);
 
         if (query === "likes") {
           const body = req.body;
-          const test = req.headers?.authorization
+          const reqToken = req.headers?.authorization
             ? req.headers?.authorization
             : null;
 
-          jwt.verify(test, process.env.JWT_SECRET, function (err) {
-            if (err) {
-              console.log(err);
-              return res.status(401).json({
-                name: err.name,
-                expiredAt: err.expiredAt,
-              });
-            }
-          });
-          return await fetchLikes(db, res, body);
+          try {
+            jwt.verify(reqToken, process.env.JWT_SECRET);
+            return await getLikes(db, res, body);
+          } catch (err) {
+            return res.status(401).json({
+              name: err.name,
+              expiredAt: err.expiredAt,
+            });
+          }
         } else if (query === "events") {
-          return await fetchEvents(db, res, body);
+          try {
+            jwt.verify(reqToken, process.env.JWT_SECRET);
+            return await getEvents(db, res, body);
+          } catch (err) {
+            return res.status(401).json({
+              name: err.name,
+              expiredAt: err.expiredAt,
+            });
+          }
         } else {
-          jwt.verify(token, process.env.JWT_SECRET, function (err) {
-            if (err) {
-              console.log(err);
-              return res.status(401).json({
-                name: err.name,
-                expiredAt: err.expiredAt,
-              });
-            }
-          });
-          return await fetchProfile(req, db, res, token);
+          try {
+            jwt.verify(token, process.env.JWT_SECRET);
+            return await fetchProfile(db, res, token);
+          } catch (err) {
+            return res.status(401).json({
+              name: err.name,
+              expiredAt: err.expiredAt,
+            });
+          }
         }
 
       default:
@@ -264,6 +248,14 @@ export default function userId(req, res) {
  *   post:
  *     tags : [users]
  *     description: Récupère les informations liées à l'utilisateur connecté
+ *     parameters:
+ *       - in: path
+ *         name: data
+ *         required: false
+ *         description: Le complément d'informations souhaité.
+ *         schema:
+ *           type: string
+ *           enum: ["events", "likes"]
  *     responses:
  *       200:
  *         description: L'utilisateur demandé
@@ -271,6 +263,14 @@ export default function userId(req, res) {
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/User'
+ *       401:
+ *         description: Utilisateur non connecté.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *             example:
+ *               message: "fdkjsfjd"
  *       404:
  *         description: Echec de la requête.
  *         content:

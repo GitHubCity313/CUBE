@@ -47,6 +47,7 @@ export default function Profile() {
         }
         if (profile.hasEvents > 0) {
           const events = await fetchEvents(profile.hasEvents);
+          setEvents(events);
         }
       } catch (err) {
         setIsFetching(false);
@@ -133,8 +134,7 @@ export default function Profile() {
                   Suivez le déroulement des projets qui vous tiennent à coeur.
                 </Typography>
                 <Box>
-                  {user.hasEvents === undefined ||
-                  user.hasEvents.length === 0 ? (
+                  {events.length === 0 ? (
                     <>
                       <Typography sx={{ my: 2, fontStyle: "italic" }}>
                         Vous n'avez aucun évènement créé
@@ -153,7 +153,27 @@ export default function Profile() {
                       </Stack>
                     </>
                   ) : (
-                    <Stack>Le gros map</Stack>
+                    <Stack direction="row">
+                      {events.map((e) => (
+                        <Card sx={{ display: "flex", my: 4, mr: 4 }} key={e._id}>
+                          <Link href={`/resource/${f._id}`}>
+                            <CardActionArea>
+                              <CardMedia
+                                component="img"
+                                sx={{
+                                  width: 125,
+                                  heigth: 125,
+                                  borderRadius: "16px",
+                                  objectFit: "cover",
+                                }}
+                                image={`${e.thumbnail.url}`}
+                                alt=""
+                              />
+                            </CardActionArea>
+                          </Link>
+                        </Card>
+                      ))}
+                    </Stack>
                   )}
                 </Box>
               </CardContent>
@@ -174,14 +194,14 @@ export default function Profile() {
                   Qui suivez-vous en ce moment ?
                 </Typography>
                 <Box>
-                  {user.likes === undefined || user.likes.length === 0 ? (
+                  {favorites.length === 0 ? (
                     <Typography sx={{ my: 2, fontStyle: "italic" }}>
                       Vous n'avez pas encore de favoris
                     </Typography>
                   ) : (
                     <Stack direction="row">
                       {favorites.map((f) => (
-                        <Card sx={{ display: "flex", my: 4, mr: 4 }}>
+                        <Card sx={{ display: "flex", my: 4, mr: 4 }} key={f._id}>
                           <Link href={`/resource/${f._id}`}>
                             <CardActionArea>
                               <CardMedia
