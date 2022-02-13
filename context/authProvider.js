@@ -131,6 +131,26 @@ const AuthProvider = (props) => {
     }
   };
 
+  const events = async (arr) => {
+    try {
+      const events = await apiService.fetchEvents(token, arr);
+      return events.data.events;
+    } catch (err) {
+      console.log(err);
+      return [];
+    }
+  };
+
+  const likes = async (arr) => {
+    try {
+      const likes = await apiService.fetchLikes(token, arr);
+      return likes.data.resources;
+    } catch (err) {
+      console.log(err);
+      return [];
+    }
+  };
+
   // Ici, ce sont les infos du contexte que l'on interroge dans l'app. SignIn et SignOut peuvent être appelees
   // l'exterieur et servir a interroger les methodes a l'interieur du contexte
   // Les crochets en bas servent a determiner quand le contexte se met a jour
@@ -144,6 +164,8 @@ const AuthProvider = (props) => {
       role,
       error,
       fetchProfile: async () => await profile(),
+      fetchLikes: async (arr) => await likes(arr),
+      fetchEvents: async (arr) => await events(arr),
       // Petit util pour reset les erreurs sur le signIn quand on veux
       resetError: () => setError(""),
       signIn: async (credentials, callbackUrl) =>

@@ -63,26 +63,67 @@ export default function userId(req, res) {
     }
   };
 
-  const fetchProfile = async (req, db, res) => {
-    const token = req.body.headers?.Authorization
-      ? req.body.headers.Authorization
-      : null;
-    // Verifie si le token est valide
-    jwt.verify(token, process.env.JWT_SECRET, function (err) {
-      if (err) {
-        return res.status(401).json({
-          name: err.name,
-          expiredAt: err.expiredAt,
-        });
-      }
-    });
-
+  const fetchProfile = async (req, db, res, token) => {
     const user = jwt.decode(token);
     const { id } = user.data;
-    return await getUser(id, db, res)
+    return await getUser(id, db, res);
   };
 
-  const getRoute = async (req, res) => {
+  const fetchLikes = async (db, res, body) => {
+    try {
+      const test = await getLikes(res, db, body);
+      console.log("helle", test);
+    } catch (err) {}
+    //return await ressources.getLikes(res, db, id);
+  };
+
+  const fetchEvents = async (db, res, token) => {
+    const user = jwt.decode(token);
+    const { id } = user.data;
+    return await getEvents(res, db, id);
+  };
+
+  const getEvents = async (res, db, id) => {
+    try {
+      console.log(body);
+      const likesArr = body.map((i) => ObjectId(i));
+      const events = await db
+        .collection("resources")
+        .find({
+          _id: {
+            $in: likesArr,
+          },
+        })
+        .toArray();
+
+      return res.status(200).json({ events });
+    } catch (err) {
+      return res.status(404).json({ err });
+    }
+  };
+
+  const getLikes = async (res, db, body) => {
+    try {
+      console.log(body);
+      const likesArr = body.map((i) => ObjectId(i));
+      const resources = await db
+        .collection("resources")
+        .find({
+          _id: {
+            $in: likesArr,
+          },
+        })
+        .toArray();
+
+        console.log(resources);
+
+      return res.status(200).json({ resources });
+    } catch (err) {
+      return res.status(404).json({ err });
+    }
+  };
+
+  const getRoute = async (req, res, next) => {
     const db = await connect();
     const user = req?.body ? req.body : null;
 
@@ -96,7 +137,46 @@ export default function userId(req, res) {
       case "PUT":
         return await updateUser(id, db, user, res);
       case "POST":
-        return await fetchProfile(req, db, res);
+        const query = req.query.data;
+        console.log(req.body.headers?.Authorization);
+        const token = req.body.headers?.Authorization
+          ? req.body.headers.Authorization
+          : null;
+        // // Verifie si le token est valide
+
+        console.log(query);
+
+        if (query === "likes") {
+          const body = req.body;
+          const test = req.headers?.authorization
+            ? req.headers?.authorization
+            : null;
+
+          jwt.verify(test, process.env.JWT_SECRET, function (err) {
+            if (err) {
+              console.log(err);
+              return res.status(401).json({
+                name: err.name,
+                expiredAt: err.expiredAt,
+              });
+            }
+          });
+          return await fetchLikes(db, res, body);
+        } else if (query === "events") {
+          return await fetchEvents(db, res, body);
+        } else {
+          jwt.verify(token, process.env.JWT_SECRET, function (err) {
+            if (err) {
+              console.log(err);
+              return res.status(401).json({
+                name: err.name,
+                expiredAt: err.expiredAt,
+              });
+            }
+          });
+          return await fetchProfile(req, db, res, token);
+        }
+
       default:
         res.status(405).end("Method Not Allowed");
         break;

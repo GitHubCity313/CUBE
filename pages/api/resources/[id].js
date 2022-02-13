@@ -50,6 +50,9 @@ export default function ressources(req, res) {
     }
   };
 
+
+
+
   const getRoute = async (req, res) => {
     const db = await connect();
     const id = req.query.id.trim();

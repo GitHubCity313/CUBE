@@ -5,7 +5,10 @@ import {
   Box,
   Card,
   CardContent,
+  CardMedia,
+  CardActionArea,
   Typography,
+  CircularProgress,
   Button,
 } from "@mui/material";
 import AuthContext from "../context/authContext";
@@ -14,15 +17,22 @@ import SettingsIcon from "@mui/icons-material/Settings";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
 import Layout from "../components/Layout/Layout";
-import authService from "../services/authService";
-import apiService from "../services/apiService";
+import Link from "next/link";
 
 export default function Profile() {
-  const { isAuthenticated, fetchProfile } = useContext(AuthContext);
+  const { isAuthenticated, fetchProfile, fetchLikes, fetchEvents } =
+    useContext(AuthContext);
   const [isFetching, setIsFetching] = useState(true);
   const [fetchingError, setFetchingError] = useState(false);
   const [user, setUser] = useState({});
   const router = useRouter();
+  // State pour les evenements
+  const [events, setEvents] = useState([]);
+  // State pour les favoris
+  const [favorites, setFavorites] = useState([]);
+  // State pour les infos utilisateurs
+  const [data, setData] = useState([]);
+
   useEffect(async () => {
     if (isAuthenticated === false) {
       router.push("/");
@@ -31,6 +41,13 @@ export default function Profile() {
         const profile = await fetchProfile();
         setUser(profile);
         setIsFetching(false);
+        if (profile.likes.length > 0) {
+          const likes = await fetchLikes(profile.likes);
+          setFavorites(likes);
+        }
+        if (profile.hasEvents > 0) {
+          const events = await fetchEvents(profile.hasEvents);
+        }
       } catch (err) {
         setIsFetching(false);
         setFetchingError(true);
@@ -40,23 +57,34 @@ export default function Profile() {
 
   return (
     <Layout title="Cube | Profil">
-      {fetchingError ||
-        (isFetching && (
-          <Stack
-            justifyContent="center"
-            alignItems="center"
-            sx={{
-              mt: "50vh",
-              backgroundColor: "gov.mediumBlue",
-              color: "gov.white",
-              p: 4,
-              borderRadius: "8px",
-            }}
-          >
-            <ErrorOutlineIcon />
-            <Typography>Erreur lors de la récuperation des données</Typography>
-          </Stack>
-        ))}
+      {isFetching && (
+        <Stack
+          justifyContent="center"
+          alignItems="center"
+          sx={{
+            mt: "50vh",
+            color: "gov.mediumBlue",
+          }}
+        >
+          <CircularProgress color="inherit" />
+        </Stack>
+      )}
+      {fetchingError && (
+        <Stack
+          justifyContent="center"
+          alignItems="center"
+          sx={{
+            mt: "50vh",
+            backgroundColor: "gov.mediumBlue",
+            color: "gov.white",
+            p: 4,
+            borderRadius: "8px",
+          }}
+        >
+          <ErrorOutlineIcon />
+          <Typography>Erreur lors de la récuperation des données</Typography>
+        </Stack>
+      )}
 
       {!isFetching && !fetchingError && (
         <Grid container sx={{ mt: 20 }} spacing={2}>
@@ -151,7 +179,27 @@ export default function Profile() {
                       Vous n'avez pas encore de favoris
                     </Typography>
                   ) : (
-                    <Stack>Le gros map</Stack>
+                    <Stack direction="row">
+                      {favorites.map((f) => (
+                        <Card sx={{ display: "flex", my: 4, mr: 4 }}>
+                          <Link href={`/resource/${f._id}`}>
+                            <CardActionArea>
+                              <CardMedia
+                                component="img"
+                                sx={{
+                                  width: 125,
+                                  heigth: 125,
+                                  borderRadius: "16px",
+                                  objectFit: "cover",
+                                }}
+                                image={`${f.thumbnail.url}`}
+                                alt=""
+                              />
+                            </CardActionArea>
+                          </Link>
+                        </Card>
+                      ))}
+                    </Stack>
                   )}
                 </Box>
               </CardContent>

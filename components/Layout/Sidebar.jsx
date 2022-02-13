@@ -57,11 +57,6 @@ export default function Sidebar() {
               <Button variant="textBtn">Mon profil</Button>
             </ListItem>
           </Link>
-          <Link href="/profile">
-            <ListItem>
-              <Button variant="textBtn">Favoris</Button>
-            </ListItem>
-          </Link>
         </Box>
       )}
       <Box sx={{ marginBottom: "200px" }}>
