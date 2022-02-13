@@ -1,8 +1,9 @@
 import React, { useContext } from "react";
-import { Box, Grid, ListItem, ListItemText, Button } from "@mui/material";
+import { Box, Avatar, ListItem, ListItemText, Button } from "@mui/material";
 import { useRouter } from "next/router";
 import SettingsIcon from "@mui/icons-material/Settings";
-import HomeIcon from "@mui/icons-material/Home";
+import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
+import Link from "next/link";
 import AuthContext from "../../context/authContext";
 
 export default function Sidebar() {
@@ -25,24 +26,42 @@ export default function Sidebar() {
         flexDirection: "column",
         alignItems: "center",
         justifyContent: "space-evenly",
-        width: "15vw",
         height: "90vh",
       }}
     >
       {isAuthenticated && (
         <Box>
-          <ListItem>
-            <ListItemText primary={`Bonjour ${session?.firstName}`} />
+          <ListItem sx={{ mb: 2 }}>
+            <Avatar
+              alt={`${session?.firstName}`}
+              src={`${session?.profilePic}`}
+              sx={{ mr: 2 }}
+            />
+            <ListItemText
+              primary={`${session?.firstName} ${session?.lastName}`}
+            />
           </ListItem>
-          <ListItem>
-            <ListItemText primary="Créer un article" />
-          </ListItem>
-          <ListItem>
-            <ListItemText primary="Mon profil" />
-          </ListItem>
-          <ListItem>
-            <ListItemText primary="Mes favoris" />
-          </ListItem>
+
+          <Link href="/">
+            <ListItem sx={{ borderBottom: `1px solid ${"gov.blue"}` }}>
+              <Button variant="textBtn">Accueil</Button>
+            </ListItem>
+          </Link>
+          <Link href="/article">
+            <ListItem>
+              <Button variant="textBtn">Créer un évènement</Button>
+            </ListItem>
+          </Link>
+          <Link href="/profile">
+            <ListItem>
+              <Button variant="textBtn">Mon profil</Button>
+            </ListItem>
+          </Link>
+          <Link href="/profile">
+            <ListItem>
+              <Button variant="textBtn">Favoris</Button>
+            </ListItem>
+          </Link>
         </Box>
       )}
       <Box sx={{ marginBottom: "200px" }}>

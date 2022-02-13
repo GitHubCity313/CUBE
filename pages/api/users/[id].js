@@ -1,5 +1,6 @@
 import clientPromise from "../../../lib/mongodb";
 import { ObjectId } from "mongodb";
+import jwt from "jsonwebtoken";
 
 export default function userId(req, res) {
   const connect = async () => {
@@ -56,26 +57,46 @@ export default function userId(req, res) {
         .updateOne(filter, updatedUser);
       return res.status(204).json({ update });
     } catch (err) {
-      console.log("erro in updateUser");
+      console.log("error in updateUser");
       console.log(err);
       return res.status(404).json({ err });
     }
   };
 
+  const fetchProfile = async (req, db, res) => {
+    const token = req.body.headers?.Authorization
+      ? req.body.headers.Authorization
+      : null;
+    // Verifie si le token est valide
+    jwt.verify(token, process.env.JWT_SECRET, function (err) {
+      if (err) {
+        return res.status(401).json({
+          name: err.name,
+          expiredAt: err.expiredAt,
+        });
+      }
+    });
+
+    const user = jwt.decode(token);
+    const { id } = user.data;
+    return await getUser(id, db, res)
+  };
+
   const getRoute = async (req, res) => {
     const db = await connect();
-    const id = req.query.id.trim();
     const user = req?.body ? req.body : null;
 
     switch (req.method) {
       case "GET": {
-        const id = req.query.id;
+        const id = req.query.id.trim();
         return await getUser(id, db, res);
       }
       case "DELETE":
         return await deleteUser(id.toString());
       case "PUT":
         return await updateUser(id, db, user, res);
+      case "POST":
+        return await fetchProfile(req, db, res);
       default:
         res.status(405).end("Method Not Allowed");
         break;
@@ -85,75 +106,97 @@ export default function userId(req, res) {
   return getRoute(req, res);
 }
 
+/**
+ * @swagger
+ * /users/{id}:
+ *   parameters:
+ *     - in: path
+ *       name: id
+ *       required: true
+ *       description: L'id de l'utilisateur.
+ *       schema:
+ *         type: integer
+ *   get:
+ *     tags : [users]
+ *     description: Retrouve un utilisateur selon l'id.
+ *     responses:
+ *       200:
+ *         description: L'utilisateur demandé
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/User'
+ *       404:
+ *         description: Echec de la requête.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *             example:
+ *               message: "fdkjsfjd"
+ *   put:
+ *     tags : [users]
+ *     description: Modifie les informations d'un utilisateur.
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/User'
+ *     responses:
+ *       200:
+ *         description: L'utilisateur avec les informations mises à jour
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/User'
+ *       404:
+ *         description: Echec de la requête.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *             example:
+ *               message: "fdkjsfjd"
+ *   delete:
+ *     tags : [users]
+ *     description: Supprime un utilisateur.
+ *     responses:
+ *       204:
+ *         description:
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/User'
+ *       404:
+ *         description: Echec de la requête.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *             example:
+ *               message: "fdkjsfjd"
+ */
 
-  /**
-   * @swagger
-   * /users/{id}:
-   *   parameters:
-   *     - in: path
-   *       name: id
-   *       required: true
-   *       description: L'id de l'utilisateur.
-   *       schema:
-   *         type: integer
-   *   get:
-   *     tags : [users]
-   *     description: Retrouve un utilisateur selon l'id.
-   *     responses:
-   *       200:
-   *         description: L'utilisateur demandé
-   *         content:
-   *           application/json:
-   *             schema:
-   *               $ref: '#/components/schemas/User'
-   *       404:
-   *         description: Echec de la requête.
-   *         content:
-   *           application/json:
-   *             schema:
-   *               $ref: '#/components/schemas/Error'
-   *             example:
-   *               message: "fdkjsfjd"
-   *   put:
-   *     tags : [users]
-   *     description: Modifie les informations d'un utilisateur.
-   *     requestBody:
-   *       required: true
-   *       content:
-   *         application/json:
-   *           schema:
-   *             $ref: '#/components/schemas/User'
-   *     responses:
-   *       200:
-   *         description: L'utilisateur avec les informations mises à jour
-   *         content:
-   *           application/json:
-   *             schema:
-   *               $ref: '#/components/schemas/User'
-   *       404:
-   *         description: Echec de la requête.
-   *         content:
-   *           application/json:
-   *             schema:
-   *               $ref: '#/components/schemas/Error'
-   *             example:
-   *               message: "fdkjsfjd"
-   *   delete:
-   *     tags : [users]
-   *     description: Supprime un utilisateur.
-   *     responses:
-   *       204:
-   *         description: 
-   *         content:
-   *           application/json:
-   *             schema:
-   *               $ref: '#/components/schemas/User'
-   *       404:
-   *         description: Echec de la requête.
-   *         content:
-   *           application/json:
-   *             schema:
-   *               $ref: '#/components/schemas/Error'
-   *             example:
-   *               message: "fdkjsfjd"
-   */
+/**
+ * @swagger
+ * /users/profile:
+ *   post:
+ *     tags : [users]
+ *     description: Récupère les informations liées à l'utilisateur connecté
+ *     responses:
+ *       200:
+ *         description: L'utilisateur demandé
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/User'
+ *       404:
+ *         description: Echec de la requête.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *             example:
+ *               message: "fdkjsfjd"
+ */

@@ -29,10 +29,9 @@ const spectral = {
 const theme = createTheme({
   palette: {
     gov: {
-      blue: "#000091"
-    },
-    primary: {
-      main: "#000091",
+      blue: "#000091",
+      white: "#FFFFFF",
+      mediumBlue: "#176fc5"
     },
     secondary: {
       main: "#EEEEEE",
@@ -71,6 +70,21 @@ const theme = createTheme({
               backgroundColor: "transparent",
               border: "1px solid #000091",
               color: "#000091",
+            },
+          },
+        },
+        {
+          props: { variant: "textBtn" },
+          style: {
+            backgroundColor: "transparent",
+            color: "#000091",
+            textTransform: "capitalize",
+            borderRadius: "0px",
+            boxShadow: "0px 0px 0px 0px rgba(0,0,0,0.2)",
+            padding: "0.5rem",
+            ":hover": {
+              backgroundColor: "#000091",
+              color: "#FFFFFF",
             },
           },
         },
@@ -171,11 +185,11 @@ const theme = createTheme({
       ],
     },
     MuiCardContent: {
-           styleOverrides: {
+      styleOverrides: {
         root: {
-          "&:last-child":{
-            paddingBottom: 0
-          }
+          "&:last-child": {
+            paddingBottom: 0,
+          },
         },
       },
     },

@@ -7,7 +7,9 @@ import {
   Typography,
   InputBase,
   Toolbar,
+  useMediaQuery,
 } from "@mui/material";
+import { useTheme } from "@mui/material/styles";
 import SearchIcon from "@mui/icons-material/Search";
 import Image from "next/image";
 import Link from "next/link";
@@ -62,8 +64,10 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
   },
 }));
 
-const Test = (props) => {
+const Header = (props) => {
   const { withSidebar } = props;
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar variant="header" position="fixed">
@@ -108,7 +112,7 @@ const Test = (props) => {
           </Search>
         </Toolbar>
       </AppBar>
-      {withSidebar && (
+      {withSidebar && !isMobile && (
         <Drawer variant="permanent">
           <Sidebar />
         </Drawer>
@@ -117,4 +121,4 @@ const Test = (props) => {
   );
 };
 
-export default Test;
+export default Header;

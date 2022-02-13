@@ -1,3 +1,4 @@
+import axios from "axios";
 import axiosInstance from "./instance";
 
 const apiService = {
@@ -14,6 +15,10 @@ const apiService = {
   deleteItem: (item, id) =>
     axiosInstance.delete(`${item}/${id}`, {
       headers: { Authorization: `Bearer ${token}` },
+    }),
+  fetchProfile: (token) =>
+    axiosInstance.post(`/users/profile`, {
+      headers: { Authorization: token },
     }),
 };
 
