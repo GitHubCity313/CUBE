@@ -1,14 +1,19 @@
 import React, { useContext } from "react";
-import { Box, Grid, ListItem, ListItemText, Button } from "@mui/material";
-import Link from "next/link";
+import { Box, Avatar, ListItem, ListItemText, Button } from "@mui/material";
+import { useRouter } from "next/router";
 import SettingsIcon from "@mui/icons-material/Settings";
-import HomeIcon from "@mui/icons-material/Home";
+import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
+import Link from "next/link";
 import AuthContext from "../../context/authContext";
 
 export default function Sidebar() {
-  const { session, isAuthenticated, signIn, signOut } = useContext(AuthContext);
+  const { session, isAuthenticated, signOut } = useContext(AuthContext);
+  const router = useRouter();
 
-  console.log(session, isAuthenticated);
+  const handleDisconnexion = () => {
+    signOut();
+    return router.push("/home");
+  };
 
   return (
     <Box
@@ -20,54 +25,61 @@ export default function Sidebar() {
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
-        justifyContent: "space-between",
-        width: "10vw",
+        justifyContent: "space-evenly",
         height: "90vh",
       }}
     >
-      <Box>
-        {isAuthenticated && (
-          <ListItem>
-            <ListItemText primary={`Bonjour ${session?.firstName}`} />
+      {isAuthenticated && (
+        <Box>
+          <ListItem sx={{ mb: 2 }}>
+            <Avatar
+              alt={`${session?.firstName}`}
+              src={`${session?.profilePic}`}
+              sx={{ mr: 2 }}
+            />
+            <ListItemText
+              primary={`${session?.firstName} ${session?.lastName}`}
+            />
           </ListItem>
-        )}
-        <ListItem>
-          <HomeIcon sx={{ marginRight: "20px" }} color="primary" />
-          <ListItemText primary="Item 1" />
-        </ListItem>
-        <ListItem>
-          <ListItemText primary="Item 2" />
-        </ListItem>
-        <ListItem>
-          <ListItemText primary="Item 3" />
-        </ListItem>
-        {!isAuthenticated ? (
-          <ListItem>
-            <Link href="/login">
-              <a>
-                <ListItemText primary="Se connecter" onClick={signIn} />
-              </a>
-            </Link>
-          </ListItem>
+
+          <Link href="/">
+            <ListItem sx={{ borderBottom: `1px solid ${"gov.blue"}` }}>
+              <Button variant="textBtn">Accueil</Button>
+            </ListItem>
+          </Link>
+          <Link href="/article">
+            <ListItem>
+              <Button variant="textBtn">Créer un évènement</Button>
+            </ListItem>
+          </Link>
+          <Link href="/profile">
+            <ListItem>
+              <Button variant="textBtn">Mon profil</Button>
+            </ListItem>
+          </Link>
+        </Box>
+      )}
+      <Box sx={{ marginBottom: "200px" }}>
+        {isAuthenticated ? (
+          <Button
+            variant="borderBtn"
+            color="primary"
+            startIcon={<SettingsIcon />}
+            onClick={handleDisconnexion}
+          >
+            Se déconnecter
+          </Button>
         ) : (
-          <ListItem>
-            <Link href="/home">
-              <a>
-                <ListItemText primary="Se deconnecter" onClick={signOut} />
-              </a>
-            </Link>
-          </ListItem>
+          <Button
+            variant="borderBtn"
+            size="small"
+            color="primary"
+            startIcon={<SettingsIcon />}
+            onClick={() => router.push("/login")}
+          >
+            Se connecter
+          </Button>
         )}
-      </Box>
-      <Box sx={{ marginBottom: "100px" }}>
-        <Button
-          variant="borderBtn"
-          size="small"
-          color="primary"
-          startIcon={<SettingsIcon />}
-        >
-          Paramètres
-        </Button>
       </Box>
     </Box>
   );

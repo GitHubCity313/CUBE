@@ -25,8 +25,7 @@ const SignIn = () => {
         flexDirection={isMobile ? "column" : "row"}
         justifyContent="center"
         alignItems="center"
-        sx={{ mt: isMobile && 12 }}
-        sx={{ pt: isMobile ? 20 : 10 }}
+        sx={{ pt: 20 }}
       >
         <Grid item xs={12} md={4}>
           <Grid

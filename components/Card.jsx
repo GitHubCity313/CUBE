@@ -1,55 +1,80 @@
 import * as React from "react";
-import Card from "@mui/material/Card";
-import CardContent from "@mui/material/CardContent";
-import CardMedia from "@mui/material/CardMedia";
-import Typography from "@mui/material/Typography";
-import { Button, CardActions } from "@mui/material";
+import {
+  Card,
+  CardContent,
+  CardMedia,
+  Typography,
+  Button,
+  CardActions,
+  CardActionArea,
+  Stack,
+} from "@mui/material";
 import { getMatchingCategories } from "../utils";
-
-const styles = () => ({
-  default: {},
-});
+import Link from "next/link";
 
 export default function MultiActionAreaCard({ resourceData, categories }) {
-  // console.log("test MultiActionAreaCard (categories) : ")
-  // console.log(categories)
-  // console.log("resourceData")
-  // console.log(resourceData)
   return (
     <Card
-      sx={{ maxWidth: 700, height: "fit-content" }}
-      sx={{ display: "flex" }}
+      sx={{
+        display: "flex",
+        justifyContent: "space-between",
+        alignItems: "center",
+        backgroundColor: "transparent",
+        height: "250px",
+      }}
     >
-      <CardContent variant="wrapperImageCard">
+      <CardActionArea>
         <CardMedia
           variant="imageCard"
           component="img"
           image={resourceData?.thumbnail.url}
           alt={resourceData?.thumbnail.alt}
+          sx={{
+            objectFit: "fill",
+            height: "100%",
+            padding: "0px",
+          }}
         />
-      </CardContent>
-      <CardContent variant="wrapperContentCard">
-        <Typography variant="categoryTypo">
-          {
-            resourceData?.categories.map(resourceCategory => {
+      </CardActionArea>
+      <CardContent
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+          p: 2,
+          backgroundColor: "#f9f8f6",
+        }}
+      >
+        <Stack spacing={1} justifyContent="space-between" sx={{ mt: 2 }}>
+          <Typography variant="categoryTypo">
+            {resourceData?.categories.map((resourceCategory) => {
               return getMatchingCategories(resourceCategory, categories);
-            })
-          }
-        </Typography>
-        <Typography gutterBottom variant="TitreCard" component="div">
-          {resourceData?.name}
-        </Typography>
-        <Typography variant="DesCard">
-          {resourceData?.description}
-        </Typography>
-        <CardActions>
-          <Button variant="borderBtn" size="small" color="primary">
-            Share
-          </Button>
-          <Button variant="bleuBtn" size="small" color="primary">
-            Share
-          </Button>
-        </CardActions>
+            })}
+          </Typography>
+          <Typography gutterBottom variant="TitreCard" component="div">
+            {resourceData?.name}
+          </Typography>
+          <Typography variant="DesCard">
+            {resourceData?.description}...
+          </Typography>
+        </Stack>
+        <Stack spacing={2} justifyContent="space-evenly">
+          <CardActions
+            sx={{
+              display: "flex",
+              justifyContent: "space-between",
+              py: 4,
+              px: 0,
+            }}
+          >
+            <Button variant="bleuBtn" size="small" color="primary">
+              Suivre
+            </Button>
+            <Button variant="borderBtn" size="small" color="primary">
+              En savoir plus
+            </Button>
+          </CardActions>
+        </Stack>
       </CardContent>
     </Card>
   );

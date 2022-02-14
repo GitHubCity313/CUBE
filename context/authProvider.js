@@ -4,6 +4,8 @@ import AuthContext from "./authContext";
 import authService from "../services/authService";
 import commonUtils from "../utils/commonUtils";
 import jwt from "jsonwebtoken";
+import apiService from "../services/apiService";
+import { LoopOutlined } from "@mui/icons-material";
 
 // Welcome to the context o/
 const AuthProvider = (props) => {
@@ -11,6 +13,7 @@ const AuthProvider = (props) => {
   const { refetchInterval, children } = props;
   // Les states sont les etats par defaut du contexte. Donc de base, personne n'est connecte + 0 infos
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [token, setToken] = useState("");
   const [session, setSession] = useState({});
   // Je mets les rôles a part pour le moment
   const [role, setRole] = useState(null);
@@ -23,8 +26,9 @@ const AuthProvider = (props) => {
   // Genere une session utilisateur avec les infos du token
   const getSession = useCallback((token) => {
     const decoded = jwt.decode(token);
-    const { lastName, firstName, role } = decoded.data;
-    setSession({ lastName, firstName });
+    const { lastName, firstName, role, profilePic } = decoded.data;
+    setToken(token);
+    setSession({ lastName, firstName, profilePic });
     setRole(role);
     return setIsAuthenticated(true);
   }, []);
@@ -33,6 +37,7 @@ const AuthProvider = (props) => {
   const shutSession = useCallback(() => {
     setRole("");
     setSession({});
+    setToken("");
     setError("");
     return setIsAuthenticated(false);
   }, []);
@@ -52,6 +57,7 @@ const AuthProvider = (props) => {
         try {
           const check = await verifyToken();
           if (check.status === 200) {
+            setToken(token);
             return getSession(token);
           } else {
             logOut();
@@ -101,13 +107,47 @@ const AuthProvider = (props) => {
       const check = await authService.signOut(token);
       // Enleve le token du local storage
       authService.clear();
+      setToken("");
       // Reinitialise le contexte
       shutSession();
       // Redirige vers le callback souhaite. Par defaut home
       return router.push(callbackUrl ? callbackUrl : "/");
     } catch (err) {
       authService.clear();
+      setToken("");
       shutSession();
+    }
+  };
+
+  const profile = async () => {
+    if (token !== "") {
+      try {
+        const profile = await apiService.fetchProfile(token);
+        return profile.data.user.shift();
+      } catch (err) {
+        console.log(err);
+        return {};
+      }
+    }
+  };
+
+  const events = async (arr) => {
+    try {
+      const events = await apiService.fetchEvents(token, arr);
+      return events.data.events;
+    } catch (err) {
+      console.log(err);
+      return [];
+    }
+  };
+
+  const likes = async (arr) => {
+    try {
+      const likes = await apiService.fetchLikes(token, arr);
+      return likes.data.resources;
+    } catch (err) {
+      console.log(err);
+      return [];
     }
   };
 
@@ -118,10 +158,14 @@ const AuthProvider = (props) => {
   const authData = useMemo(
     () => ({
       isAuthenticated,
+      token,
       refetchInterval,
       session,
       role,
       error,
+      fetchProfile: async () => await profile(),
+      fetchLikes: async (arr) => await likes(arr),
+      fetchEvents: async (arr) => await events(arr),
       // Petit util pour reset les erreurs sur le signIn quand on veux
       resetError: () => setError(""),
       signIn: async (credentials, callbackUrl) =>

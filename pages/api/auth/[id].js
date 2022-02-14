@@ -18,9 +18,9 @@ export default function auth(req, res) {
         .toArray();
 
       if (user && user.length !== 0) {
-        const { firstName, lastName, role, _id } = user.shift();
+        const { firstName, lastName, role, _id, profilePic } = user.shift();
         const token = jwt.sign(
-          { data: { id: _id, firstName, lastName, role } },
+          { data: { id: _id, firstName, lastName, role, profilePic } },
           process.env.JWT_SECRET,
           {
             expiresIn: refetchInterval,
@@ -55,7 +55,7 @@ export default function auth(req, res) {
   };
 
   const getRoute = async (req, res) => {
-    const {credentials, refetchInterval } = req.body;
+    const { credentials, refetchInterval } = req.body;
     const id = req.query.id;
     const token = req.body.headers?.Authorization
       ? req.body.headers.Authorization

@@ -1,4 +1,6 @@
-module.exports = {
+const withFonts = require("next-fonts");
+
+module.exports = withFonts({
   reactStrictMode: true,
   publicRuntimeConfig: {
     baseUrl:
@@ -10,4 +12,8 @@ module.exports = {
         ? "http://localhost:3000/api" // development api
         : "http://localhost:3000/api", // production api - changer une fois l'url connue
   },
-};
+  webpack: (config) => {
+    // Important: return the modified config
+    return config;
+  },
+});
