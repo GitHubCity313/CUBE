@@ -38,7 +38,6 @@ const AuthProvider = (props) => {
     setRole("");
     setSession({});
     setToken("");
-    setError("");
     return setIsAuthenticated(false);
   }, []);
 
@@ -100,7 +99,9 @@ const AuthProvider = (props) => {
     } catch (err) {
       if (err.response !== undefined) {
         // Recupere la reponse de l'API
+
         const { message } = err.response.data;
+        console.log(message);
         // Actualise le state pour permettre de la recuperer depuis le front
         setError(message);
       } else {
@@ -117,11 +118,12 @@ const AuthProvider = (props) => {
       const encodedCredentials = hashCredentials(user);
       console.log(encodedCredentials);
       const createUser = await authService.signUp(encodedCredentials);
-      console.log(createUser)
+      console.log(createUser);
     } catch (err) {
       if (err.response !== undefined) {
         // Recupere la reponse de l'API
         const { message } = err.response.data;
+
         // Actualise le state pour permettre de la recuperer depuis le front
         setError(message);
       } else {
@@ -208,6 +210,8 @@ const AuthProvider = (props) => {
     }),
     [isAuthenticated, error]
   );
+
+  console.log(error)
 
   return (
     <AuthContext.Provider value={authData}>{children}</AuthContext.Provider>

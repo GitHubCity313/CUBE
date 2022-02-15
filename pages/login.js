@@ -1,5 +1,5 @@
 // Pour appeler un contexte, on importe le useContext de React
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 // Et le contexte aue l'on souhaite consommer (il peut en avoir plus d'un)
 import AuthContext from "../context/authContext";
 import {
@@ -23,6 +23,8 @@ const Login = () => {
   // Pour les connaitre -> GO context/authProvider -- En bas dans le useMemo
   const { signIn, error, resetError } = useContext(AuthContext);
   const [fields, setFields] = useState({ email: "", password: "" });
+
+  useEffect(() => resetError, [])
 
   // Met a jour le state qui controle la valeur des champs du formulaire
   // Et vide l'erreur histoire au'elle ne reste pas 15 ans apres modification
@@ -66,8 +68,8 @@ const Login = () => {
           >
             <Stack spacing={3}>
               <Typography variant="h2">Connexion</Typography>
-              {error !== null && (
-                <Typography sx={{ color: "red" }}>{error}</Typography>
+              {error !== "" && (
+                <Typography sx={{ color: "red" }} variant="caption">{error}</Typography>
               )}
               <TextField
                 id="email"

@@ -11,6 +11,7 @@ export default function auth(req, res) {
     return db;
   };
 
+  //TODO - Ptite refacto la
   const signIn = async (credentials, refetchInterval) => {
     try {
       const { email, password } = credentials;
@@ -20,7 +21,7 @@ export default function auth(req, res) {
         .find({ email, password })
         .toArray();
 
-      if (user && user.length !== 0) {
+      if (user.length !== 0 && user[0].isValidated) {
         const { firstName, lastName, role, _id, profilePic } = user.shift();
         const token = jwt.sign(
           { data: { id: _id, firstName, lastName, role, profilePic } },
@@ -29,12 +30,15 @@ export default function auth(req, res) {
             expiresIn: refetchInterval,
           }
         );
-
         res.status(200).json({
           token,
         });
       } else {
-        throw Error;
+        if (!user[0].isValidated) {
+          return res.status(401).json({
+            message: "Vous devez vérifier votre compte avant de vous connecter",
+          });
+        }
       }
     } catch (err) {
       return res
@@ -47,10 +51,8 @@ export default function auth(req, res) {
     try {
       const newUser = generateUserModel(user);
       const db = await connect();
-            console.log("req", newUser);
+      console.log("req", newUser);
       const signUp = await db.collection("users").insertOne(newUser);
-
-
 
       //TODO - une verif de línsertion avant envoi de mail
       sendConfirmationEmail(
