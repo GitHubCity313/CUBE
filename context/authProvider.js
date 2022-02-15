@@ -5,7 +5,7 @@ import authService from "../services/authService";
 import commonUtils from "../utils/commonUtils";
 import jwt from "jsonwebtoken";
 import apiService from "../services/apiService";
-import { LoopOutlined } from "@mui/icons-material";
+import md5 from "blueimp-md5";
 
 // Welcome to the context o/
 const AuthProvider = (props) => {
@@ -74,11 +74,19 @@ const AuthProvider = (props) => {
     }
   }, [children]);
 
+  const hashCredentials = (credentials) => {
+    const { email, password } = credentials;
+    const encodedPass = md5(password);
+    const encodedCredentials = { email, password: encodedPass };
+    return encodedCredentials;
+  };
+
   // Authentifie l'utilisateur -- Communiaue avec l'API pour generer un token
   const authenticate = async (credentials, callbackUrl) => {
     try {
+      const encodedCredentials = hashCredentials(credentials);
       // Genere le token
-      const check = await authService.signIn(credentials, refetchInterval);
+      const check = await authService.signIn(encodedCredentials, refetchInterval);
       const { token } = check.data;
       // Store l'info dans le local storage
       authService.store(token);

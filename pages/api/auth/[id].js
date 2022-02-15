@@ -1,5 +1,6 @@
 import clientPromise from "../../../lib/mongodb";
 import jwt from "jsonwebtoken";
+import md5 from "blueimp-md5"
 
 export default function auth(req, res) {
   const connect = async () => {
@@ -17,6 +18,7 @@ export default function auth(req, res) {
         .find({ email, password })
         .toArray();
 
+      //TODO - Mise en place du hash
       if (user && user.length !== 0) {
         const { firstName, lastName, role, _id, profilePic } = user.shift();
         const token = jwt.sign(
