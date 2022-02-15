@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import AuthContext from "../context/authContext";
 import {
   Grid,
@@ -28,6 +28,7 @@ const SignUp = () => {
   });
 
   const updateField = (e) => {
+    console.log(e.target.id)
     if (error.length > 0) {
       resetError();
     }
@@ -79,17 +80,17 @@ const SignUp = () => {
             >
               <Grid item>
                 <TextField
-                  id="filled-basic"
+                  id="lastName"
                   label="Nom"
                   variant="filled"
                   required
-                  value={field.lastName}
+                  value={fields.lastName}
                   onChange={updateField}
                 />
               </Grid>
               <Grid item>
                 <TextField
-                  id="filled-basic"
+                  id="firstName"
                   label="Prenom"
                   variant="filled"
                   required
@@ -99,9 +100,10 @@ const SignUp = () => {
               </Grid>
               <Grid item>
                 <TextField
-                  id="filled-basic"
+                  id="password"
                   label="Mot de passe"
                   variant="filled"
+                  type="password"
                   required
                   value={fields.password}
                   onChange={updateField}
@@ -109,7 +111,7 @@ const SignUp = () => {
               </Grid>
               <Grid item>
                 <TextField
-                  id="filled-basic"
+                  id="email"
                   label="Adresse email "
                   variant="filled"
                   required
@@ -119,7 +121,10 @@ const SignUp = () => {
               </Grid>
             </Grid>
             <Box sx={{ alignSelf: "end", pr: isMobile ? 0 : 3, mt: 4 }}>
-              <Button onClick={SignUp} variant="bleuBtn">
+              <Button
+                onClick={() => signUp(fields, "/profile")}
+                variant="bleuBtn"
+              >
                 S'inscrire
               </Button>
             </Box>

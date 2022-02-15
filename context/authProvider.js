@@ -111,11 +111,13 @@ const AuthProvider = (props) => {
     }
   };
 
-    // Authentifie l'utilisateur -- Communiaue avec l'API pour generer un token
+  // Authentifie l'utilisateur -- Communiaue avec l'API pour generer un token
   const createAccount = async (user, callbackUrl) => {
     try {
       const encodedCredentials = hashCredentials(user);
-
+      console.log(encodedCredentials);
+      const createUser = await authService.signUp(encodedCredentials);
+      console.log(createUser)
     } catch (err) {
       if (err.response !== undefined) {
         // Recupere la reponse de l'API
@@ -200,7 +202,7 @@ const AuthProvider = (props) => {
       resetError: () => setError(""),
       signIn: async (credentials, callbackUrl) =>
         await authenticate(credentials, callbackUrl),
-      signUp: async (credentials, callbackUrl) =>
+      signUp: async (user, callbackUrl) =>
         await createAccount(user, callbackUrl),
       signOut: async (callbackUrl) => await logOut(callbackUrl),
     }),

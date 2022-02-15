@@ -1,6 +1,7 @@
 import clientPromise from "../../../lib/mongodb";
+import sendConfirmationEmail from "../../../lib/nodemailer";
+import { ObjectId } from "mongodb";
 import jwt from "jsonwebtoken";
-import md5 from "blueimp-md5";
 import { v4 as uuidv4 } from "uuid";
 
 export default function auth(req, res) {
@@ -46,7 +47,19 @@ export default function auth(req, res) {
     try {
       const newUser = generateUserModel(user);
       const db = await connect();
-      const signUp = await db.collection("users").insertOne(user);
+            console.log("req", newUser);
+      const signUp = await db.collection("users").insertOne(newUser);
+
+
+
+      //TODO - une verif de línsertion avant envoi de mail
+      sendConfirmationEmail(
+        newUser.lastName,
+        newUser.firstName,
+        newUser.email,
+        newUser.confirmationCode
+      );
+
       return res.status(201).json({ newUser });
     } catch (err) {
       console.log("POST USER ERROR");
@@ -58,6 +71,8 @@ export default function auth(req, res) {
   const generateConfimationCode = () => uuidv4();
 
   const generateUserModel = (user) => {
+    const { lastName, firstName, email, password } = user;
+    console.log(user);
     const newUser = {
       lastName,
       firstName,
@@ -75,6 +90,8 @@ export default function auth(req, res) {
       updatedAt: Date.now(),
       confirmationCode: generateConfimationCode(),
     };
+
+    return newUser;
   };
 
   const checkToken = async (token) => {
@@ -92,17 +109,20 @@ export default function auth(req, res) {
   };
 
   const getRoute = async (req, res) => {
-    const { credentials, refetchInterval } = req.body;
     const id = req.query.id;
     const token = req.body.headers?.Authorization
       ? req.body.headers.Authorization
       : null;
 
+    console.log(id);
     switch (id) {
       case "signIn":
+        const { credentials, refetchInterval } = req.body;
         return await signIn(credentials, refetchInterval);
       case "signUp":
-        return await signUp(token);
+        const { user } = req.body;
+        console.log(user);
+        return await signUp(user);
       case "checkToken":
         return await checkToken(token);
       default:
@@ -119,6 +139,21 @@ export default function auth(req, res) {
  *   post:
  *     tags : [users, auth]
  *     description: Permet à un utilisateur de s'inscrire
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               email:
+ *                 type: string
+ *               password:
+ *                 type: string
+ *               lastName:
+ *                 type: string
+ *               firstName:
+ *                 type: string
  *     responses:
  *       201:
  *         description: L'utilisateur a été crée
