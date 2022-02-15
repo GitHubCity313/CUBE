@@ -13,6 +13,7 @@ const AuthProvider = (props) => {
   const { refetchInterval, children } = props;
   // Les states sont les etats par defaut du contexte. Donc de base, personne n'est connecte + 0 infos
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isSignUpPending, setIsSignUpPending] = useState(false);
   const [token, setToken] = useState("");
   const [session, setSession] = useState({});
   // Je mets les rôles a part pour le moment
@@ -50,6 +51,7 @@ const AuthProvider = (props) => {
     // A l'arrivee sur la page, verifie le token present dans le local storage
     // S'il a expire, l'utilisateur est deconnecte
     const verifyToken = async () => authService.checkToken(token);
+    setIsSignUpPending(false);
 
     if (commonUtils.isValid(JSON.stringify(token))) {
       const check = async () => {
@@ -119,6 +121,7 @@ const AuthProvider = (props) => {
       console.log(encodedCredentials);
       const createUser = await authService.signUp(encodedCredentials);
       console.log(createUser);
+      return setIsSignUpPending(true)
     } catch (err) {
       if (err.response !== undefined) {
         // Recupere la reponse de l'API
@@ -197,6 +200,7 @@ const AuthProvider = (props) => {
       session,
       role,
       error,
+      isSignUpPending,
       fetchProfile: async () => await profile(),
       fetchLikes: async (arr) => await likes(arr),
       fetchEvents: async (arr) => await events(arr),
@@ -208,7 +212,7 @@ const AuthProvider = (props) => {
         await createAccount(user, callbackUrl),
       signOut: async (callbackUrl) => await logOut(callbackUrl),
     }),
-    [isAuthenticated, error]
+    [isAuthenticated, error, isSignUpPending]
   );
 
   console.log(error)

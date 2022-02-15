@@ -9,6 +9,7 @@ import {
   Button,
   Typography,
   useMediaQuery,
+  Alert,
 } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import Layout from "../components/Layout/Layout";
@@ -24,7 +25,7 @@ const Login = () => {
   const { signIn, error, resetError } = useContext(AuthContext);
   const [fields, setFields] = useState({ email: "", password: "" });
 
-  useEffect(() => resetError, [])
+  useEffect(() => resetError, []);
 
   // Met a jour le state qui controle la valeur des champs du formulaire
   // Et vide l'erreur histoire au'elle ne reste pas 15 ans apres modification
@@ -69,7 +70,11 @@ const Login = () => {
             <Stack spacing={3}>
               <Typography variant="h2">Connexion</Typography>
               {error !== "" && (
-                <Typography sx={{ color: "red" }} variant="caption">{error}</Typography>
+                <Alert severity="error">
+                  <Typography sx={{ color: "red" }} variant="caption">
+                    {error}
+                  </Typography>
+                </Alert>
               )}
               <TextField
                 id="email"
