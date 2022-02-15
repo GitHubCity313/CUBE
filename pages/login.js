@@ -94,7 +94,7 @@ const Login = () => {
                 </Button>
                 <Typography variant="caption" sx={{ p: 0.5 }}>
                   {`Pas de compte ? `}
-                  <Link href="/signIn">
+                  <Link href="/signUp">
                     <a>S'inscrire </a>
                   </Link>
                 </Typography>

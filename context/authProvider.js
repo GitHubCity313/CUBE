@@ -75,9 +75,9 @@ const AuthProvider = (props) => {
   }, [children]);
 
   const hashCredentials = (credentials) => {
-    const { email, password } = credentials;
+    const { password } = credentials;
     const encodedPass = md5(password);
-    const encodedCredentials = { email, password: encodedPass };
+    const encodedCredentials = { ...credentials, password: encodedPass };
     return encodedCredentials;
   };
 
@@ -86,7 +86,10 @@ const AuthProvider = (props) => {
     try {
       const encodedCredentials = hashCredentials(credentials);
       // Genere le token
-      const check = await authService.signIn(encodedCredentials, refetchInterval);
+      const check = await authService.signIn(
+        encodedCredentials,
+        refetchInterval
+      );
       const { token } = check.data;
       // Store l'info dans le local storage
       authService.store(token);
@@ -94,6 +97,25 @@ const AuthProvider = (props) => {
       getSession(token);
       // Redirige vers le callback souhaité
       return router.push(callbackUrl);
+    } catch (err) {
+      if (err.response !== undefined) {
+        // Recupere la reponse de l'API
+        const { message } = err.response.data;
+        // Actualise le state pour permettre de la recuperer depuis le front
+        setError(message);
+      } else {
+        // Si l'erreur attrapee n'est pas standard, affiche une erreur generique
+        setError("Une erreur est survenue");
+      }
+      return shutSession();
+    }
+  };
+
+    // Authentifie l'utilisateur -- Communiaue avec l'API pour generer un token
+  const createAccount = async (user, callbackUrl) => {
+    try {
+      const encodedCredentials = hashCredentials(user);
+
     } catch (err) {
       if (err.response !== undefined) {
         // Recupere la reponse de l'API
@@ -178,6 +200,8 @@ const AuthProvider = (props) => {
       resetError: () => setError(""),
       signIn: async (credentials, callbackUrl) =>
         await authenticate(credentials, callbackUrl),
+      signUp: async (credentials, callbackUrl) =>
+        await createAccount(user, callbackUrl),
       signOut: async (callbackUrl) => await logOut(callbackUrl),
     }),
     [isAuthenticated, error]

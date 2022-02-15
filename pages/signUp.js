@@ -1,8 +1,7 @@
-import React from "react";
-import PropTypes from "prop-types";
+import React, { useContext } from "react";
+import AuthContext from "../context/authContext";
 import {
   Grid,
-  Stack,
   TextField,
   Button,
   Typography,
@@ -14,9 +13,26 @@ import Layout from "../components/Layout/Layout";
 import Image from "next/image";
 import Logo from "../public/logoMini.svg";
 
-const SignIn = () => {
+const SignUp = () => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
+
+  // Ensuite, on recupere les infos qui nous interesse dans le contexte.
+  // Pour les connaitre -> GO context/authProvider -- En bas dans le useMemo
+  const { signUp, error, resetError } = useContext(AuthContext);
+  const [fields, setFields] = useState({
+    email: "",
+    password: "",
+    lastName: "",
+    firstName: "",
+  });
+
+  const updateField = (e) => {
+    if (error.length > 0) {
+      resetError();
+    }
+    return setFields({ ...fields, [e.target.id]: e.target.value });
+  };
 
   return (
     <Layout title="Cube | Sign In" withSidebar={false} withFooter>
@@ -67,6 +83,8 @@ const SignIn = () => {
                   label="Nom"
                   variant="filled"
                   required
+                  value={field.lastName}
+                  onChange={updateField}
                 />
               </Grid>
               <Grid item>
@@ -75,6 +93,8 @@ const SignIn = () => {
                   label="Prenom"
                   variant="filled"
                   required
+                  value={fields.firstName}
+                  onChange={updateField}
                 />
               </Grid>
               <Grid item>
@@ -83,6 +103,8 @@ const SignIn = () => {
                   label="Mot de passe"
                   variant="filled"
                   required
+                  value={fields.password}
+                  onChange={updateField}
                 />
               </Grid>
               <Grid item>
@@ -91,11 +113,15 @@ const SignIn = () => {
                   label="Adresse email "
                   variant="filled"
                   required
+                  value={fields.email}
+                  onChange={updateField}
                 />
               </Grid>
             </Grid>
             <Box sx={{ alignSelf: "end", pr: isMobile ? 0 : 3, mt: 4 }}>
-              <Button variant="bleuBtn">S'inscrire</Button>
+              <Button onClick={SignUp} variant="bleuBtn">
+                S'inscrire
+              </Button>
             </Box>
           </Grid>
         </Grid>
@@ -104,4 +130,4 @@ const SignIn = () => {
   );
 };
 
-export default SignIn;
+export default SignUp;
