@@ -1,6 +1,7 @@
 import clientPromise from "../../../lib/mongodb";
 import jwt from "jsonwebtoken";
 import md5 from "blueimp-md5";
+import { v4 as uuidv4 } from "uuid";
 
 export default function auth(req, res) {
   const connect = async () => {
@@ -18,7 +19,6 @@ export default function auth(req, res) {
         .find({ email, password })
         .toArray();
 
-      //TODO - Mise en place du hash
       if (user && user.length !== 0) {
         const { firstName, lastName, role, _id, profilePic } = user.shift();
         const token = jwt.sign(
@@ -42,37 +42,39 @@ export default function auth(req, res) {
     }
   };
 
-  const signUp = async (credentials, refetchInterval) => {
+  const signUp = async (user) => {
     try {
-      const { email, password } = credentials;
+      const newUser = generateUserModel(user);
       const db = await connect();
-      const user = await db
-        .collection("users")
-        .find({ email, password })
-        .toArray();
-
-      //TODO - Mise en place du hash
-      if (user && user.length !== 0) {
-        const { firstName, lastName, role, _id, profilePic } = user.shift();
-        const token = jwt.sign(
-          { data: { id: _id, firstName, lastName, role, profilePic } },
-          process.env.JWT_SECRET,
-          {
-            expiresIn: refetchInterval,
-          }
-        );
-
-        res.status(200).json({
-          token,
-        });
-      } else {
-        throw Error;
-      }
+      const signUp = await db.collection("users").insertOne(user);
+      return res.status(201).json({ newUser });
     } catch (err) {
-      return res
-        .status(401)
-        .json({ message: "Adresse mail ou mot de passe incorrect" });
+      console.log("POST USER ERROR");
+      console.log(err);
+      return res.status(404).json({ err });
     }
+  };
+
+  const generateConfimationCode = () => uuidv4();
+
+  const generateUserModel = (user) => {
+    const newUser = {
+      lastName,
+      firstName,
+      email,
+      password,
+      enabled: true,
+      profilePic: "",
+      seen: [],
+      hasEvents: [],
+      hasEventsCreated: [],
+      likes: [],
+      role: ObjectId("61e165463d88f191f3f4e0d4"),
+      isValidated: false,
+      createdAt: Date.now(),
+      updatedAt: Date.now(),
+      confirmationCode: generateConfimationCode(),
+    };
   };
 
   const checkToken = async (token) => {
