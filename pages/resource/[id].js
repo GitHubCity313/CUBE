@@ -40,7 +40,7 @@ export default function Resource({ resource, categories }) {
                 const matchedCategory = getMatchingCategories(resourceCategory, categories);
                 if(matchedCategory) {
                   return (
-                      <Chip label={matchedCategory} color="primary"/>
+                      <Chip key={resourceCategory._id} label={matchedCategory} color="primary"/>
                   )
                 }
               })
@@ -58,6 +58,7 @@ export default function Resource({ resource, categories }) {
             + Ajouter aux favoris
           </Fab>
         </Grid>
+
       </Grid>
     </Layout>
   );
