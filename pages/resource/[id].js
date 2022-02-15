@@ -50,7 +50,7 @@ export default function Resource({ resource, categories }) {
           <Stack direction="row" spacing={1} sx={{ ml : 1.2, mr : 1.2 }}>
             <div>
               Publié le{" "}
-            {resourceCreationDate.getDate()}/{resourceCreationDate.getMonth()}/{resourceCreationDate.getFullYear()}
+            {resourceCreationDate.getDate()}/{resourceCreationDate.getMonth()+1}/{resourceCreationDate.getFullYear()}
             </div>
           </Stack>
           <Fab size="small" variant="extended" color="primary">
