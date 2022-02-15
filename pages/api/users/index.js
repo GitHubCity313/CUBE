@@ -93,7 +93,7 @@ export default function users(req, res) {
  *       properties:
  *         id:
  *           type: uuid
- *           description: l'id de l"utilisateur.
+ *           description: l'id de l'utilisateur.
  *           example: trouver un truc
  *         lastName:
  *           type: string
@@ -151,6 +151,10 @@ export default function users(req, res) {
  *           type: date
  *           description: La date de mise à jour de la ressource.
  *           example: 1630792800
+ *         confirmationCode:
+ *           type: string
+ *           description: le code de confirmation a l'inscription
+ *           example: jfhgwsejhfgejshfgjhsegf
  */
 
 /**
