@@ -6,8 +6,11 @@ import Typography from "@mui/material/Typography";
 import apiService from "../../services/apiService";
 import Chip from "@mui/material/Chip";
 import {getMatchingCategories} from "../../utils";
+import Image from "next/image"
 
 export default function Resource({ resource, categories }) {
+  console.log("resource");
+  console.log(resource);
   const resourceCreationDate = new Date(resource.createdAt*1000);
   return (
     <Layout title={resource.name} withSidebar withFooter>
@@ -58,7 +61,17 @@ export default function Resource({ resource, categories }) {
             + Ajouter aux favoris
           </Fab>
         </Grid>
-
+        <Grid
+        container
+        sx={{mt: 2, mb: 2}}
+        >
+          <Image
+              src={resource.thumbnail.url}
+              alt={resource.thumbnail.alt}
+              width={900}
+              height={300}
+          />
+        </Grid>
       </Grid>
     </Layout>
   );
@@ -80,8 +93,6 @@ export async function getStaticProps({ params }) {
   try {
     const categoriesReq = await apiService.getItems("categories");
     categories = await categoriesReq.data.categories;
-    console.log("categories");
-    console.log(categories);
   } catch (e) {
     console.log(e);
   }
