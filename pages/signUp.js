@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import AuthContext from "../context/authContext";
 import {
   Grid,
@@ -17,6 +17,8 @@ import Logo from "../public/logoMini.svg";
 const SignUp = () => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
+
+  useEffect(() => resetError, []);
 
   // Ensuite, on recupere les infos qui nous interesse dans le contexte.
   // Pour les connaitre -> GO context/authProvider -- En bas dans le useMemo
@@ -73,6 +75,13 @@ const SignUp = () => {
           >
             <Box sx={{ alignSelf: "center" }}>
               <Typography variant="h2">Inscription</Typography>
+              {error !== "" && (
+                <Alert severity="error" sx={{ my: 2, px: 2 }}>
+                  <Typography sx={{ color: "red" }} variant="caption">
+                    {error}
+                  </Typography>
+                </Alert>
+              )}
             </Box>
             {isSignUpPending ? (
               <Alert severity="success">

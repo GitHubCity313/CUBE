@@ -52,17 +52,29 @@ export default function auth(req, res) {
       const newUser = generateUserModel(user);
       const db = await connect();
       console.log("req", newUser);
-      const signUp = await db.collection("users").insertOne(newUser);
+      const { email } = user;
+      const isEmailUnique = await db
+        .collection("users")
+        .find({ email })
+        .toArray();
 
-      //TODO - une verif de línsertion avant envoi de mail
-      sendConfirmationEmail(
-        newUser.lastName,
-        newUser.firstName,
-        newUser.email,
-        newUser.confirmationCode
-      );
+      if (isEmailUnique.length === 0) {
+        const signUp = await db.collection("users").insertOne(newUser);
 
-      return res.status(201).json({ newUser });
+        //TODO - une verif de línsertion avant envoi de mail
+        sendConfirmationEmail(
+          newUser.lastName,
+          newUser.firstName,
+          newUser.email,
+          newUser.confirmationCode
+        );
+
+        return res.status(201).json({ newUser });
+      } else {
+        return res
+          .status(409)
+          .json({ message: "Cette adresse email est deja utilisée" });
+      }
     } catch (err) {
       console.log("POST USER ERROR");
       console.log(err);
