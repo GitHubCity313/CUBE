@@ -101,9 +101,7 @@ const AuthProvider = (props) => {
     } catch (err) {
       if (err.response !== undefined) {
         // Recupere la reponse de l'API
-
         const { message } = err.response.data;
-        console.log(message);
         // Actualise le state pour permettre de la recuperer depuis le front
         setError(message);
       } else {
@@ -118,10 +116,10 @@ const AuthProvider = (props) => {
   const createAccount = async (user, callbackUrl) => {
     try {
       const encodedCredentials = hashCredentials(user);
-      console.log(encodedCredentials);
+
       const createUser = await authService.signUp(encodedCredentials);
-      console.log(createUser);
-      return setIsSignUpPending(true)
+
+      return setIsSignUpPending(true);
     } catch (err) {
       if (err.response !== undefined) {
         // Recupere la reponse de l'API
@@ -214,8 +212,6 @@ const AuthProvider = (props) => {
     }),
     [isAuthenticated, error, isSignUpPending]
   );
-
-  console.log(error)
 
   return (
     <AuthContext.Provider value={authData}>{children}</AuthContext.Provider>

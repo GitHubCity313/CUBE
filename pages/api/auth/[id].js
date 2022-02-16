@@ -51,7 +51,6 @@ export default function auth(req, res) {
     try {
       const newUser = generateUserModel(user);
       const db = await connect();
-      console.log("req", newUser);
       const { email } = user;
       const isEmailUnique = await db
         .collection("users")
@@ -86,7 +85,6 @@ export default function auth(req, res) {
 
   const generateUserModel = (user) => {
     const { lastName, firstName, email, password } = user;
-    console.log(user);
     const newUser = {
       lastName,
       firstName,
@@ -106,6 +104,32 @@ export default function auth(req, res) {
     };
 
     return newUser;
+  };
+
+  const confirmSignUp = async (id) => {
+    try {
+      const db = await connect();
+      const confirmationCode = id;
+      const filter = { confirmationCode };
+      const updatedUser = {
+        $set: {
+          confirmationCode: "",
+          isValidated: true,
+          updatedAt: Date.now(),
+        },
+      };
+      const update = await db
+        .collection("users")
+        .updateOne(filter, updatedUser);
+
+      res.writeHead(302, {
+        Location: "/welcome",
+      });
+
+      return res.end();
+    } catch (err) {
+      return res.status(404).json({ err });
+    }
   };
 
   const checkToken = async (token) => {
@@ -128,17 +152,18 @@ export default function auth(req, res) {
       ? req.body.headers.Authorization
       : null;
 
-    console.log(id);
     switch (id) {
       case "signIn":
         const { credentials, refetchInterval } = req.body;
         return await signIn(credentials, refetchInterval);
       case "signUp":
         const { user } = req.body;
-        console.log(user);
         return await signUp(user);
       case "checkToken":
         return await checkToken(token);
+      case "confirm":
+        const code = req.query.code;
+        return await confirmSignUp(code);
       default:
         return res.status(405).end(`Method ${req.method} Not Allowed`);
     }

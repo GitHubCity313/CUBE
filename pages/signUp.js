@@ -32,14 +32,11 @@ const SignUp = () => {
   });
 
   const updateField = (e) => {
-    console.log(e.target.id);
     if (error.length > 0) {
       resetError();
     }
     return setFields({ ...fields, [e.target.id]: e.target.value });
   };
-
-  console.log(isSignUpPending);
 
   return (
     <Layout title="Cube | Sign In" withSidebar={false} withFooter>
