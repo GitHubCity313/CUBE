@@ -18,19 +18,18 @@ export default function Sidebar() {
   return (
     <Box
       sx={{
-        position: "fixed",
-        top: 126,
-        p: 4,
+        mt: "126px",
         backgroundColor: "transparent",
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
-        justifyContent: "space-evenly",
-        height: "90vh",
+        justifyContent: "center",
+        height: "100vh",
+        width: "20vw",
       }}
     >
       {isAuthenticated && (
-        <Box>
+        <Box sx={{ p: 2 }}>
           <ListItem sx={{ mb: 2 }}>
             <Avatar
               alt={`${session?.firstName}`}
@@ -59,7 +58,7 @@ export default function Sidebar() {
           </Link>
         </Box>
       )}
-      <Box sx={{ marginBottom: "200px" }}>
+      <Box sx={{ p: 2 }}>
         {isAuthenticated ? (
           <Button
             variant="borderBtn"

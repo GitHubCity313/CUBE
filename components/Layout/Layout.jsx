@@ -22,21 +22,30 @@ const Layout = (props) => {
         maxWidth="xl"
         sx={{
           display: " flex",
-          flexDirection: "row",
-          justifyContent: "center",
-          alignItems: "center",
+          flexDirection: "column",
           backgroundColor: "#FBFBFB",
         }}
       >
         <Grid
           container
-          sx={{ minHeight: `calc(100vh - 16px)` }}
+          sx={{ minHeight: `calc(100vh - 20px)` }}
+          flexDirection="row"
           justifyContent="flex-end"
+          alignItems="end"
         >
           <Grid item xs={withSidebar && !isMobile ? 9 : 12}>
             {children}
+
+            <Grid
+              item
+              xs={withSidebar && 12}
+              sx={{
+                mt: 3,
+              }}
+            >
+              {withFooter && <Footer />}
+            </Grid>
           </Grid>
-          {withFooter && <Footer />}
         </Grid>
       </Container>
     </>

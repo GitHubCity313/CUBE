@@ -8,6 +8,7 @@ import {
   useMediaQuery,
   Box,
   Alert,
+  Stack,
 } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import Layout from "../components/Layout/Layout";
@@ -45,7 +46,6 @@ const SignUp = () => {
         flexDirection={isMobile ? "column" : "row"}
         justifyContent="center"
         alignItems="center"
-        sx={{ pt: 20 }}
       >
         <Grid item xs={12} md={4}>
           <Grid
@@ -70,16 +70,15 @@ const SignUp = () => {
             alignItems="center"
             pt={isMobile && 5}
           >
-            <Box sx={{ alignSelf: "center" }}>
+            <Stack flexDirection="center" alignItems="center">
               <Typography variant="h2">Inscription</Typography>
               {error !== "" && (
-                <Alert severity="error" sx={{ my: 2, px: 2 }}>
-                  <Typography sx={{ color: "red" }} variant="caption">
-                    {error}
-                  </Typography>
-                </Alert>
+                <Typography sx={{ color: "gov.red" }} variant="caption">
+                  {error}
+                </Typography>
               )}
-            </Box>
+            </Stack>
+
             {isSignUpPending ? (
               <Alert severity="success">
                 <Typography>
@@ -96,6 +95,7 @@ const SignUp = () => {
                   alignItems={"center"}
                   justifyContent={"space-around"}
                   rowSpacing={4}
+                  mt={1}
                 >
                   <Grid item>
                     <TextField

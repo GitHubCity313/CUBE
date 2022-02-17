@@ -43,7 +43,7 @@ const Login = () => {
         flexDirection={isMobile ? "column-reverse" : "row"}
         justifyContent="center"
         alignItems="center"
-        sx={{ mt: isMobile ? 12 : 16 }}
+        sx={{ mt: isMobile && 16 }}
       >
         <Grid item xs={12} md={6}>
           <Grid
@@ -67,7 +67,7 @@ const Login = () => {
             justifyContent="center"
             alignItems="center"
           >
-            <Stack spacing={3}>
+            <Stack spacing={2} sx={{ maxWidth: "300px" }}>
               <Typography variant="h2">Connexion</Typography>
               {error !== "" && (
                 <Alert severity="error">

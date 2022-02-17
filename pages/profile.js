@@ -64,7 +64,7 @@ export default function Profile() {
           alignItems="center"
           sx={{
             mt: "50vh",
-            color: "gov.mediumBlue",
+            color: "gov.mediumCumulus",
           }}
         >
           <CircularProgress color="inherit" />
@@ -76,7 +76,7 @@ export default function Profile() {
           alignItems="center"
           sx={{
             mt: "50vh",
-            backgroundColor: "gov.mediumBlue",
+            backgroundColor: "gov.lightTuile",
             color: "gov.white",
             p: 4,
             borderRadius: "8px",
@@ -88,7 +88,7 @@ export default function Profile() {
       )}
 
       {!isFetching && !fetchingError && (
-        <Grid container sx={{ mt: 20 }} spacing={2}>
+        <Grid container spacing={2}>
           <Grid item xs={12}>
             <Card sx={{ p: 3 }}>
               <CardContent>
