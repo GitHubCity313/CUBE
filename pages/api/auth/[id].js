@@ -3,6 +3,7 @@ import sendConfirmationEmail from "../../../lib/nodemailer";
 import { ObjectId } from "mongodb";
 import jwt from "jsonwebtoken";
 import { v4 as uuidv4 } from "uuid";
+import Joi from "joi";
 
 export default function auth(req, res) {
   const connect = async () => {
@@ -57,10 +58,11 @@ export default function auth(req, res) {
         .find({ email })
         .toArray();
 
-      if (isEmailUnique.length === 0) {
-        const signUp = await db.collection("users").insertOne(newUser);
+      const emailIsValid = await validateEmail(email);
+      console.log(emailIsValid);
+      if (isEmailUnique.length === 0 && emailIsValid === email) {
+        await db.collection("users").insertOne(newUser);
 
-        //TODO - une verif de línsertion avant envoi de mail
         sendConfirmationEmail(
           newUser.lastName,
           newUser.firstName,
@@ -70,14 +72,36 @@ export default function auth(req, res) {
 
         return res.status(201).json({ newUser });
       } else {
-        return res
-          .status(409)
-          .json({ message: "Cette adresse email est deja utilisée" });
+        if (emailIsValid !== email) {
+          return res
+            .status(400)
+            .json({ message: "Une adresse email valide est requise" });
+        } else {
+          return res
+            .status(409)
+            .json({ message: "Cette adresse email est deja utilisée" });
+        }
       }
     } catch (err) {
       console.log("POST USER ERROR");
       console.log(err);
       return res.status(404).json({ err });
+    }
+  };
+
+  // Bon, dans un monde parfait, c'est dans un middleware mais bon hein
+  const validateEmail = async (email) => {
+    const emailSchema = Joi.object({
+      email: Joi.string().email({
+        minDomainSegments: 2,
+        tlds: { allow: ["com", "net"] },
+      }),
+    });
+
+    try {
+      return await emailSchema.validateAsync({ email });
+    } catch (err) {
+      return err;
     }
   };
 
