@@ -60,7 +60,7 @@ export default function auth(req, res) {
 
       const emailIsValid = await validateEmail(email);
       console.log(emailIsValid);
-      if (isEmailUnique.length === 0 && emailIsValid === email) {
+      if (isEmailUnique.length === 0 && emailIsValid.email === email) {
         await db.collection("users").insertOne(newUser);
 
         sendConfirmationEmail(
