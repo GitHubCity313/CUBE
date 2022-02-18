@@ -4,6 +4,7 @@ const authService = {
   // API
   signIn: (credentials, refetchInterval) =>
     axiosInstance.post(`/auth/signIn`, { credentials, refetchInterval }),
+  signUp: (user) => axiosInstance.post(`/auth/signUp`, { user }),
   signOut: (token) =>
     axiosInstance.post(`/auth/signOut`, {
       headers: { Authorization: `Bearer ${token}` },

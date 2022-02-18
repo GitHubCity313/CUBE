@@ -14,7 +14,7 @@ export default function Home({ resources, categories, resourceTypes }) {
       <Grid container flexDirection="column">
         <Grid
           container
-          sx={{ ml: 3, mt: 22, pb: 3, borderBottom: "1px solid #E5E5E5" }}
+          sx={{ ml: 3, pb: 3, borderBottom: "1px solid #E5E5E5" }}
           alignItems="center"
         >
           <Typography sx={{ pr: 2, color: "gov.blue" }}>Filtrer par</Typography>

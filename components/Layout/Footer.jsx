@@ -24,8 +24,8 @@ export default function Footer() {
     >
       <Box
         display="flex"
-        justifyContent="space-between"
-        px={20}
+        justifyContent={isMobile ? "center" : "space-between"}
+        px={!isMobile && 20}
         pb={3}
         alignItems="center"
         width="100%"
@@ -41,8 +41,10 @@ export default function Footer() {
           />
         )}
 
-        <Box item display="flex" flexDirection="column" alignItems="flex-start">
-          <Typography textAlign="left">Sites associés</Typography>
+        <Box item display="flex" flexDirection="column">
+          <Typography textAlign={isMobile ? "center" : "left"}>
+            Sites associés
+          </Typography>
 
           <ListItem sx={{ p: 0 }}>
             <ListItemText secondary="http://www.service-public.fr/" />
@@ -56,12 +58,13 @@ export default function Footer() {
         </Box>
       </Box>
       <Grid
-        width={isMobile ? "100%" : "60%"}
+        width={"100%"}
         display="flex"
         justifyContent="center"
         alignItems="center"
+        pt={1}
       >
-        <ListItem sx={{ p: 0 }}>
+        <ListItem sx={{ pt: 0 }}>
           <ListItemText secondary="Plan du site" sx={{ textAlign: "center" }} />
         </ListItem>
         <ListItem sx={{ p: 0 }}>

@@ -1,5 +1,5 @@
 // Pour appeler un contexte, on importe le useContext de React
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 // Et le contexte aue l'on souhaite consommer (il peut en avoir plus d'un)
 import AuthContext from "../context/authContext";
 import {
@@ -9,6 +9,7 @@ import {
   Button,
   Typography,
   useMediaQuery,
+  Alert,
 } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import Layout from "../components/Layout/Layout";
@@ -23,6 +24,8 @@ const Login = () => {
   // Pour les connaitre -> GO context/authProvider -- En bas dans le useMemo
   const { signIn, error, resetError } = useContext(AuthContext);
   const [fields, setFields] = useState({ email: "", password: "" });
+
+  useEffect(() => resetError, []);
 
   // Met a jour le state qui controle la valeur des champs du formulaire
   // Et vide l'erreur histoire au'elle ne reste pas 15 ans apres modification
@@ -40,7 +43,7 @@ const Login = () => {
         flexDirection={isMobile ? "column-reverse" : "row"}
         justifyContent="center"
         alignItems="center"
-        sx={{ mt: isMobile ? 12 : 16 }}
+        sx={{ mt: isMobile && 16 }}
       >
         <Grid item xs={12} md={6}>
           <Grid
@@ -64,10 +67,14 @@ const Login = () => {
             justifyContent="center"
             alignItems="center"
           >
-            <Stack spacing={3}>
+            <Stack spacing={2} sx={{ maxWidth: "300px" }}>
               <Typography variant="h2">Connexion</Typography>
-              {error !== null && (
-                <Typography sx={{ color: "red" }}>{error}</Typography>
+              {error !== "" && (
+                <Alert severity="error">
+                  <Typography sx={{ color: "red" }} variant="caption">
+                    {error}
+                  </Typography>
+                </Alert>
               )}
               <TextField
                 id="email"
@@ -94,7 +101,7 @@ const Login = () => {
                 </Button>
                 <Typography variant="caption" sx={{ p: 0.5 }}>
                   {`Pas de compte ? `}
-                  <Link href="/signIn">
+                  <Link href="/signUp">
                     <a>S'inscrire </a>
                   </Link>
                 </Typography>

@@ -5,7 +5,7 @@ import authService from "../services/authService";
 import commonUtils from "../utils/commonUtils";
 import jwt from "jsonwebtoken";
 import apiService from "../services/apiService";
-import { LoopOutlined } from "@mui/icons-material";
+import md5 from "blueimp-md5";
 
 // Welcome to the context o/
 const AuthProvider = (props) => {
@@ -13,6 +13,7 @@ const AuthProvider = (props) => {
   const { refetchInterval, children } = props;
   // Les states sont les etats par defaut du contexte. Donc de base, personne n'est connecte + 0 infos
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isSignUpPending, setIsSignUpPending] = useState(false);
   const [token, setToken] = useState("");
   const [session, setSession] = useState({});
   // Je mets les rôles a part pour le moment
@@ -38,7 +39,6 @@ const AuthProvider = (props) => {
     setRole("");
     setSession({});
     setToken("");
-    setError("");
     return setIsAuthenticated(false);
   }, []);
 
@@ -51,6 +51,7 @@ const AuthProvider = (props) => {
     // A l'arrivee sur la page, verifie le token present dans le local storage
     // S'il a expire, l'utilisateur est deconnecte
     const verifyToken = async () => authService.checkToken(token);
+    setIsSignUpPending(false);
 
     if (commonUtils.isValid(JSON.stringify(token))) {
       const check = async () => {
@@ -74,11 +75,22 @@ const AuthProvider = (props) => {
     }
   }, [children]);
 
+  const hashCredentials = (credentials) => {
+    const { password } = credentials;
+    const encodedPass = md5(password);
+    const encodedCredentials = { ...credentials, password: encodedPass };
+    return encodedCredentials;
+  };
+
   // Authentifie l'utilisateur -- Communiaue avec l'API pour generer un token
   const authenticate = async (credentials, callbackUrl) => {
     try {
+      const encodedCredentials = hashCredentials(credentials);
       // Genere le token
-      const check = await authService.signIn(credentials, refetchInterval);
+      const check = await authService.signIn(
+        encodedCredentials,
+        refetchInterval
+      );
       const { token } = check.data;
       // Store l'info dans le local storage
       authService.store(token);
@@ -90,6 +102,29 @@ const AuthProvider = (props) => {
       if (err.response !== undefined) {
         // Recupere la reponse de l'API
         const { message } = err.response.data;
+        // Actualise le state pour permettre de la recuperer depuis le front
+        setError(message);
+      } else {
+        // Si l'erreur attrapee n'est pas standard, affiche une erreur generique
+        setError("Une erreur est survenue");
+      }
+      return shutSession();
+    }
+  };
+
+  // Authentifie l'utilisateur -- Communiaue avec l'API pour generer un token
+  const createAccount = async (user, callbackUrl) => {
+    try {
+      const encodedCredentials = hashCredentials(user);
+
+      const createUser = await authService.signUp(encodedCredentials);
+
+      return setIsSignUpPending(true);
+    } catch (err) {
+      if (err.response !== undefined) {
+        // Recupere la reponse de l'API
+        const { message } = err.response.data;
+
         // Actualise le state pour permettre de la recuperer depuis le front
         setError(message);
       } else {
@@ -163,6 +198,7 @@ const AuthProvider = (props) => {
       session,
       role,
       error,
+      isSignUpPending,
       fetchProfile: async () => await profile(),
       fetchLikes: async (arr) => await likes(arr),
       fetchEvents: async (arr) => await events(arr),
@@ -170,9 +206,11 @@ const AuthProvider = (props) => {
       resetError: () => setError(""),
       signIn: async (credentials, callbackUrl) =>
         await authenticate(credentials, callbackUrl),
+      signUp: async (user, callbackUrl) =>
+        await createAccount(user, callbackUrl),
       signOut: async (callbackUrl) => await logOut(callbackUrl),
     }),
-    [isAuthenticated, error]
+    [isAuthenticated, error, isSignUpPending]
   );
 
   return (

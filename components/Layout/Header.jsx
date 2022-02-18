@@ -70,7 +70,11 @@ const Header = (props) => {
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
   return (
     <Box sx={{ flexGrow: 1 }}>
-      <AppBar variant="header" position="fixed">
+      <AppBar
+        variant="header"
+        position="fixed"
+        sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}
+      >
         <Toolbar>
           <Box sx={{ cursor: "pointer" }}>
             <Link href="/">
@@ -113,7 +117,7 @@ const Header = (props) => {
         </Toolbar>
       </AppBar>
       {withSidebar && !isMobile && (
-        <Drawer variant="permanent">
+        <Drawer variant="permanent" sx={{ backgroundColor: "transparent" }}>
           <Sidebar />
         </Drawer>
       )}

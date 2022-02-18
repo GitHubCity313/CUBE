@@ -31,7 +31,16 @@ const theme = createTheme({
     gov: {
       blue: "#000091",
       white: "#FFFFFF",
-      mediumBlue: "#176fc5"
+      red: "#E1000F",
+      mediumCumulus: "#7AB18E",
+      lightCumulus: "#417DC4",
+      darkCumulus: "#3558A2",
+      mediumMenthe: "#009081",
+      lightMenthe: "#21ABBE",
+      darkMenthe: "#37635F",
+      mediumTuile: "#CE614A",
+      lightTuile: "#FF9575",
+      darkTuile: "#AD4847",
     },
     secondary: {
       main: "#EEEEEE",
@@ -234,6 +243,24 @@ const theme = createTheme({
           },
         },
       ],
+    },
+    MuiAlert: {
+      styleOverrides: {
+        // Name of the slot
+        standardSuccess: {
+          backgroundColor: "#21ABBE",
+          "& svg": {
+            color: "white",
+          },
+        },
+        standardError: {
+          backgroundColor: "#FFB7AE",
+          color: "#8D533E",
+          "& svg": {
+            color: "#E1000F",
+          },
+        },
+      },
     },
     MuiSearch: {
       variants: [

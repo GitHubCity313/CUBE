@@ -1,5 +1,9 @@
 import clientPromise from "../../../lib/mongodb";
+import sendConfirmationEmail from "../../../lib/nodemailer";
+import { ObjectId } from "mongodb";
 import jwt from "jsonwebtoken";
+import { v4 as uuidv4 } from "uuid";
+import Joi from "joi";
 
 export default function auth(req, res) {
   const connect = async () => {
@@ -8,6 +12,7 @@ export default function auth(req, res) {
     return db;
   };
 
+  //TODO - Ptite refacto la
   const signIn = async (credentials, refetchInterval) => {
     try {
       const { email, password } = credentials;
@@ -17,7 +22,7 @@ export default function auth(req, res) {
         .find({ email, password })
         .toArray();
 
-      if (user && user.length !== 0) {
+      if (user.length !== 0 && user[0].isValidated) {
         const { firstName, lastName, role, _id, profilePic } = user.shift();
         const token = jwt.sign(
           { data: { id: _id, firstName, lastName, role, profilePic } },
@@ -26,17 +31,128 @@ export default function auth(req, res) {
             expiresIn: refetchInterval,
           }
         );
-
         res.status(200).json({
           token,
         });
       } else {
-        throw Error;
+        if (!user[0].isValidated) {
+          return res.status(401).json({
+            message: "Vous devez vérifier votre compte avant de vous connecter",
+          });
+        }
       }
     } catch (err) {
       return res
         .status(404)
         .json({ message: "Adresse mail ou mot de passe incorrect" });
+    }
+  };
+
+  const signUp = async (user) => {
+    try {
+      const newUser = generateUserModel(user);
+      const db = await connect();
+      const { email } = user;
+      const isEmailUnique = await db
+        .collection("users")
+        .find({ email })
+        .toArray();
+
+      const emailIsValid = await validateEmail(email);
+      console.log(emailIsValid);
+      if (isEmailUnique.length === 0 && emailIsValid.email === email) {
+        await db.collection("users").insertOne(newUser);
+
+        sendConfirmationEmail(
+          newUser.lastName,
+          newUser.firstName,
+          newUser.email,
+          newUser.confirmationCode
+        );
+
+        return res.status(201).json({ newUser });
+      } else {
+        if (emailIsValid !== email) {
+          return res
+            .status(400)
+            .json({ message: "Une adresse email valide est requise" });
+        } else {
+          return res
+            .status(409)
+            .json({ message: "Cette adresse email est deja utilisée" });
+        }
+      }
+    } catch (err) {
+      console.log("POST USER ERROR");
+      console.log(err);
+      return res.status(404).json({ err });
+    }
+  };
+
+  // Bon, dans un monde parfait, c'est dans un middleware mais bon hein
+  const validateEmail = async (email) => {
+    const emailSchema = Joi.object({
+      email: Joi.string().email({
+        minDomainSegments: 2,
+        tlds: { allow: ["com", "net"] },
+      }),
+    });
+
+    try {
+      return await emailSchema.validateAsync({ email });
+    } catch (err) {
+      return err;
+    }
+  };
+
+  const generateConfimationCode = () => uuidv4();
+
+  const generateUserModel = (user) => {
+    const { lastName, firstName, email, password } = user;
+    const newUser = {
+      lastName,
+      firstName,
+      email,
+      password,
+      enabled: true,
+      profilePic: "",
+      seen: [],
+      hasEvents: [],
+      hasEventsCreated: [],
+      likes: [],
+      role: ObjectId("61e165463d88f191f3f4e0d4"),
+      isValidated: false,
+      createdAt: Date.now(),
+      updatedAt: Date.now(),
+      confirmationCode: generateConfimationCode(),
+    };
+
+    return newUser;
+  };
+
+  const confirmSignUp = async (id) => {
+    try {
+      const db = await connect();
+      const confirmationCode = id;
+      const filter = { confirmationCode };
+      const updatedUser = {
+        $set: {
+          confirmationCode: "",
+          isValidated: true,
+          updatedAt: Date.now(),
+        },
+      };
+      const update = await db
+        .collection("users")
+        .updateOne(filter, updatedUser);
+
+      res.writeHead(302, {
+        Location: "/welcome",
+      });
+
+      return res.end();
+    } catch (err) {
+      return res.status(404).json({ err });
     }
   };
 
@@ -55,7 +171,6 @@ export default function auth(req, res) {
   };
 
   const getRoute = async (req, res) => {
-    const { credentials, refetchInterval } = req.body;
     const id = req.query.id;
     const token = req.body.headers?.Authorization
       ? req.body.headers.Authorization
@@ -63,9 +178,16 @@ export default function auth(req, res) {
 
     switch (id) {
       case "signIn":
+        const { credentials, refetchInterval } = req.body;
         return await signIn(credentials, refetchInterval);
+      case "signUp":
+        const { user } = req.body;
+        return await signUp(user);
       case "checkToken":
         return await checkToken(token);
+      case "confirm":
+        const code = req.query.code;
+        return await confirmSignUp(code);
       default:
         return res.status(405).end(`Method ${req.method} Not Allowed`);
     }
@@ -73,3 +195,63 @@ export default function auth(req, res) {
 
   return getRoute(req, res);
 }
+
+/**
+ * @swagger
+ * /auth/signUp:
+ *   post:
+ *     tags : [users, auth]
+ *     description: Permet à un utilisateur de s'inscrire
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               email:
+ *                 type: string
+ *               password:
+ *                 type: string
+ *               lastName:
+ *                 type: string
+ *               firstName:
+ *                 type: string
+ *     responses:
+ *       201:
+ *         description: L'utilisateur a été crée
+ *       404:
+ *         description: Echec de la requête.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *             example:
+ *               message: "Erreur lors de l'inscription"
+ * /auth/signIn:
+ *   post:
+ *     tags : [users, auth]
+ *     description: Permet à un utilisateur de se connecter
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               email:
+ *                 type: string
+ *               password:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: L'utilisateur a été crée
+ *       401:
+ *         description: Echec de la requête.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *             example:
+ *               message: "Adresse mail ou mot de passe incorrect"
+ */
