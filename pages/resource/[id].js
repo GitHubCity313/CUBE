@@ -1,7 +1,7 @@
 import React from "react";
 import Layout from "../../components/Layout/Layout";
 import PropTypes from "prop-types";
-import {Breadcrumbs, Divider, Fab, Grid, Link, Stack} from "@mui/material";
+import {Breadcrumbs, Divider, Fab, Grid, Link, Stack, TextareaAutosize} from "@mui/material";
 import Typography from "@mui/material/Typography";
 import apiService from "../../services/apiService";
 import Chip from "@mui/material/Chip";
@@ -83,6 +83,26 @@ export default function Resource({ resource, categories, contents }) {
               )
             })
           }
+        </Grid>
+        <Grid
+            container
+            sx={{mt: 2}}
+            flexDirection="column"
+        >
+          <Typography variant="h6">Poster un commentaire</Typography>
+          <TextareaAutosize
+          aria-label="Laisser un commentaire"
+          minRows={3}
+          placeholder="Veuillez vous connecter pour laisser un commentaire"
+          style={{ width: "80%" }}
+          />
+          <Grid
+              sx={{mt: 1}}
+          >
+            <Fab size="small" variant="extended" color="primary">
+              Envoyer
+            </Fab>
+          </Grid>
         </Grid>
       </Grid>
     </Layout>
