@@ -8,10 +8,9 @@ import Chip from "@mui/material/Chip";
 import {getMatchingCategories} from "../../utils";
 import Image from "next/image"
 
-export default function Resource({ resource, categories }) {
-  console.log("resource");
-  console.log(resource);
+export default function Resource({ resource, categories, contents }) {
   const resourceCreationDate = new Date(resource.createdAt*1000);
+
   return (
     <Layout title={resource.name} withSidebar withFooter>
       <Grid
@@ -72,6 +71,19 @@ export default function Resource({ resource, categories }) {
               height={300}
           />
         </Grid>
+        <Grid
+          container
+          >
+          {
+            contents.content.map((content) => {
+              return(
+                  <div key={content.value} className={content.type}>
+                    {content.value}
+                  </div>
+              )
+            })
+          }
+        </Grid>
       </Grid>
     </Layout>
   );
@@ -97,10 +109,20 @@ export async function getStaticProps({ params }) {
     console.log(e);
   }
 
+  let contents = [];
+
+  try {
+    const contentsReq = await apiService.getItem("contents", resource.contentId);
+    contents = await contentsReq.data.content[0];
+  } catch (e) {
+    console.log(e);
+  }
+
   return {
     props: {
       resource,
-      categories
+      categories,
+      contents
     },
   };
 }
@@ -120,5 +142,6 @@ export async function getStaticPaths() {
 
 Resource.propTypes = {
   resource: PropTypes.object,
-  categories: PropTypes.array
+  categories: PropTypes.array,
+  contents: PropTypes.object
 }
