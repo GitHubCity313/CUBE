@@ -128,7 +128,7 @@ export default function Resource({ resource, categories, contents, comments, res
                     <Grid
                       container
                       >
-                      {updatedAtDate ?
+                      {!(isNaN(updatedAtDate.getDate())) ?
                           `Mis à jour le 
                           ${updatedAtDate.getDate()}/${updatedAtDate.getMonth()+1}/${updatedAtDate.getFullYear()}
                           à 
