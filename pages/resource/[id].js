@@ -222,6 +222,20 @@ export default function Resource({
             );
           })}
         </Grid>
+        <Grid container sx={{ mt: 2 }} flexDirection="column">
+          <Typography variant="h6">Poster un commentaire</Typography>
+          <TextareaAutosize
+            aria-label="Laisser un commentaire"
+            minRows={3}
+            placeholder="Veuillez vous connecter pour laisser un commentaire"
+            style={{ width: "80%" }}
+          />
+          <Grid sx={{ mt: 1 }}>
+            <Fab size="small" variant="extended" color="primary">
+              Envoyer
+            </Fab>
+          </Grid>
+        </Grid>
       </Grid>
     </Layout>
   );
