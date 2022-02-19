@@ -178,6 +178,41 @@ export default function Resource({
             </Fab>
           </Grid>
         </Grid>
+        <Grid sx={{ mt: 2 }} flexDirection="column">
+          <Typography variant="h3">Commentaires</Typography>
+          {comments.map((comment) => {
+            if (!comment.isModerated) {
+              const createdAtDate = new Date(comment.createdAt * 1000);
+              const updatedAtDate = new Date(comment.updatedAt * 1000);
+              // console.log("comment.updateAt");
+              // console.log(comment.updatedAt);
+              // console.log(updatedAtDate);
+              return (
+                <Paper key={comment._id} elevation={6} sx={{ p: 2 }}>
+                  <Image src={commentIcone} />
+                  <Typography variant="h4">{comment.title}</Typography>
+                  <Typography variant="subtitle1">{comment.author}</Typography>
+                  <Typography variant="body1">« {comment.value} »</Typography>
+                  <Grid container>
+                    {updatedAtDate
+                      ? `Mis à jour le 
+                          ${updatedAtDate.getDate()}/${
+                          updatedAtDate.getMonth() + 1
+                        }/${updatedAtDate.getFullYear()}
+                          à 
+                          ${updatedAtDate.getHours()}:${updatedAtDate.getMinutes()}`
+                      : `Écrit le 
+                          ${createdAtDate.getDate()}/${
+                          createdAtDate.getMonth() + 1
+                        }/${createdAtDate.getFullYear()}
+                          à 
+                          ${createdAtDate.getHours()}:${createdAtDate.getMinutes()}`}
+                  </Grid>
+                </Paper>
+              );
+            }
+          })}
+        </Grid>
       </Grid>
     </Layout>
   );
