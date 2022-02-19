@@ -11,9 +11,7 @@ import commentIcone from "../../public/icones/commentIcone.svg";
 
 export default function Resource({ resource, categories, contents, comments, resourceAuthor }) {
   const resourceCreationDate = new Date(resource.createdAt*1000);
-  console.log("comments");
-  console.log(typeof comments);
-  console.log(comments);
+  const resourceUpdatedDate = new Date(resource.updatedAt*1000);
   return (
     <Layout title={resource.name} withSidebar withFooter>
       <Grid
@@ -54,8 +52,19 @@ export default function Resource({ resource, categories, contents, comments, res
           <Divider orientation="vertical" flexItem />
           <Stack direction="row" spacing={1} sx={{ ml : 1.2, mr : 1.2 }}>
             <div>
-              Publié le{" "}
-            {resourceCreationDate.getDate()}/{resourceCreationDate.getMonth()+1}/{resourceCreationDate.getFullYear()}
+              {
+                isNaN(resourceUpdatedDate.getDate()) ?
+                    `Publié le
+                    ${resourceCreationDate.getDate()}/${resourceCreationDate.getMonth() + 1}/`+
+                        `${resourceCreationDate.getFullYear()}`
+                    :
+                    `Mis à jour le
+                    ${resourceUpdatedDate.getDate()}/${resourceUpdatedDate.getMonth() + 1}/`+
+                        `${resourceUpdatedDate.getFullYear()}`
+              }
+              {
+                ` par ${resourceAuthor.firstName} ${resourceAuthor.lastName}`
+              }
             </div>
           </Stack>
           <Fab size="small" variant="extended" color="primary">
@@ -192,8 +201,6 @@ export async function getStaticProps({ params }) {
       } catch (e) {
         console.log(e);
       }
-      console.log("comment inside try getStaticProps");
-      console.log(comment);
     })
   } catch (e) {
     console.log(e);
@@ -203,7 +210,7 @@ export async function getStaticProps({ params }) {
 
   try {
     const userReq = await apiService.getItem("users", resource.author);
-    resourceAuthor = await userReq.data.user;
+    resourceAuthor = await userReq.data.user[0];
   } catch (e) {
     console.log(e);
   }
