@@ -1,16 +1,19 @@
 import React from "react";
 import Layout from "../../components/Layout/Layout";
 import PropTypes from "prop-types";
-import {Breadcrumbs, Divider, Fab, Grid, Link, Stack, TextareaAutosize} from "@mui/material";
+import {Breadcrumbs, Divider, Fab, Grid, Link, Paper, Stack, TextareaAutosize} from "@mui/material";
 import Typography from "@mui/material/Typography";
 import apiService from "../../services/apiService";
 import Chip from "@mui/material/Chip";
 import {getMatchingCategories} from "../../utils";
 import Image from "next/image"
+import commentIcone from "../../public/icones/commentIcone.svg";
 
-export default function Resource({ resource, categories, contents }) {
+export default function Resource({ resource, categories, contents, comments, resourceAuthor }) {
   const resourceCreationDate = new Date(resource.createdAt*1000);
-
+  console.log("comments");
+  console.log(typeof comments);
+  console.log(comments);
   return (
     <Layout title={resource.name} withSidebar withFooter>
       <Grid
@@ -104,6 +107,42 @@ export default function Resource({ resource, categories, contents }) {
             </Fab>
           </Grid>
         </Grid>
+        <Grid
+            sx={{mt: 2}}
+            flexDirection="column"
+        >
+          <Typography variant="h3">Commentaires</Typography>
+          {comments.map((comment) => {
+            if (!comment.isModerated){
+              const createdAtDate = new Date(comment.createdAt*1000);
+              const updatedAtDate = new Date(comment.updatedAt*1000);
+              // console.log("comment.updateAt");
+              // console.log(comment.updatedAt);
+              // console.log(updatedAtDate);
+              return (
+                  <Paper key={comment._id} elevation={6} sx={{p:2}}>
+                    <Image src={commentIcone} />
+                    <Typography variant="h4">{comment.title}</Typography>
+                    <Typography variant="subtitle1">{comment.author}</Typography>
+                    <Typography variant="body1">« {comment.value} »</Typography>
+                    <Grid
+                      container
+                      >
+                      {updatedAtDate ?
+                          `Mis à jour le 
+                          ${updatedAtDate.getDate()}/${updatedAtDate.getMonth()+1}/${updatedAtDate.getFullYear()}
+                          à 
+                          ${updatedAtDate.getHours()}:${updatedAtDate.getMinutes()}`
+                          :`Écrit le 
+                          ${createdAtDate.getDate()}/${createdAtDate.getMonth()+1}/${createdAtDate.getFullYear()}
+                          à 
+                          ${createdAtDate.getHours()}:${createdAtDate.getMinutes()}`}
+                    </Grid>
+                  </Paper>
+              )
+            }
+          })}
+        </Grid>
       </Grid>
     </Layout>
   );
@@ -138,11 +177,45 @@ export async function getStaticProps({ params }) {
     console.log(e);
   }
 
+  let comments = [];
+  let formatedComments = {};
+  try {
+    const commentsReq = await apiService.getItem("comments", resource._id);
+    comments = await commentsReq.data.comments;
+    comments.map(async (comment) => {
+      let user = {};
+      try {
+        const authorReq = await apiService.getItem("users", comment.author);
+        user = authorReq.data.user[0];
+        formatedComments = comment;
+        formatedComments.authorId = user._id;
+        formatedComments.author = `${user.firstName} ${user.lastName}`;
+      } catch (e) {
+        console.log(e);
+      }
+      console.log("comment inside try getStaticProps");
+      console.log(comment);
+    })
+  } catch (e) {
+    console.log(e);
+  }
+
+  let resourceAuthor = [];
+
+  try {
+    const userReq = await apiService.getItem("users", resource.author);
+    resourceAuthor = await userReq.data.user;
+  } catch (e) {
+    console.log(e);
+  }
+
   return {
     props: {
       resource,
       categories,
-      contents
+      contents,
+      comments,
+      resourceAuthor
     },
   };
 }
@@ -163,5 +236,7 @@ export async function getStaticPaths() {
 Resource.propTypes = {
   resource: PropTypes.object,
   categories: PropTypes.array,
-  contents: PropTypes.object
+  contents: PropTypes.object,
+  comments: PropTypes.array,
+  resourceAuthor: PropTypes.object
 }
