@@ -116,9 +116,6 @@ export default function Resource({ resource, categories, contents, comments, res
             if (!comment.isModerated){
               const createdAtDate = new Date(comment.createdAt*1000);
               const updatedAtDate = new Date(comment.updatedAt*1000);
-              // console.log("comment.updateAt");
-              // console.log(comment.updatedAt);
-              // console.log(updatedAtDate);
               return (
                   <Paper key={comment._id} elevation={6} sx={{p:2}}>
                     <Image src={commentIcone} />
@@ -179,6 +176,8 @@ export async function getStaticProps({ params }) {
 
   let comments = [];
   let formatedComments = {};
+  //updating the comments object from mongo : adding the name and forname of the author in a formated string .author
+  //keeping the comment'author'user'id in .authorId
   try {
     const commentsReq = await apiService.getItem("comments", resource._id);
     comments = await commentsReq.data.comments;
