@@ -155,6 +155,15 @@ export default function Resource({
             }
           })}
         </Grid>
+        <Grid container>
+          {contents.content.map((content) => {
+            return (
+              <div key={content.value} className={content.type}>
+                {content.value}
+              </div>
+            );
+          })}
+        </Grid>
       </Grid>
     </Layout>
   );
