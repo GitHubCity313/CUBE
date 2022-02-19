@@ -12,6 +12,16 @@ import commentIcone from "../../public/icones/commentIcone.svg";
 export default function Resource({ resource, categories, contents, comments, resourceAuthor }) {
   const resourceCreationDate = new Date(resource.createdAt*1000);
   const resourceUpdatedDate = new Date(resource.updatedAt*1000);
+  const dateFormatOptions = {
+    weekday: "long",
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+    hour: "numeric",
+    minute: "numeric"
+  };
+  const formatedCreatedDate = resourceCreationDate.toLocaleString("fr-FR", dateFormatOptions);
+  const formatedUpdatedDate = resourceUpdatedDate.toLocaleString("fr-FR", dateFormatOptions);
   return (
     <Layout title={resource.name} withSidebar withFooter>
       <Grid
@@ -55,12 +65,10 @@ export default function Resource({ resource, categories, contents, comments, res
               {
                 isNaN(resourceUpdatedDate.getDate()) ?
                     `Publié le
-                    ${resourceCreationDate.getDate()}/${resourceCreationDate.getMonth() + 1}/`+
-                        `${resourceCreationDate.getFullYear()}`
+                    ${formatedCreatedDate}`
                     :
                     `Mis à jour le
-                    ${resourceUpdatedDate.getDate()}/${resourceUpdatedDate.getMonth() + 1}/`+
-                        `${resourceUpdatedDate.getFullYear()}`
+                    ${formatedUpdatedDate}`
               }
               {
                 ` par ${resourceAuthor.firstName} ${resourceAuthor.lastName}`
@@ -125,6 +133,8 @@ export default function Resource({ resource, categories, contents, comments, res
             if (!comment.isModerated){
               const createdAtDate = new Date(comment.createdAt*1000);
               const updatedAtDate = new Date(comment.updatedAt*1000);
+              const formatedCreatedDate = createdAtDate.toLocaleString("fr-FR", dateFormatOptions)
+              const formatedUpdatedDate = updatedAtDate.toLocaleString("fr-FR", dateFormatOptions)
               return (
                   <Paper key={comment._id} elevation={6} sx={{p:2}}>
                     <Image src={commentIcone} />
@@ -135,14 +145,10 @@ export default function Resource({ resource, categories, contents, comments, res
                       container
                       >
                       {!(isNaN(updatedAtDate.getDate())) ?
-                          `Mis à jour le 
-                          ${updatedAtDate.getDate()}/${updatedAtDate.getMonth()+1}/${updatedAtDate.getFullYear()}
-                          à 
-                          ${updatedAtDate.getHours()}:${updatedAtDate.getMinutes()}`
-                          :`Écrit le 
-                          ${createdAtDate.getDate()}/${createdAtDate.getMonth()+1}/${createdAtDate.getFullYear()}
-                          à 
-                          ${createdAtDate.getHours()}:${createdAtDate.getMinutes()}`}
+                          `Mis à jour le ${formatedUpdatedDate}`
+                          :
+                          `Écrit le ${formatedCreatedDate}`
+                      }
                     </Grid>
                   </Paper>
               )
