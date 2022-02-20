@@ -1,4 +1,4 @@
-import * as React from "react";
+import React, { useState, useEffect } from "react";
 import { useTheme } from "@mui/material/styles";
 import OutlinedInput from "@mui/material/OutlinedInput";
 import InputLabel from "@mui/material/InputLabel";
@@ -27,18 +27,24 @@ function getStyles(name, personName, theme) {
   };
 }
 
-export default function ResourceTypeSelect({ types }) {
+export default function ResourceTypeSelect({
+  types,
+  setActiveFilter,
+  activeFilter,
+}) {
   const theme = useTheme();
-  const [typesSelected, setTypesSelected] = React.useState([]);
+  const [typesSelected, setTypesSelected] = useState([]);
 
   const handleChange = (event) => {
     const {
       target: { value },
     } = event;
-    setTypesSelected(
-      // On autofill we get a stringified value.
-      typeof value === "string" ? value.split(",") : value
-    );
+    console.log(activeFilter.types);
+    setActiveFilter({
+      categories: activeFilter.categories,
+      types: value,
+    });
+    return setTypesSelected(value);
   };
 
   return (

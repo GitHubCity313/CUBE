@@ -29,7 +29,11 @@ function getStyles(name, personName, theme) {
   };
 }
 
-export default function CategoriesSelect({ categories, setActiveFilter }) {
+export default function CategoriesSelect({
+  categories,
+  setActiveFilter,
+  activeFilter,
+}) {
   const theme = useTheme();
   const [categoriesSelected, setCategoriesSelected] = React.useState([]);
   console.log(categories);
@@ -38,7 +42,11 @@ export default function CategoriesSelect({ categories, setActiveFilter }) {
     const {
       target: { value },
     } = event;
-    setActiveFilter(value);
+
+    setActiveFilter({
+      categories: value,
+      types: activeFilter.types,
+    });
     setCategoriesSelected(
       // On autofill we get a stringified value.
       typeof value === "string" ? value.split(",") : value

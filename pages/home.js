@@ -9,16 +9,26 @@ import apiService from "../services/apiService";
 import { indexResourceTypes, getCategoryByName } from "../utils";
 
 export default function Home({ resources, categories, resourceTypes }) {
-  const [activeFilter, setActiveFilter] = useState([]);
+  const [activeFilter, setActiveFilter] = useState({
+    types: [],
+    categories: [],
+  });
   const [displayedEvents, setDisplayedEvents] = useState([]);
 
-  const displayedItems = useMemo(() => {
-    if (activeFilter.length === 0) {
+  useMemo(() => {
+    if (
+      activeFilter.types.length === 0 &&
+      activeFilter.categories.length === 0
+    ) {
       return setDisplayedEvents(resources);
     } else {
+      // L'alias est set pour ne pas confondre ces categories la avec celles que l'on recupere en props
+      const { types, categories: selectedCategories } = activeFilter;
+
+      // Le filtrage par categories
       const filteredByCat = resources.reduce((val, acc) => {
-        const selectedCat = activeFilter
-          .map((filter) => getCategoryByName(filter, categories))
+        const selectedCat = selectedCategories
+          .map((name) => getCategoryByName(name, categories))
           .flat();
 
         selectedCat.forEach((cat) => {
@@ -28,7 +38,42 @@ export default function Home({ resources, categories, resourceTypes }) {
         });
         return val;
       }, []);
-      return setDisplayedEvents(filteredByCat);
+
+      // Si on a pas selectionne de types, on appliaue uniauement le filtre par categorie
+      if (types.length === 0) {
+        return setDisplayedEvents(filteredByCat);
+      }
+      // Le filtrage par type
+      const filteredByType = resources.reduce((val, acc) => {
+        if (activeFilter.types.length === 1) {
+          if (
+            acc.resourceType === activeFilter.types[0] &&
+            !val.includes(acc)
+          ) {
+            val.push(acc);
+          }
+        } else {
+          types.forEach((type) => {
+            if (acc.resourceType === type && !val.includes(acc)) {
+              val.push(acc);
+            }
+          });
+        }
+
+        return val;
+      }, []);
+
+      // Si on a pas selectionne de categorie, on appliaue uniauement le filtre par type
+      if (categories.length === 0) {
+        return setDisplayedEvents(filteredByType);
+      }
+
+      // Si on utilise les deux filtres, on affiche les elements sont presents dans les deux tableaux de filtres alors on les affiche
+      const duplicates = filteredByCat.filter((val) =>
+        filteredByType.includes(val)
+      );
+
+      return setDisplayedEvents(duplicates);
     }
   }, [activeFilter]);
 
@@ -45,10 +90,12 @@ export default function Home({ resources, categories, resourceTypes }) {
           <CategoriesSelect
             categories={categories}
             setActiveFilter={setActiveFilter}
+            activeFilter={activeFilter}
           />
           <ResourceTypeSelect
             types={resourceTypes}
             setActiveFilter={setActiveFilter}
+            activeFilter={activeFilter}
           />
         </Grid>
         <Grid container pt={2} justifyContent="center">
