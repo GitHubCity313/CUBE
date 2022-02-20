@@ -11,6 +11,7 @@ import {
 } from "@mui/material";
 import { getMatchingCategories } from "../utils";
 import Link from "next/link";
+import PropTypes from "prop-types";
 
 export default function MultiActionAreaCard({ resourceData, categories }) {
   return (
@@ -70,12 +71,19 @@ export default function MultiActionAreaCard({ resourceData, categories }) {
             <Button variant="bleuBtn" size="small" color="primary">
               Suivre
             </Button>
-            <Button variant="borderBtn" size="small" color="primary">
-              En savoir plus
-            </Button>
+            <Link href={`./resource/${resourceData._id}`}>
+              <Button variant="borderBtn" size="small" color="primary">
+                En savoir plus
+              </Button>
+            </Link>
           </CardActions>
         </Stack>
       </CardContent>
     </Card>
   );
 }
+
+MultiActionAreaCard.propTypes = {
+  resourceData: PropTypes.object,
+  categories: PropTypes.array,
+};
