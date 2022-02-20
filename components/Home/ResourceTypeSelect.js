@@ -39,7 +39,6 @@ export default function ResourceTypeSelect({
     const {
       target: { value },
     } = event;
-    console.log(activeFilter.types);
     setActiveFilter({
       categories: activeFilter.categories,
       types: value,
