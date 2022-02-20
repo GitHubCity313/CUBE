@@ -57,15 +57,15 @@ export default function Resource({
         <Typography variant="h1">{resource.name}</Typography>
         <Grid container flexDirection="row" alignItems="center">
           <Stack direction="row" spacing={1} sx={{ mr: 1.2 }}>
-            {resource.categories.map((resourceCategory) => {
+            {resource.categories.map((resourceCategoryId) => {
               const matchedCategory = getMatchingCategories(
-                resourceCategory,
+                resourceCategoryId,
                 categories
               );
               if (matchedCategory) {
                 return (
                   <Chip
-                    key={resourceCategory._id}
+                    key={resourceCategoryId.toString()}
                     label={matchedCategory}
                     color="primary"
                   />
