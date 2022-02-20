@@ -43,9 +43,6 @@ export default function Resource({
     "fr-FR",
     dateFormatOptions
   );
-  console.log("contents");
-  console.log(typeof contents);
-  console.log(contents);
   return (
     <Layout title={resource.name} withSidebar withFooter>
       <Grid container flexDirection="column">
