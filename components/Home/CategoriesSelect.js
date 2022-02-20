@@ -7,7 +7,7 @@ import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import Chip from "@mui/material/Chip";
-import PropTypes from "prop-types";
+import PropTypes, { arrayOf } from "prop-types";
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -29,14 +29,16 @@ function getStyles(name, personName, theme) {
   };
 }
 
-export default function CategoriesSelect({ categories }) {
+export default function CategoriesSelect({ categories, setActiveFilter }) {
   const theme = useTheme();
   const [categoriesSelected, setCategoriesSelected] = React.useState([]);
+  console.log(categories);
 
   const handleChange = (event) => {
     const {
       target: { value },
     } = event;
+    setActiveFilter(value);
     setCategoriesSelected(
       // On autofill we get a stringified value.
       typeof value === "string" ? value.split(",") : value
@@ -79,5 +81,11 @@ export default function CategoriesSelect({ categories }) {
 }
 
 CategoriesSelect.propTypes = {
-  categories: PropTypes.array,
+  categories: PropTypes.oneOfType([
+    PropTypes.arrayOf(PropTypes.string).isRequired,
+    PropTypes.arrayOf(
+      PropTypes.shape({ _id: PropTypes.string, name: PropTypes.string })
+    ).isRequired,
+  ]),
+  setActiveFilter: PropTypes.func.isRequired,
 };

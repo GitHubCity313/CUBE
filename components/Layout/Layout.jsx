@@ -17,36 +17,47 @@ const Layout = (props) => {
         <title>{title} </title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <AppBar withSidebar={withSidebar} />
+
       <Container
         maxWidth="xl"
         sx={{
           display: " flex",
           flexDirection: "row",
-          justifyContent: "center",
-          alignItems: "end",
+          alignItems: withSidebar ? "end" : "center",
           backgroundColor: "#FBFBFB",
-          minHeight: `calc(100vh - 20px)`,
         }}
       >
-        <Grid
-          item
-          xs={withSidebar && 3}
-          sx={{
-            mt: 3,
-          }}
-        ></Grid>
+        <Grid item xs={withSidebar && !isMobile && 3}>
+          <AppBar withSidebar={withSidebar} />
+        </Grid>
         <Grid item xs={withSidebar && !isMobile ? 9 : 12}>
-          {children}
-
           <Grid
-            item
-            xs={withSidebar && 12}
-            sx={{
-              mt: 3,
-            }}
+            container
+            sx={{ width: "100%" }}
+            flexDirection="column"
+            justifyContent={withFooter ? "space-between" : "center"}
+            sx={{ minHeight: `calc(100vh - 20px)` }}
           >
-            {withFooter && <Footer />}
+            <Grid
+              item
+              xs={12}
+              sx={{
+                mt: "146px",
+              }}
+            >
+              {children}
+            </Grid>
+            {withFooter && (
+              <Grid
+                item
+                xs={12}
+                sx={{
+                  mt: 3,
+                }}
+              >
+                <Footer />
+              </Grid>
+            )}
           </Grid>
         </Grid>
       </Container>
