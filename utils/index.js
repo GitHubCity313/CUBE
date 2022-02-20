@@ -1,7 +1,9 @@
+import {capitalize} from "@mui/material";
+
 export function getMatchingCategories(resourceCategory, categories) {
   return categories.map((category) => {
     if (category._id === resourceCategory) {
-      return `${category.name} `;
+      return `${capitalize(category.name)} `;
     }
   });
 }

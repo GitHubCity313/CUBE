@@ -125,7 +125,7 @@ export default function Resource({ resource, categories, contents, comments, res
           </Grid>
         </Grid>
         <Grid
-            sx={{mt: 2}}
+            sx={{mt: 2, mb: 2}}
             flexDirection="column"
         >
           <Typography variant="h3">Commentaires</Typography>
@@ -136,7 +136,7 @@ export default function Resource({ resource, categories, contents, comments, res
               const formatedCreatedDate = createdAtDate.toLocaleString("fr-FR", dateFormatOptions)
               const formatedUpdatedDate = updatedAtDate.toLocaleString("fr-FR", dateFormatOptions)
               return (
-                  <Paper key={comment._id} elevation={6} sx={{p:2}}>
+                  <Paper key={comment._id} elevation={6} sx={{p:2, mb: 2}}>
                     <Image src={commentIcone} />
                     <Typography variant="h4">{comment.title}</Typography>
                     <Typography variant="subtitle1">{comment.author}</Typography>
@@ -145,9 +145,9 @@ export default function Resource({ resource, categories, contents, comments, res
                       container
                       >
                       {!(isNaN(updatedAtDate.getDate())) ?
-                          `Mis à jour le ${formatedUpdatedDate}`
+                          `Mis à jour le ${formatedUpdatedDate}.`
                           :
-                          `Écrit le ${formatedCreatedDate}`
+                          `Écrit le ${formatedCreatedDate}.`
                       }
                     </Grid>
                   </Paper>
