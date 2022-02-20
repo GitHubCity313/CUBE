@@ -36,7 +36,6 @@ export default function CategoriesSelect({
 }) {
   const theme = useTheme();
   const [categoriesSelected, setCategoriesSelected] = React.useState([]);
-  console.log(categories);
 
   const handleChange = (event) => {
     const {
