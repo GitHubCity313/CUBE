@@ -8,9 +8,7 @@ import { Box } from "@mui/material";
 const ApiDoc = ({ spec }) => {
   return (
     <Layout title="Cube | API">
-      <Box sx={{ mt: 20}}>
-        <SwaggerUI spec={spec} filter={true} />
-      </Box>
+      <SwaggerUI spec={spec} filter={true} />
     </Layout>
   );
 };

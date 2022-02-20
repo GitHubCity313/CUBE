@@ -6,6 +6,9 @@ export function getMatchingCategories(resourceCategory, categories) {
   });
 }
 
+export const getCategoryByName = (name, categories) =>
+  categories.filter((cat) => name === cat.name);
+
 export function indexResourceTypes(resources) {
   const types = [];
   resources.map((resource) => {

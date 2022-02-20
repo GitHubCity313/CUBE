@@ -63,7 +63,6 @@ export default function Profile() {
           justifyContent="center"
           alignItems="center"
           sx={{
-            mt: "50vh",
             color: "gov.mediumCumulus",
           }}
         >
@@ -75,8 +74,7 @@ export default function Profile() {
           justifyContent="center"
           alignItems="center"
           sx={{
-            mt: "50vh",
-            backgroundColor: "gov.lightTuile",
+            backgroundColor: "gov.red",
             color: "gov.white",
             p: 4,
             borderRadius: "8px",
