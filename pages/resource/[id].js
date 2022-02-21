@@ -136,11 +136,14 @@ export default function Resource({
                 "fr-FR",
                 dateFormatOptions
               );
+              console.log(comment);
               return (
                 <Paper key={comment._id} elevation={6} sx={{ p: 2, mb: 2 }}>
                   <Image src={commentIcone} />
                   <Typography variant="h4">{comment.title}</Typography>
-                  <Typography variant="subtitle1">{comment.author}</Typography>
+                  <Typography variant="subtitle1">
+                    {comment.authorName}
+                  </Typography>
                   <Typography variant="body1">« {comment.value} »</Typography>
                   <Grid container>
                     {!isNaN(updatedAtDate.getDate())
@@ -193,24 +196,9 @@ export async function getStaticProps({ params }) {
   }
 
   let comments = [];
-  let formatedComments = {};
-  //updating the comments object from mongo : adding the name and forname of the author in a formated string .author
-  //keeping the comment'author'user'id in .authorId
   try {
     const commentsReq = await apiService.getItem("comments", resource._id);
     comments = await commentsReq.data.comments;
-    comments.map(async (comment) => {
-      let user = {};
-      try {
-        const authorReq = await apiService.getItem("users", comment.author);
-        user = authorReq.data.user[0];
-        formatedComments = comment;
-        formatedComments.authorId = user._id;
-        formatedComments.author = `${user.firstName} ${user.lastName}`;
-      } catch (e) {
-        console.log(e);
-      }
-    });
   } catch (e) {
     console.log(e);
   }
