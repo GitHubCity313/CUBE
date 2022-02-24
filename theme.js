@@ -43,6 +43,7 @@ const theme = createTheme(
         mediumTuile: "#CE614A",
         lightTuile: "#FF9575",
         darkTuile: "#AD4847",
+        mediumGlycine: "#A558A0"
       },
       secondary: {
         main: "#EEEEEE",
@@ -81,6 +82,10 @@ const theme = createTheme(
                 backgroundColor: "transparent",
                 border: "1px solid #000091",
                 color: "#000091",
+              },
+              ":disabled": {
+                backgroundColor: "lightgrey",
+                border: "1px solid lightgrey",
               },
             },
           },

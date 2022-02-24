@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo, useContext } from "react";
+import React, { useState, useCallback, useMemo, useContext } from "react";
 import { getTime } from "date-fns";
 import frLocale from "date-fns/locale/fr";
 import { useTheme } from "@mui/material/styles";
@@ -29,16 +29,18 @@ import apiService from "../../services/apiService";
 import AuthContext from "../../context/authContext";
 
 const AddArticle = ({ categories }) => {
+  // Editeur
   const { quill, quillRef } = useQuill();
   const { token } = useContext(AuthContext);
+  // Snackbar apres soumission de la ressource
   const [isSnackbarOpen, setIsSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
   const [snackbarSeverity, setSnackbarSeverity] = useState("success");
   // Responsive
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
-  // Set de l'editeur de texte
-  // Donnees pour l'API
+  // State intermédiaire pour les categories
+  const [rCategories, setRCategories] = useState([]);
   // La resource finale a envoyer
   const [newResource, setNewResource] = useState({
     title: "",
@@ -46,19 +48,14 @@ const AddArticle = ({ categories }) => {
     endDate: new Date(),
     resourceType: "event",
   });
-  // States intermediaire pour le titre et les dates et les categories
-  const [rCategories, setRCategories] = useState([]);
-  // Futur state pour le contenu recupere par l'editeur a recuperer
-  // Gestion du changement de categories
-  useEffect(() => {
-    if (quill) {
-      quill.on("text-change", (delta, oldDelta, source) => {
-        console.log("change");
-        console.log(delta, oldDelta, source);
-        console.log("content", quill.getContents());
-      });
-    }
-  }, [quillRef]);
+
+  // Verifie que la ressource a un titre et des categories avant de permettre l'envoi
+  const isFormValid = useMemo(() => {
+    const { categories } = rCategories;
+    return newResource.title !== "" && categories.length !== 0;
+  }, [newResource, rCategories]);
+
+  // Utilitaire pour mettre a jour les categories
   useMemo(
     () =>
       setNewResource((newResource) => ({
@@ -68,21 +65,31 @@ const AddArticle = ({ categories }) => {
     [rCategories]
   );
 
-  const getContent = () => {
-    const currentContent = quill.getContents();
-    return currentContent.ops;
-  };
-
-  // Utils pour racourcir le texte tapé sans couper les mots
+  // Util pour racourcir le texte tapé sans couper les mots - Snippet useful af o/
   const shortenText = (str, maxLength, separator = " ") => {
     if (str.length <= maxLength) return str;
     return str.substr(0, str.lastIndexOf(separator, maxLength)) + "...";
   };
 
+  // Fetch des données de l'editeur
+  const getContent = () => quill.getContents().ops;
   const getSummary = () => shortenText(quill.getText(), 200);
-
+  const createThumbnail = () => {
+    const currentContent = quill.getContents();
+    const firstPic = currentContent.ops.find((i) =>
+      i.insert.hasOwnProperty("image")
+    );
+    return {
+      url: firstPic !== undefined ? firstPic.insert.image : "",
+      alt: "cover-image",
+    };
+  };
   const clearEditor = () => quill.setText("");
 
+  // Util pour le changement de couleur
+  const isEvent = () => newResource.resourceType === "event";
+
+  // Validation
   const submitResource = async () => {
     const content = getContent();
     const { categories } = rCategories;
@@ -103,7 +110,6 @@ const AddArticle = ({ categories }) => {
         resource,
         token
       );
-      console.log(createResource);
       if (createResource.status === 201) {
         setNewResource({
           title: "",
@@ -112,34 +118,21 @@ const AddArticle = ({ categories }) => {
           resourceType: "event",
         });
         setRCategories([]);
-        setSnackbarSeverity("success")
+        setSnackbarSeverity("success");
 
         setSnackbarMessage(
           "Votre ressource a bien été créée. Vous pouvez suivre sa validation sur votre profil"
         );
         setIsSnackbarOpen(true);
         clearEditor();
-        // quill.setContents([]);
       }
     } catch (err) {
-      console.log(err)
       setSnackbarSeverity("error");
       setSnackbarMessage(
         "Erreur à la creation. Veuillez modifier votre ressource et rééssayer."
       );
       setIsSnackbarOpen(true);
     }
-  };
-
-  const createThumbnail = () => {
-    const currentContent = quill.getContents();
-    const firstPic = currentContent.ops.find((i) =>
-      i.insert.hasOwnProperty("image")
-    );
-    return {
-      url: firstPic !== undefined ? firstPic.insert.image : "",
-      alt: "cover-image",
-    };
   };
 
   return (
@@ -152,11 +145,21 @@ const AddArticle = ({ categories }) => {
           justifyContent="center"
         >
           <Grid item xs={12}>
-            <Typography variant="h2" sx={{ color: "gov.blue", my: 4 }}>
+            <Typography
+              variant="h2"
+              sx={{
+                color: isEvent() ? "gov.blue" : "gov.mediumGlycine",
+                my: 4,
+              }}
+            >
               Ajouter une ressource
             </Typography>
             <FormControl>
-              <FormLabel id="event-type" variant="body1">
+              <FormLabel
+                id="event-type"
+                variant="body1"
+                sx={{ color: isEvent() ? "gov.mediumGlycine" : "gov.blue" }}
+              >
                 Type de ressources
               </FormLabel>
               <RadioGroup
@@ -183,11 +186,15 @@ const AddArticle = ({ categories }) => {
             </FormControl>
           </Grid>
           <Grid item xs={12} m={2}>
-            <Typography variant="body1" sx={{ color: "gov.blue" }}>
+            <Typography
+              variant="body1"
+              sx={{ color: isEvent() ? "gov.blue" : "gov.mediumGlycine" }}
+            >
               Titre
             </Typography>
             <TextField
               fullWidth
+              reauired
               id="title"
               label=""
               variant="standard"
@@ -223,7 +230,10 @@ const AddArticle = ({ categories }) => {
                 locale={frLocale}
               >
                 <>
-                  <Typography variant="body1" sx={{ color: "gov.blue" }}>
+                  <Typography
+                    variant="body1"
+                    sx={{ "gov.blue": "gov.mediumGlycine" }}
+                  >
                     du
                   </Typography>
                   <DateTimePicker
@@ -240,7 +250,10 @@ const AddArticle = ({ categories }) => {
                   />
                 </>
                 <>
-                  <Typography variant="body1" sx={{ color: "gov.blue" }}>
+                  <Typography
+                    variant="body1"
+                    sx={{ "gov.blue": "gov.mediumGlycine" }}
+                  >
                     au
                   </Typography>
                   <DateTimePicker
@@ -260,15 +273,34 @@ const AddArticle = ({ categories }) => {
             </Stack>
           </Grid>
           <Grid item xs={12}>
-            <Typography variant="body1" sx={{ color: "gov.blue", mb: 2 }}>
+            <Typography
+              variant="body1"
+              sx={{
+                color: isEvent() ? "gov.blue" : "gov.mediumGlycine",
+                mb: 2,
+              }}
+            >
               Décrivez plus précisément votre projet
             </Typography>
-            <Box ref={quillRef} sx={{ p: 2, minHeight: "300px", mb: 2 }} />
+            <Box
+              ref={quillRef}
+              sx={{ p: 2, minHeight: "300px", mb: 2 }}
+              onChange={() =>
+                setNewResource({
+                  ...newResource,
+                  content: getContent(),
+                })
+              }
+            />
             <Stack
               sx={{ pb: 4, mt: 2 }}
               alignItems={isMobile ? "center" : "flex-end"}
             >
-              <Button variant="bleuBtn" onClick={submitResource}>
+              <Button
+                variant="bleuBtn"
+                onClick={submitResource}
+                disabled={!isFormValid}
+              >
                 Ajouter
               </Button>
             </Stack>
@@ -290,9 +322,7 @@ export async function getServerSideProps() {
   try {
     const fetchedCategories = await apiService.getItems("categories");
     categories = await fetchedCategories.data.categories;
-  } catch (err) {
-    console.log(err);
-  }
+  } catch (err) {}
   return {
     props: {
       categories,
