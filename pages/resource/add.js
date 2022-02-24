@@ -7,6 +7,11 @@ import {
   Stack,
   Button,
   Box,
+  FormControl,
+  FormControlLabel,
+  FormLabel,
+  Radio,
+  RadioGroup,
 } from "@mui/material";
 import { getTime } from "date-fns";
 import { EditorState } from "draft-js";
@@ -45,6 +50,7 @@ const AddArticle = ({ categories }) => {
     title: "",
     startDate: new Date(),
     endDate: new Date(),
+    resourceType: "event",
   });
   // States intermediaire pour le titre et les dates et les categories
   const [rCategories, setRCategories] = useState([]);
@@ -116,6 +122,32 @@ const AddArticle = ({ categories }) => {
             <Typography variant="h2" sx={{ color: "gov.blue", my: 4 }}>
               Ajouter un évènement
             </Typography>
+            <FormControl>
+              <FormLabel id="event-type" variant="body1">
+                Type de ressources
+              </FormLabel>
+              <RadioGroup
+                name="radio-buttons-group"
+                value={newResource.resourceType}
+                onChange={(e) =>
+                  setNewResource({
+                    ...newResource,
+                    resourceType: e.target.value,
+                  })
+                }
+              >
+                <FormControlLabel
+                  value="event"
+                  control={<Radio />}
+                  label="Evénement"
+                />
+                <FormControlLabel
+                  value="association"
+                  control={<Radio />}
+                  label="Association"
+                />
+              </RadioGroup>
+            </FormControl>
           </Grid>
           <Grid item xs={12} m={2}>
             <Typography variant="body1" sx={{ color: "gov.blue" }}>
