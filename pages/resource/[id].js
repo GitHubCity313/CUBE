@@ -3,6 +3,7 @@ import Layout from "../../components/Layout/Layout";
 import PropTypes from "prop-types";
 import {
   Breadcrumbs,
+  Button,
   Divider,
   Fab,
   Grid,
@@ -84,9 +85,7 @@ export default function Resource({
               {` par ${resourceAuthor.firstName} ${resourceAuthor.lastName}`}
             </div>
           </Stack>
-          <Fab size="small" variant="extended" color="primary">
-            {/*<NavigationIcon sx={{ mr: 1 }} />*/}+ Ajouter aux favoris
-          </Fab>
+          <Button variant="bleuBtn">+ Ajouter aux favoris</Button>
         </Grid>
         <Grid container sx={{ mt: 2, mb: 2 }}>
           <Image
@@ -117,9 +116,7 @@ export default function Resource({
             style={{ width: "80%" }}
           />
           <Grid sx={{ mt: 1 }}>
-            <Fab size="small" variant="extended" color="primary">
-              Envoyer
-            </Fab>
+            <Button variant="bleuBtn">Envoyer</Button>
           </Grid>
         </Grid>
         <Grid sx={{ mt: 2, mb: 2 }} flexDirection="column">
