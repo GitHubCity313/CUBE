@@ -94,7 +94,6 @@ export default function Resource({
           {isAuthenticated ? (
             <Button variant="bleuBtn">+ Ajouter aux favoris</Button>
           ) : null}
-          {/*<Button variant="bleuBtn">+ Ajouter aux favoris</Button>*/}
         </Grid>
         <Grid container sx={{ mt: 2, mb: 2 }}>
           <Image
