@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import Layout from "../../components/Layout/Layout";
 import PropTypes from "prop-types";
 import {
@@ -17,6 +17,7 @@ import { getMatchingCategories } from "../../utils";
 import Image from "next/image";
 import commentIcone from "../../public/icones/commentIcone.svg";
 import CommentForm from "../../components/Resource/CommentForm";
+import AuthContext from "../../context/authContext";
 
 export default function Resource({
   resource,
@@ -25,6 +26,10 @@ export default function Resource({
   comments,
   resourceAuthor,
 }) {
+  const { session, isAuthenticated, signOut } = useContext(AuthContext);
+  console.log("session :");
+  console.log(session);
+  console.log(`isAuthenticated : ${isAuthenticated}`);
   const resourceCreationDate = new Date(resource.createdAt * 1000);
   const resourceUpdatedDate = new Date(resource.updatedAt * 1000);
   const dateFormatOptions = {
@@ -86,7 +91,10 @@ export default function Resource({
               </Typography>
             </div>
           </Stack>
-          <Button variant="bleuBtn">+ Ajouter aux favoris</Button>
+          {isAuthenticated ? (
+            <Button variant="bleuBtn">+ Ajouter aux favoris</Button>
+          ) : null}
+          {/*<Button variant="bleuBtn">+ Ajouter aux favoris</Button>*/}
         </Grid>
         <Grid container sx={{ mt: 2, mb: 2 }}>
           <Image
