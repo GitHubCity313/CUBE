@@ -77,11 +77,15 @@ const AddArticle = ({ categories }) => {
     const thumbnail = createThumbnail();
     const description = getSummary();
 
+    const { endDate, startDate } = newResource;
+
     const resource = {
       ...newResource,
       content,
       thumbnail,
       description,
+      endDate: endDate.toISOString(),
+      startDate: startDate.toISOString()
     };
 
     try {
@@ -107,6 +111,7 @@ const AddArticle = ({ categories }) => {
         clearEditor();
       }
     } catch (err) {
+      console.log(err)
       setSnackbarSeverity("error");
       setSnackbarMessage(
         "Erreur à la creation. Veuillez modifier votre ressource et rééssayer."

@@ -1,6 +1,7 @@
 import clientPromise from "../../../lib/mongodb";
 import { ObjectId } from "mongodb";
 import jwt from "jsonwebtoken";
+import Joi from "joi";
 
 export default function ressources(req, res) {
   const connect = async () => {
@@ -9,24 +10,39 @@ export default function ressources(req, res) {
     return db;
   };
 
-  const getRessources = async (db, res) => {
-    try {
-      const resources = await db.collection("resources").find({}).toArray();
-      return res.status(200).json({ resources });
-    } catch (err) {
-      return res.status(404).json({ err });
-    }
-  };
-
-  const addResource = async (db, res, resource, token) => {
-    try {
-      const newResource = await createResourceModel(resource, token);
-      console.log("resource", newResource);
-      const add = await db.collection("resources").insertOne(newResource);
-      return res.status(201).json({ add });
-    } catch (err) {
-      return res.status(404).json({ err });
-    }
+  const getResourceValidationSchema = () => {
+    return Joi.object({
+      resourceType: Joi.string()
+        .valid("event", "association")
+        .required()
+        .trim(),
+      categories: Joi.array().items(Joi.string().trim()).min(1).required(),
+      author: Joi.string().alphanum().required().trim(),
+      hasParticipants: Joi.array().items(Joi.string()).required(),
+      moderationValidation: Joi.boolean(),
+      publicationStatus: Joi.string()
+        .valid("public", "private")
+        .required()
+        .trim(),
+      title: Joi.string().required().trim(),
+      content: Joi.array().items(Joi.object()).required(),
+      createdAt: Joi.date().iso().required(),
+      updatedAt: Joi.date().iso().required(),
+      startDate: Joi.date().iso().required(),
+      endDate: Joi.date().iso().required(),
+      place: Joi.object({
+        city: Joi.string().trim(),
+        zipCode: Joi.number().integer(),
+        region: Joi.string().trim(),
+      }),
+      likes: Joi.number().integer(),
+      thumbnail: Joi.object({
+        url: Joi.string().trim(),
+        alt: Joi.string().trim(),
+      }),
+      description: Joi.string().required().trim(),
+      validationStatus: Joi.boolean(),
+    });
   };
 
   const createResourceModel = async (resource, token) => {
@@ -41,6 +57,9 @@ export default function ressources(req, res) {
       description,
     } = resource;
 
+    const date = new Date();
+    const dateToIso = date.toISOString();
+
     const newUser = {
       resourceType,
       categories,
@@ -50,8 +69,8 @@ export default function ressources(req, res) {
       publicationStatus: "public",
       title,
       content,
-      createdAt: new Date(),
-      updatedAt: new Date(),
+      createdAt: dateToIso,
+      updatedAt: dateToIso,
       startDate,
       endDate,
       place: {
@@ -68,12 +87,33 @@ export default function ressources(req, res) {
     return newUser;
   };
 
+  const getRessources = async (db, res) => {
+    try {
+      const resources = await db.collection("resources").find({}).toArray();
+      return res.status(200).json({ resources });
+    } catch (err) {
+      return res.status(404).json({ err });
+    }
+  };
+
+  const addResource = async (db, res, resource, token) => {
+    try {
+      const newResource = await createResourceModel(resource, token);
+      const validation = await validateResource(newResource)
+        .then(async () => {
+          const add = await db.collection("resources").insertOne(newResource);
+          return res.status(201).json({ add });
+        })
+        .catch((err) => res.status(400).json({ err }));
+    } catch (err) {
+      return res.status(404).json({ err });
+    }
+  };
+
   const getAuthor = async (token) => {
-    console.log("pouet", token)
     // Ajout
     jwt.verify(token, process.env.JWT_SECRET, function (err) {
       if (err) {
-        console.log("non")
         return res.status(401).json({
           name: err.name,
           expiredAt: err.expiredAt,
@@ -83,6 +123,16 @@ export default function ressources(req, res) {
     const user = jwt.decode(token);
     const { id } = user.data;
     return id;
+  };
+
+  // Bon, dans un monde parfait, c'est dans un middleware mais bon hein
+  const validateResource = async (resource) => {
+    try {
+      const schema = getResourceValidationSchema();
+      return await schema.validateAsync({ resource });
+    } catch (err) {
+      return err;
+    }
   };
 
   const getRoute = async (req, res) => {
