@@ -5,7 +5,6 @@ import {
   Breadcrumbs,
   Button,
   Divider,
-  Fab,
   Grid,
   Link,
   Paper,
@@ -97,14 +96,18 @@ export default function Resource({
             height={300}
           />
         </Grid>
-        <Grid container>
+        <Grid container flexDirection="column">
           {contents.content.map((content) => {
             return (
               <div
                 key={contents.content.indexOf(content)}
                 className={content.type}
               >
-                {content.value}
+                {content.type !== "image" ? (
+                  <Typography variant="body2">{content.value}</Typography>
+                ) : (
+                  <Image width={450} height={150} src={content.url} />
+                )}
               </div>
             );
           })}
