@@ -56,7 +56,7 @@ export default function Resource({
             <Link underline="hover" color="inherit" href="/">
               Accueil
             </Link>
-            <Typography color="text.primary">{resource.name}</Typography>
+            <Typography color="text.primary">{resource.title}</Typography>
           </Breadcrumbs>
         </Grid>
         <Typography variant="h1">{resource.name}</Typography>
