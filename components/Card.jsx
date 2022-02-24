@@ -14,6 +14,7 @@ import Link from "next/link";
 import PropTypes from "prop-types";
 
 export default function MultiActionAreaCard({ resourceData, categories }) {
+  console.log(resourceData?.thumbnail.url);
   return (
     <Card
       sx={{
@@ -28,7 +29,7 @@ export default function MultiActionAreaCard({ resourceData, categories }) {
         <CardMedia
           variant="imageCard"
           component="img"
-          image={resourceData?.thumbnail.url}
+          src={resourceData?.thumbnail.url}
           alt={resourceData?.thumbnail.alt}
           sx={{
             objectFit: "fill",
@@ -53,7 +54,7 @@ export default function MultiActionAreaCard({ resourceData, categories }) {
             })}
           </Typography>
           <Typography gutterBottom variant="TitreCard" component="div">
-            {resourceData?.name}
+            {resourceData?.title}
           </Typography>
           <Typography variant="DesCard">
             {resourceData?.description}...

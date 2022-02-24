@@ -1,5 +1,6 @@
 import clientPromise from "../../../lib/mongodb";
 import { ObjectId } from "mongodb";
+import jwt from "jsonwebtoken";
 
 export default function ressources(req, res) {
   const connect = async () => {
@@ -37,13 +38,13 @@ export default function ressources(req, res) {
       startDate,
       endDate,
       thumbnail,
+      description,
     } = resource;
 
     const newUser = {
       resourceType,
       categories,
-      author: ObjectId("61e17a1d3d88f191f3f8f706"),
-      //author: await getAuthor(token),
+      author: ObjectId(await getAuthor(token)),
       hasParticipants: [],
       moderationValidation: false,
       publicationStatus: "public",
@@ -54,12 +55,13 @@ export default function ressources(req, res) {
       startDate,
       endDate,
       place: {
-        city: "Lille",
-        zipCode: "59000",
-        region: "Hauts-de-France",
+        city: "",
+        zipCode: "",
+        region: "",
       },
       likes: 0,
       thumbnail,
+      description,
       validationStatus: false,
     };
 
@@ -67,16 +69,17 @@ export default function ressources(req, res) {
   };
 
   const getAuthor = async (token) => {
+    console.log("pouet", token)
     // Ajout
     jwt.verify(token, process.env.JWT_SECRET, function (err) {
       if (err) {
+        console.log("non")
         return res.status(401).json({
           name: err.name,
           expiredAt: err.expiredAt,
         });
       }
     });
-    // Faire expirer le token a la deco
     const user = jwt.decode(token);
     const { id } = user.data;
     return id;
@@ -91,8 +94,8 @@ export default function ressources(req, res) {
       }
       case "POST": {
         const resource = req.body;
-        const token = req.body.headers?.Authorization
-          ? req.body.headers.Authorization
+        const token = req.headers?.authorization
+          ? req.headers.authorization
           : null;
         return await addResource(db, res, resource, token);
       }
@@ -144,7 +147,7 @@ export default function ressources(req, res) {
  *           schema :
  *             oneOf: ["public", "private"]
  *             example: public
- *         name:
+ *         title:
  *           type: string
  *           description: Le titre de la ressource
  *           example: Distribution de fournitures scolaires pour la rentrée

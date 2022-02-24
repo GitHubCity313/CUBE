@@ -46,9 +46,9 @@ export default function Sidebar() {
               <Button variant="textBtn">Accueil</Button>
             </ListItem>
           </Link>
-          <Link href="/article">
+          <Link href="/resource/add">
             <ListItem>
-              <Button variant="textBtn">Créer un évènement</Button>
+              <Button variant="textBtn">Créer une ressource</Button>
             </ListItem>
           </Link>
           <Link href="/profile">
