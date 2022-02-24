@@ -162,6 +162,10 @@ export default function Resource({
 
 export async function getStaticProps({ params }) {
   let resource = [];
+  let categories = [];
+  let contents = [];
+  let comments = [];
+  let resourceAuthor = [];
 
   try {
     const apiSResourceRequest = await apiService.getItem(
@@ -170,42 +174,19 @@ export async function getStaticProps({ params }) {
     );
     //mongo sending it back in an array even if there is juste one item :|
     resource = apiSResourceRequest.data.resource[0];
-  } catch (e) {
-    console.log(e);
-  }
 
-  let categories = [];
-
-  try {
     const categoriesReq = await apiService.getItems("categories");
     categories = await categoriesReq.data.categories;
-  } catch (e) {
-    console.log(e);
-  }
 
-  let contents = [];
-
-  try {
     const contentsReq = await apiService.getItem(
       "contents",
       resource.contentId
     );
     contents = await contentsReq.data.content[0];
-  } catch (e) {
-    console.log(e);
-  }
 
-  let comments = [];
-  try {
     const commentsReq = await apiService.getItem("comments", resource._id);
     comments = await commentsReq.data.comments;
-  } catch (e) {
-    console.log(e);
-  }
 
-  let resourceAuthor = [];
-
-  try {
     const userReq = await apiService.getItem("users", resource.author);
     resourceAuthor = await userReq.data.user[0];
   } catch (e) {
@@ -224,9 +205,15 @@ export async function getStaticProps({ params }) {
 }
 
 export async function getStaticPaths() {
-  const fetchedResources = await fetch("http://localhost:3000/api/resources/");
-  const JsonResources = await fetchedResources.json();
-  const resources = JsonResources.resources;
+  let resources = [];
+
+  try {
+    const fetchedResources = await apiService.getItems("resources");
+
+    resources = await fetchedResources.data.resources;
+  } catch (e) {
+    console.log(e);
+  }
 
   return {
     paths: resources.map((resource) => ({
