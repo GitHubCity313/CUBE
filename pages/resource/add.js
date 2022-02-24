@@ -1,6 +1,5 @@
 import React, { useState, useCallback, useMemo, useContext } from "react";
 import { getTime } from "date-fns";
-import frLocale from "date-fns/locale/fr";
 import { useTheme } from "@mui/material/styles";
 import { useQuill } from "react-quilljs";
 import "react-quill/dist/quill.snow.css";
@@ -19,10 +18,8 @@ import {
   RadioGroup,
 } from "@mui/material";
 import Layout from "../../components/Layout/Layout";
+import DatePicker from "../../components/DatePicker";
 import Snackbar from "../../components/Snackbar";
-import { DateTimePicker } from "@mui/lab";
-import AdapterDateFns from "@mui/lab/AdapterDateFns";
-import LocalizationProvider from "@mui/lab/LocalizationProvider";
 import CategoriesSelect from "../../components/Home/CategoriesSelect";
 
 import apiService from "../../services/apiService";
@@ -225,51 +222,33 @@ const AddArticle = ({ categories }) => {
               justifyContent={isMobile ? "center" : "flex-start"}
               alignItems="center"
             >
-              <LocalizationProvider
-                dateAdapter={AdapterDateFns}
-                locale={frLocale}
-              >
-                <>
-                  <Typography
-                    variant="body1"
-                    sx={{ "gov.blue": "gov.mediumGlycine" }}
-                  >
-                    du
-                  </Typography>
-                  <DateTimePicker
-                    renderInput={(props) => <TextField {...props} />}
-                    label="Date de début de l'évènement"
-                    minDate={new Date()}
-                    value={getTime(newResource.startDate)}
-                    onChange={(e) =>
-                      setNewResource({
-                        ...newResource,
-                        startDate: getTime(e),
-                      })
-                    }
-                  />
-                </>
-                <>
-                  <Typography
-                    variant="body1"
-                    sx={{ "gov.blue": "gov.mediumGlycine" }}
-                  >
-                    au
-                  </Typography>
-                  <DateTimePicker
-                    renderInput={(props) => <TextField {...props} />}
-                    minDate={newResource.startDate}
-                    label="Date de fin de l'évènement"
-                    value={getTime(newResource.endDate)}
-                    onChange={(e) =>
-                      setNewResource({
-                        ...newResource,
-                        endDate: getTime(e),
-                      })
-                    }
-                  />
-                </>
-              </LocalizationProvider>
+              <DatePicker
+                onChange={(e) =>
+                  setNewResource({
+                    ...newResource,
+                    startDate: getTime(e),
+                  })
+                }
+                value={getTime(newResource.startDate)}
+                minDate={new Date()}
+                label="Date de début de l'évènement"
+                pickerLabel={"du"}
+                isEvent={isEvent}
+              />
+
+              <DatePicker
+                onChange={(e) =>
+                  setNewResource({
+                    ...newResource,
+                    endDate: getTime(e),
+                  })
+                }
+                value={getTime(newResource.endDate)}
+                minDate={newResource.startDate}
+                pickerLabel="Date de fin de l'évènement"
+                label={"au"}
+                isEvent={isEvent}
+              />
             </Stack>
           </Grid>
           <Grid item xs={12}>
