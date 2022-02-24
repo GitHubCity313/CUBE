@@ -4,7 +4,7 @@ import axiosInstance from "./instance";
 const apiService = {
   getItems: (item) => axiosInstance.get(item),
   getItem: (item, id) => axiosInstance.get(`${item}/${id}`),
-  createItem: (item, data) =>
+  createItem: (item, data, token) =>
     axiosInstance.post(`${item}`, JSON.stringify(data), {
       headers: { Authorization: token },
     }),

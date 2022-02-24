@@ -33,6 +33,7 @@ export default function ressources(req, res) {
       }
       case "POST": {
         const resource = req.body;
+        console.log("POUET", req.body);
         return await addResource(db, res, resource);
       }
       default:

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo, useContext } from "react";
 import {
   useMediaQuery,
   Grid,
@@ -6,9 +6,9 @@ import {
   TextField,
   Stack,
   Button,
-  Card,
   Box,
 } from "@mui/material";
+import { getTime } from "date-fns";
 import { EditorState } from "draft-js";
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 import { useTheme } from "@mui/material/styles";
@@ -18,8 +18,10 @@ import AdapterDateFns from "@mui/lab/AdapterDateFns";
 import LocalizationProvider from "@mui/lab/LocalizationProvider";
 import DateTimePicker from "@mui/lab/DateTimePicker";
 import CategoriesSelect from "../../components/Home/CategoriesSelect";
+import frLocale from "date-fns/locale/fr";
+import { convertToRaw } from "draft-js";
 import apiService from "../../services/apiService";
-
+import AuthContext from "../../context/authContext";
 // import dynamiaue de l'editeur> Permet de contourner le fait que window n'est pas defini au montage
 const Editor = dynamic(
   () => {
@@ -29,6 +31,7 @@ const Editor = dynamic(
 );
 
 const AddArticle = ({ categories }) => {
+  const { token } = useContext(AuthContext);
   // Responsive
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
@@ -38,15 +41,36 @@ const AddArticle = ({ categories }) => {
   );
   // Donnees pour l'API
   // La resource finale a envoyer
-  const [resource, setResource] = useState();
+  const [newResource, setNewResource] = useState({
+    title: "",
+    startDate: new Date(),
+    endDate: new Date(),
+  });
   // States intermediaire pour le titre et les dates et les categories
-  const [title, setTitle] = useState("");
   const [rCategories, setRCategories] = useState([]);
-  const [value, setValue] = React.useState(new Date());
   // Futur state pour le contenu recupere par l'editeur a recuperer
+  // Gestion du changement de categories
+  useMemo(
+    () =>
+      setNewResource((newResource) => ({
+        ...newResource,
+        categories: rCategories,
+      })),
+    [rCategories]
+  );
+
   useEffect(() => {
-    console.log(editorState);
+    // Récupère le contenu actuel de l'éditeur
+    const lol = editorState.getCurrentContent();
+    const test = convertToRaw(lol);
+    console.log(test, "contenu de l'article");
   }, [editorState]);
+
+  const getContent = () => {
+    const currentContent = editorState.getCurrentContent();
+    const rawContent = convertToRaw(currentContent);
+    return JSON.stringify(rawContent);
+  };
 
   const toolbarOptions = [
     "inline",
@@ -61,8 +85,22 @@ const AddArticle = ({ categories }) => {
     "history",
   ];
 
-  const submitResource = () => {
-    console.log("ajout resources + disabled jusqu'a resolution");
+  const submitResource = async () => {
+    const content = getContent();
+    const { categories } = rCategories;
+    const resource = { ...newResource, content, categories };
+
+    console.log(resource);
+    try {
+      let createResource = await apiService.createItem(
+        "resources",
+        resource,
+        token
+      );
+      console.log(createResource);
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   return (
@@ -89,8 +127,10 @@ const AddArticle = ({ categories }) => {
               label=""
               variant="standard"
               type="text"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
+              value={newResource.title}
+              onChange={(e) =>
+                setNewResource({ ...newResource, title: e.target.value })
+              }
             />
           </Grid>
           <Grid item xs={12} md={4} sx={{ minHeight: "100px", mt: 2 }}>
@@ -113,18 +153,22 @@ const AddArticle = ({ categories }) => {
               justifyContent={isMobile ? "center" : "flex-start"}
               alignItems="center"
             >
-              <LocalizationProvider dateAdapter={AdapterDateFns}>
+              <LocalizationProvider
+                dateAdapter={AdapterDateFns}
+                locale={frLocale}
+              >
                 <>
                   <Typography variant="body1" sx={{ color: "gov.blue" }}>
                     du
                   </Typography>
                   <DateTimePicker
                     renderInput={(props) => <TextField {...props} />}
-                    label="DateTimePicker"
-                    value={value}
-                    onChange={(newValue) => {
-                      setValue(newValue);
-                    }}
+                    label="Date de début de l'évènement"
+                    minDate={new Date()}
+                    value={getTime(newResource.startDate)}
+                    onChange={(e) =>
+                      setNewResource({ ...newResource, startDate: getTime(e) })
+                    }
                   />
                 </>
                 <>
@@ -133,11 +177,12 @@ const AddArticle = ({ categories }) => {
                   </Typography>
                   <DateTimePicker
                     renderInput={(props) => <TextField {...props} />}
-                    label="DateTimePicker"
-                    value={value}
-                    onChange={(newValue) => {
-                      setValue(newValue);
-                    }}
+                    minDate={newResource.startDate}
+                    label="Date de fin de l'évènement"
+                    value={getTime(newResource.endDate)}
+                    onChange={(e) =>
+                      setNewResource({ ...newResource, endDate: getTime(e) })
+                    }
                   />
                 </>
               </LocalizationProvider>
@@ -166,7 +211,7 @@ const AddArticle = ({ categories }) => {
                   border: `1px solid ${theme.palette.gov.blue}`,
                   backgroundColor: `${theme.palette.gov.blue}`,
                   padding: "10px",
-                  margin: "-10px"
+                  margin: "-10px",
                 }}
               />
             </Box>
@@ -186,9 +231,7 @@ export async function getServerSideProps() {
   let categories = [];
   try {
     const fetchedCategories = await apiService.getItems("categories");
-
     categories = await fetchedCategories.data.categories;
-    console.log(categories);
   } catch (err) {
     console.log(err);
   }
