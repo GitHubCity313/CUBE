@@ -11,14 +11,10 @@ import {
   Stack,
   Button,
   Box,
-  FormControl,
-  FormControlLabel,
-  FormLabel,
-  Radio,
-  RadioGroup,
 } from "@mui/material";
 import Layout from "../../components/Layout/Layout";
 import DatePicker from "../../components/DatePicker";
+import TypeRadio from "../../components/Event/TypeRadio";
 import Snackbar from "../../components/Snackbar";
 import CategoriesSelect from "../../components/Home/CategoriesSelect";
 
@@ -151,36 +147,17 @@ const AddArticle = ({ categories }) => {
             >
               Ajouter une ressource
             </Typography>
-            <FormControl>
-              <FormLabel
-                id="event-type"
-                variant="body1"
-                sx={{ color: isEvent() ? "gov.mediumGlycine" : "gov.blue" }}
-              >
-                Type de ressources
-              </FormLabel>
-              <RadioGroup
-                name="radio-buttons-group"
-                value={newResource.resourceType}
-                onChange={(e) =>
-                  setNewResource({
-                    ...newResource,
-                    resourceType: e.target.value,
-                  })
-                }
-              >
-                <FormControlLabel
-                  value="event"
-                  control={<Radio />}
-                  label="Evénement"
-                />
-                <FormControlLabel
-                  value="association"
-                  control={<Radio />}
-                  label="Association"
-                />
-              </RadioGroup>
-            </FormControl>
+            <TypeRadio
+              onChange={(e) =>
+                setNewResource({
+                  ...newResource,
+                  resourceType: e.target.value,
+                })
+              }
+              value={newResource.resourceType}
+              label=" Type de ressources"
+              isEvent={isEvent}
+            />
           </Grid>
           <Grid item xs={12} m={2}>
             <Typography
@@ -231,9 +208,9 @@ const AddArticle = ({ categories }) => {
                 }
                 value={getTime(newResource.startDate)}
                 minDate={new Date()}
-                label="Date de début de l'évènement"
-                pickerLabel={"du"}
-                isEvent={isEvent}
+                pickerLabel="Date de début de l'évènement"
+                label={"du"}
+                isEvent={isEvent()}
               />
 
               <DatePicker
@@ -247,7 +224,7 @@ const AddArticle = ({ categories }) => {
                 minDate={newResource.startDate}
                 pickerLabel="Date de fin de l'évènement"
                 label={"au"}
-                isEvent={isEvent}
+                isEvent={isEvent()}
               />
             </Stack>
           </Grid>
