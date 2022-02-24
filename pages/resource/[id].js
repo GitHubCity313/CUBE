@@ -9,7 +9,6 @@ import {
   Link,
   Paper,
   Stack,
-  TextareaAutosize,
 } from "@mui/material";
 import Typography from "@mui/material/Typography";
 import apiService from "../../services/apiService";
@@ -17,6 +16,7 @@ import Chip from "@mui/material/Chip";
 import { getMatchingCategories } from "../../utils";
 import Image from "next/image";
 import commentIcone from "../../public/icones/commentIcone.svg";
+import CommentForm from "../../components/Resource/CommentForm";
 
 export default function Resource({
   resource,
@@ -112,18 +112,7 @@ export default function Resource({
             );
           })}
         </Grid>
-        <Grid container sx={{ mt: 2 }} flexDirection="column">
-          <Typography variant="h6">Poster un commentaire</Typography>
-          <TextareaAutosize
-            aria-label="Laisser un commentaire"
-            minRows={3}
-            placeholder="Veuillez vous connecter pour laisser un commentaire"
-            style={{ width: "80%" }}
-          />
-          <Grid sx={{ mt: 1 }}>
-            <Button variant="bleuBtn">Envoyer</Button>
-          </Grid>
-        </Grid>
+        <CommentForm />
         <Grid sx={{ mt: 2, mb: 2 }} flexDirection="column">
           <Typography variant="h3">Commentaires</Typography>
           {comments.map((comment) => {

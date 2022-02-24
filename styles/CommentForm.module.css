@@ -1,0 +1,13 @@
+.grid ::-webkit-resizer {
+    display: none;
+}
+.textArea {
+    /*width: 80%;*/
+    font-family: "Marianne", serif;
+    border-color: rgb(7, 0, 145);
+    border-width: 1.6px;
+    border-radius: 4px;
+    padding-left: 5px;
+    padding-top: 5px;
+    font-size: 14px;
+}
