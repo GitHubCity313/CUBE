@@ -32,31 +32,20 @@ const AddArticle = ({ categories }) => {
   // Responsive
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
-  // State intermédiaire pour les categories
-  const [rCategories, setRCategories] = useState([]);
   // La resource finale a envoyer
   const [newResource, setNewResource] = useState({
     title: "",
     startDate: new Date(),
     endDate: new Date(),
     resourceType: "event",
+    categories: [],
   });
 
   // Verifie que la ressource a un titre et des categories avant de permettre l'envoi
   const isFormValid = useMemo(() => {
-    const { categories } = rCategories;
-    return newResource.title !== "" && categories.length !== 0;
-  }, [newResource, rCategories]);
-
-  // Utilitaire pour mettre a jour les categories
-  useMemo(
-    () =>
-      setNewResource((newResource) => ({
-        ...newResource,
-        categories: rCategories,
-      })),
-    [rCategories]
-  );
+    const { categories, title } = newResource;
+    return title !== "" && categories && categories.length !== 0;
+  }, [newResource]);
 
   // Util pour racourcir le texte tapé sans couper les mots - Snippet useful af o/
   const shortenText = (str, maxLength, separator = " ") => {
@@ -85,14 +74,12 @@ const AddArticle = ({ categories }) => {
   // Validation
   const submitResource = async () => {
     const content = getContent();
-    const { categories } = rCategories;
     const thumbnail = createThumbnail();
     const description = getSummary();
 
     const resource = {
       ...newResource,
       content,
-      categories,
       thumbnail,
       description,
     };
@@ -109,8 +96,8 @@ const AddArticle = ({ categories }) => {
           startDate: new Date(),
           endDate: new Date(),
           resourceType: "event",
+          categories: [],
         });
-        setRCategories([]);
         setSnackbarSeverity("success");
 
         setSnackbarMessage(
@@ -168,7 +155,7 @@ const AddArticle = ({ categories }) => {
             </Typography>
             <TextField
               fullWidth
-              reauired
+              required
               id="title"
               label=""
               variant="standard"
@@ -187,8 +174,16 @@ const AddArticle = ({ categories }) => {
             >
               <CategoriesSelect
                 categories={categories}
-                setActiveFilter={setRCategories}
-                activeFilter={rCategories}
+                onChange={(e) =>
+                  setNewResource((newResource) => ({
+                    ...newResource,
+                    categories:
+                      e.target.value === "string"
+                        ? e.target.value.split(",")
+                        : e.target.value,
+                  }))
+                }
+                value={newResource.categories}
               />
             </Stack>
           </Grid>

@@ -77,6 +77,15 @@ export default function Home({ resources, categories, resourceTypes }) {
     }
   }, [activeFilter]);
 
+  const handleCategoryChange = (e) =>
+    setActiveFilter({
+      ...activeFilter,
+      categories:
+        e.target.value === "string"
+          ? e.target.value.split(",")
+          : e.target.value,
+    });
+
   return (
     <Layout title="Cube | Home">
       <Grid container flexDirection="column" mt={2}>
@@ -88,9 +97,9 @@ export default function Home({ resources, categories, resourceTypes }) {
         >
           <Typography sx={{ pr: 2, color: "gov.blue" }}>Filtrer par</Typography>
           <CategoriesSelect
+            onChange={(e) => handleCategoryChange(e)}
             categories={categories}
-            setActiveFilter={setActiveFilter}
-            activeFilter={activeFilter}
+            value={activeFilter.categories}
           />
           <ResourceTypeSelect
             types={resourceTypes}

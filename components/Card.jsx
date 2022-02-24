@@ -14,7 +14,6 @@ import Link from "next/link";
 import PropTypes from "prop-types";
 
 export default function MultiActionAreaCard({ resourceData, categories }) {
-  console.log(resourceData?.thumbnail.url);
   return (
     <Card
       sx={{

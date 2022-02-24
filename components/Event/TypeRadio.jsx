@@ -35,7 +35,7 @@ TypeRadio.propTypes = {
   onChange: PropTypes.func.isRequired,
   value: PropTypes.string.isRequired,
   label: PropTypes.string.isRequired,
-  isEvent: PropTypes.bool.isRequired,
+  isEvent: PropTypes.func.isRequired,
 };
 
 export default TypeRadio;
