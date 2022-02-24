@@ -1,6 +1,7 @@
 import React from "react";
 import { ThemeProvider } from "@mui/material/styles";
-import GlobalStyles from '@mui/material/GlobalStyles';
+import GlobalStyles from "@mui/material/GlobalStyles";
+import "../styles/globals.css";
 // Provider qui gère l'authentification -- Refetch interval determine la duree de validite du token
 import AuthProvider from "./../context/authProvider";
 import theme from "../theme";
@@ -10,7 +11,7 @@ function MyApp({ Component, pageProps }) {
   return (
     <ThemeProvider theme={theme}>
       <AuthProvider refetchInterval={1440}>
-          <Component {...pageProps} />
+        <Component {...pageProps} />
       </AuthProvider>
     </ThemeProvider>
   );

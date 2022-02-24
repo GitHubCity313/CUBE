@@ -16,4 +16,7 @@ module.exports = withFonts({
     // Important: return the modified config
     return config;
   },
+  images: {
+    domains: ["mathieu-neveu.com"],
+  },
 });
