@@ -1,4 +1,5 @@
 import clientPromise from "../../../lib/mongodb";
+import { ObjectId } from "mongodb";
 
 export default function ressources(req, res) {
   const connect = async () => {
@@ -16,25 +17,84 @@ export default function ressources(req, res) {
     }
   };
 
-  const addResource = async (db, res, resource) => {
+  const addResource = async (db, res, resource, token) => {
     try {
-      const newResource = await db.collection("resources").insertOne(resource);
-      return res.status(201).json({ newResource });
+      const newResource = await createResourceModel(resource, token);
+      console.log("resource", newResource);
+      const add = await db.collection("resources").insertOne(newResource);
+      return res.status(201).json({ add });
     } catch (err) {
       return res.status(404).json({ err });
     }
   };
 
+  const createResourceModel = async (resource, token) => {
+    const {
+      resourceType,
+      categories,
+      title,
+      content,
+      startDate,
+      endDate,
+      thumbnail,
+    } = resource;
+
+    const newUser = {
+      resourceType,
+      categories,
+      author: ObjectId("61e17a1d3d88f191f3f8f706"),
+      //author: await getAuthor(token),
+      hasParticipants: [],
+      moderationValidation: false,
+      publicationStatus: "public",
+      title,
+      content,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      startDate,
+      endDate,
+      place: {
+        city: "Lille",
+        zipCode: "59000",
+        region: "Hauts-de-France",
+      },
+      likes: 0,
+      thumbnail,
+      validationStatus: false,
+    };
+
+    return newUser;
+  };
+
+  const getAuthor = async (token) => {
+    // Ajout
+    jwt.verify(token, process.env.JWT_SECRET, function (err) {
+      if (err) {
+        return res.status(401).json({
+          name: err.name,
+          expiredAt: err.expiredAt,
+        });
+      }
+    });
+    // Faire expirer le token a la deco
+    const user = jwt.decode(token);
+    const { id } = user.data;
+    return id;
+  };
+
   const getRoute = async (req, res) => {
     const db = await connect();
+
     switch (req.method) {
       case "GET": {
         return await getRessources(db, res);
       }
       case "POST": {
         const resource = req.body;
-        console.log("POUET", req.body);
-        return await addResource(db, res, resource);
+        const token = req.body.headers?.Authorization
+          ? req.body.headers.Authorization
+          : null;
+        return await addResource(db, res, resource, token);
       }
       default:
         return res.status(405).end(`Method ${req.method} Not Allowed`);

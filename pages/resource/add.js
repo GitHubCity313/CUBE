@@ -14,8 +14,6 @@ import {
   RadioGroup,
 } from "@mui/material";
 import { getTime } from "date-fns";
-import { EditorState } from "draft-js";
-import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 import { useTheme } from "@mui/material/styles";
 import Layout from "../../components/Layout/Layout";
 import dynamic from "next/dynamic";
@@ -24,26 +22,18 @@ import LocalizationProvider from "@mui/lab/LocalizationProvider";
 import DateTimePicker from "@mui/lab/DateTimePicker";
 import CategoriesSelect from "../../components/Home/CategoriesSelect";
 import frLocale from "date-fns/locale/fr";
-import { convertToRaw } from "draft-js";
 import apiService from "../../services/apiService";
 import AuthContext from "../../context/authContext";
-// import dynamiaue de l'editeur> Permet de contourner le fait que window n'est pas defini au montage
-const Editor = dynamic(
-  () => {
-    return import("react-draft-wysiwyg").then((mod) => mod.Editor);
-  },
-  { ssr: false }
-);
+import "react-quill/dist/quill.snow.css";
+import { useQuill } from "react-quilljs";
 
 const AddArticle = ({ categories }) => {
+  const { quill, quillRef } = useQuill();
   const { token } = useContext(AuthContext);
   // Responsive
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
   // Set de l'editeur de texte
-  const [editorState, setEditorState] = useState(() =>
-    EditorState.createEmpty()
-  );
   // Donnees pour l'API
   // La resource finale a envoyer
   const [newResource, setNewResource] = useState({
@@ -56,6 +46,15 @@ const AddArticle = ({ categories }) => {
   const [rCategories, setRCategories] = useState([]);
   // Futur state pour le contenu recupere par l'editeur a recuperer
   // Gestion du changement de categories
+  useEffect(() => {
+    if (quill) {
+      quill.on("text-change", (delta, oldDelta, source) => {
+        console.log("change");
+        console.log(delta, oldDelta, source);
+        console.log("content", quill.getContents());
+      });
+    }
+  }, [quillRef]);
   useMemo(
     () =>
       setNewResource((newResource) => ({
@@ -65,17 +64,11 @@ const AddArticle = ({ categories }) => {
     [rCategories]
   );
 
-  useEffect(() => {
-    // Récupère le contenu actuel de l'éditeur
-    const lol = editorState.getCurrentContent();
-    const test = convertToRaw(lol);
-    console.log(test, "contenu de l'article");
-  }, [editorState]);
-
   const getContent = () => {
-    const currentContent = editorState.getCurrentContent();
-    const rawContent = convertToRaw(currentContent);
-    return JSON.stringify(rawContent);
+    const currentContent = quill.getContents();
+    console.log("currentContent", currentContent);
+    // const rawContent = convertToRaw(currentContent);
+    return currentContent.ops;
   };
 
   const toolbarOptions = [
@@ -94,19 +87,31 @@ const AddArticle = ({ categories }) => {
   const submitResource = async () => {
     const content = getContent();
     const { categories } = rCategories;
-    const resource = { ...newResource, content, categories };
+    const thumbnail = createThumbnail();
+    const resource = { ...newResource, content, categories, thumbnail };
 
     console.log(resource);
-    try {
-      let createResource = await apiService.createItem(
-        "resources",
-        resource,
-        token
-      );
-      console.log(createResource);
-    } catch (err) {
-      console.log(err);
-    }
+    // try {
+    //   let createResource = await apiService.createItem(
+    //     "resources",
+    //     resource,
+    //     token
+    //   );
+    //   console.log(createResource);
+    // } catch (err) {
+    //   console.log(err);
+    // }
+  };
+
+  const createThumbnail = () => {
+    // const content = convertToRaw(editorState.getCurrentContent());
+    // const entities = content.entityMap;
+    // const firstPic = Object.values(entities).find(
+    //   (bloc) => bloc.type === "IMAGE"
+    // );
+    // console.log(firstPic);
+    // //! Regler la taille image c'est ici
+    // return { url: firstPic.data.src, alt: "cover-image" };
   };
 
   return (
@@ -120,7 +125,7 @@ const AddArticle = ({ categories }) => {
         >
           <Grid item xs={12}>
             <Typography variant="h2" sx={{ color: "gov.blue", my: 4 }}>
-              Ajouter un évènement
+              Ajouter une ressource
             </Typography>
             <FormControl>
               <FormLabel id="event-type" variant="body1">
@@ -224,28 +229,15 @@ const AddArticle = ({ categories }) => {
             <Typography variant="body1" sx={{ color: "gov.blue", mb: 2 }}>
               Décrivez plus précisément votre projet
             </Typography>
-            <Box
-              sx={{
-                mb: 3,
-                backgroundColor: "gov.white",
-                border: `1px solid ${theme.palette.gov.darkCumulus}`,
-              }}
-            >
-              <Editor
-                editorState={editorState}
-                onEditorStateChange={setEditorState}
-                toolbar={{ options: toolbarOptions }}
-                wrapperStyle={{
-                  minHeight: isMobile ? "400px" : "200px",
-                  margin: "10px",
+            <Box ref={quillRef}>
+              <Box
+                sx={{
+                  mb: 3,
+                  backgroundColor: "gov.white",
+                  border: `1px solid ${theme.palette.gov.darkCumulus}`,
+                  minHeight: "300px",
                 }}
-                toolbarStyle={{
-                  border: `1px solid ${theme.palette.gov.blue}`,
-                  backgroundColor: `${theme.palette.gov.blue}`,
-                  padding: "10px",
-                  margin: "-10px",
-                }}
-              />
+              ></Box>
             </Box>
             <Stack sx={{ pb: 4 }} alignItems={isMobile ? "center" : "flex-end"}>
               <Button variant="bleuBtn" onClick={submitResource}>
