@@ -117,6 +117,14 @@ const theme = createTheme({
         },
       ],
     },
+    MuiChip: {
+      styleOverrides: {
+        root: {
+          "@font-face": [marianne],
+          fontFamily: "Marianne, Arial, sans-serif",
+        },
+      },
+    },
     MuiTypography: {
       styleOverrides: {
         root: {
