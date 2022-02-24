@@ -77,12 +77,14 @@ export default function Resource({
           <Divider orientation="vertical" flexItem />
           <Stack direction="row" spacing={1} sx={{ ml: 1.2, mr: 1.2 }}>
             <div>
-              {isNaN(resourceUpdatedDate.getDate())
-                ? `Publié le
+              <Typography variant="body2">
+                {isNaN(resourceUpdatedDate.getDate())
+                  ? `Publié le
                     ${formatedCreatedDate}`
-                : `Mis à jour le
+                  : `Mis à jour le
                     ${formatedUpdatedDate}`}
-              {` par ${resourceAuthor.firstName} ${resourceAuthor.lastName}`}
+                {` par ${resourceAuthor.firstName} ${resourceAuthor.lastName}`}
+              </Typography>
             </div>
           </Stack>
           <Button variant="bleuBtn">+ Ajouter aux favoris</Button>
@@ -133,7 +135,6 @@ export default function Resource({
                 "fr-FR",
                 dateFormatOptions
               );
-              console.log(comment);
               return (
                 <Paper key={comment._id} elevation={6} sx={{ p: 2, mb: 2 }}>
                   <Image src={commentIcone} />
@@ -143,9 +144,11 @@ export default function Resource({
                   </Typography>
                   <Typography variant="body1">« {comment.value} »</Typography>
                   <Grid container>
-                    {!isNaN(updatedAtDate.getDate())
-                      ? `Mis à jour le ${formatedUpdatedDate}.`
-                      : `Écrit le ${formatedCreatedDate}.`}
+                    <Typography variant="body2">
+                      {!isNaN(updatedAtDate.getDate())
+                        ? `Mis à jour le ${formatedUpdatedDate}.`
+                        : `Écrit le ${formatedCreatedDate}.`}
+                    </Typography>
                   </Grid>
                 </Paper>
               );
