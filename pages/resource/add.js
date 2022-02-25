@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useMemo, useContext } from "react";
+import React, { useState, useMemo, useContext } from "react";
 import { getTime } from "date-fns";
 import { useTheme } from "@mui/material/styles";
 import { useQuill } from "react-quilljs";
@@ -22,8 +22,11 @@ import apiService from "../../services/apiService";
 import AuthContext from "../../context/authContext";
 
 const AddArticle = ({ categories }) => {
-  // Editeur
-  const { quill, quillRef } = useQuill();
+  const quillOptions = {
+    readOnly: false,
+    placeholder: "Saissisez ici le contenu de votre présentation",
+  };
+  const { quill, quillRef } = useQuill(quillOptions);
   const { token } = useContext(AuthContext);
   // Snackbar apres soumission de la ressource
   const [isSnackbarOpen, setIsSnackbarOpen] = useState(false);
@@ -85,7 +88,7 @@ const AddArticle = ({ categories }) => {
       thumbnail,
       description,
       endDate: endDate.toISOString(),
-      startDate: startDate.toISOString()
+      startDate: startDate.toISOString(),
     };
 
     try {
@@ -111,7 +114,7 @@ const AddArticle = ({ categories }) => {
         clearEditor();
       }
     } catch (err) {
-      console.log(err)
+      console.log(err);
       setSnackbarSeverity("error");
       setSnackbarMessage(
         "Erreur à la creation. Veuillez modifier votre ressource et rééssayer."

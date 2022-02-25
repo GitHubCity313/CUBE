@@ -1,4 +1,6 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect, useState } from "react";
+import { format } from "date-fns";
+import frLocale from "date-fns/locale/fr";
 import Layout from "../../components/Layout/Layout";
 import PropTypes from "prop-types";
 import {
@@ -9,47 +11,59 @@ import {
   Link,
   Paper,
   Stack,
+  Box,
 } from "@mui/material";
 import Typography from "@mui/material/Typography";
 import apiService from "../../services/apiService";
 import Chip from "@mui/material/Chip";
-import { getMatchingCategories } from "../../utils";
+import { useQuill } from "react-quilljs";
+import "react-quill/dist/quill.snow.css";
 import Image from "next/image";
 import commentIcone from "../../public/icones/commentIcone.svg";
 import CommentForm from "../../components/Resource/CommentForm";
 import AuthContext from "../../context/authContext";
 
-export default function Resource({
-  resource,
-  categories,
-  contents,
-  comments,
-  resourceAuthor,
-}) {
+export default function Resource({ resource, comments, resourceAuthor }) {
   const { session, isAuthenticated, signOut } = useContext(AuthContext);
-  console.log("session :");
-  console.log(session);
-  console.log(`isAuthenticated : ${isAuthenticated}`);
-  const resourceCreationDate = new Date(resource.createdAt * 1000);
-  const resourceUpdatedDate = new Date(resource.updatedAt * 1000);
-  const dateFormatOptions = {
-    weekday: "long",
-    day: "numeric",
-    month: "long",
-    year: "numeric",
-    hour: "numeric",
-    minute: "numeric",
+  const { createdAt, updatedAt } = resource;
+
+  const quillOptions = {
+    readOnly: true,
+    modules: { toolbar: false },
   };
-  const formatedCreatedDate = resourceCreationDate.toLocaleString(
-    "fr-FR",
-    dateFormatOptions
-  );
-  const formatedUpdatedDate = resourceUpdatedDate.toLocaleString(
-    "fr-FR",
-    dateFormatOptions
-  );
+  const { quill, quillRef } = useQuill(quillOptions);
+  const [content, setContent] = useState([]);
+
+  useEffect(() => {
+    if (quill) {
+      const currentContent = quill.setContents(resource.content);
+      setContent(currentContent);
+    }
+  }, [quill, resource]);
+
+  const formatDate = (date) => {
+    const dateFormatOptions = {
+      weekday: "long",
+      day: "numeric",
+      month: "long",
+      year: "numeric",
+      hour: "numeric",
+      minute: "numeric",
+    };
+    const publicationDate = new Date(date);
+    return publicationDate.toLocaleString("fr-FR", dateFormatOptions);
+  };
+  // Mur de la honte du dry Mathieu
+  // const formatedCreatedDate = resourceCreationDate.toLocaleString(
+  //   "fr-FR",
+  //   dateFormatOptions
+  // );
+  // const formatedUpdatedDate = resourceUpdatedDate.toLocaleString(
+  //   "fr-FR",
+  //   dateFormatOptions
+  // );
   return (
-    <Layout title={resource.name} withSidebar withFooter>
+    <Layout title={resource.title} withSidebar withFooter>
       <Grid container flexDirection="column">
         <Grid container flexDirection="row" sx={{ mb: 3 }}>
           <Breadcrumbs aria-label="breadcrumb">
@@ -59,34 +73,23 @@ export default function Resource({
             <Typography color="text.primary">{resource.title}</Typography>
           </Breadcrumbs>
         </Grid>
-        <Typography variant="h1">{resource.name}</Typography>
+        <Typography variant="h1">{resource.title}</Typography>
+        <Grid container sx={{ mt: 2, mb: 2 }}></Grid>
         <Grid container flexDirection="row" alignItems="center">
           <Stack direction="row" spacing={1} sx={{ mr: 1.2 }}>
-            {resource.categories.map((resourceCategoryId) => {
-              const matchedCategory = getMatchingCategories(
-                resourceCategoryId,
-                categories
-              );
-              if (matchedCategory) {
-                return (
-                  <Chip
-                    key={resourceCategoryId.toString()}
-                    label={matchedCategory}
-                    color="primary"
-                  />
-                );
-              }
-            })}
+            {resource.categories.map((cat) => (
+              <Chip key={`id-${cat}`} label={cat} color="primary" />
+            ))}
           </Stack>
           <Divider orientation="vertical" flexItem />
           <Stack direction="row" spacing={1} sx={{ ml: 1.2, mr: 1.2 }}>
             <div>
               <Typography variant="body2">
-                {isNaN(resourceUpdatedDate.getDate())
+                {createdAt === updatedAt
                   ? `Publié le
-                    ${formatedCreatedDate}`
+                    ${formatDate(createdAt)}`
                   : `Mis à jour le
-                    ${formatedUpdatedDate}`}
+                    ${formatDate(updatedAt)}`}
                 {` par ${resourceAuthor.firstName} ${resourceAuthor.lastName}`}
               </Typography>
             </div>
@@ -95,29 +98,12 @@ export default function Resource({
             <Button variant="bleuBtn">+ Ajouter aux favoris</Button>
           ) : null}
         </Grid>
-        <Grid container sx={{ mt: 2, mb: 2 }}>
-          <Image
-            src={resource.thumbnail.url}
-            alt={resource.thumbnail.alt}
-            width={900}
-            height={300}
+
+        <Grid container flexDirection="column" mt={2}>
+          <Box
+            ref={quillRef}
+            sx={{ p: 2, mb: 2, border: "1px solid transparent" }}
           />
-        </Grid>
-        <Grid container flexDirection="column">
-          {contents.content.map((content) => {
-            return (
-              <div
-                key={contents.content.indexOf(content)}
-                className={content.type}
-              >
-                {content.type !== "image" ? (
-                  <Typography variant="body2">{content.value}</Typography>
-                ) : (
-                  <Image width={450} height={150} src={content.url} />
-                )}
-              </div>
-            );
-          })}
         </Grid>
         <CommentForm />
         <Grid sx={{ mt: 2, mb: 2 }} flexDirection="column">
@@ -161,7 +147,6 @@ export default function Resource({
 
 export async function getStaticProps({ params }) {
   let resource = [];
-  let categories = [];
   let contents = [];
   let comments = [];
   let resourceAuthor = [];
@@ -174,20 +159,17 @@ export async function getStaticProps({ params }) {
     //mongo sending it back in an array even if there is juste one item :|
     resource = apiSResourceRequest.data.resource[0];
 
-    const categoriesReq = await apiService.getItems("categories");
-    categories = await categoriesReq.data.categories;
+    const userReq = await apiService.getItem("users", resource.author);
+    resourceAuthor = await userReq.data.user[0];
 
     const contentsReq = await apiService.getItem(
       "contents",
       resource.contentId
     );
-    contents = await contentsReq.data.content[0];
+    contents = await contentsReq.data.content;
 
     const commentsReq = await apiService.getItem("comments", resource._id);
     comments = await commentsReq.data.comments;
-
-    const userReq = await apiService.getItem("users", resource.author);
-    resourceAuthor = await userReq.data.user[0];
   } catch (e) {
     console.log(e);
   }
@@ -195,7 +177,6 @@ export async function getStaticProps({ params }) {
   return {
     props: {
       resource,
-      categories,
       contents,
       comments,
       resourceAuthor,
