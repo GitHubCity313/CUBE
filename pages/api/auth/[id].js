@@ -42,6 +42,7 @@ export default function auth(req, res) {
         }
       }
     } catch (err) {
+      console.log(err);
       return res
         .status(404)
         .json({ message: "Adresse mail ou mot de passe incorrect" });
@@ -59,7 +60,6 @@ export default function auth(req, res) {
         .toArray();
 
       const emailIsValid = await validateEmail(email);
-      console.log(emailIsValid);
       if (isEmailUnique.length === 0 && emailIsValid.email === email) {
         await db.collection("users").insertOne(newUser);
 

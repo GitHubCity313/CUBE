@@ -7,7 +7,7 @@ import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import Chip from "@mui/material/Chip";
-import PropTypes, { arrayOf } from "prop-types";
+import PropTypes from "prop-types";
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -29,40 +29,20 @@ function getStyles(name, personName, theme) {
   };
 }
 
-export default function CategoriesSelect({
-  categories,
-  setActiveFilter,
-  activeFilter,
-}) {
+export default function CategoriesSelect({ value, onChange, categories }) {
   const theme = useTheme();
-  const [categoriesSelected, setCategoriesSelected] = React.useState([]);
-
-  const handleChange = (event) => {
-    const {
-      target: { value },
-    } = event;
-
-    setActiveFilter({
-      categories: value,
-      types: activeFilter.types,
-    });
-    setCategoriesSelected(
-      // On autofill we get a stringified value.
-      typeof value === "string" ? value.split(",") : value
-    );
-  };
 
   return (
     <div>
       <FormControl sx={{ m: 1, width: 300 }}>
-        <InputLabel id="demo-multiple-chip-label">Catégories</InputLabel>
+        <InputLabel id="categories-select">Catégories</InputLabel>
         <Select
-          labelId="demo-multiple-chip-label"
-          id="demo-multiple-chip"
+          labelId="categories-select"
+          id="categories-select"
           multiple
-          value={categoriesSelected}
-          onChange={handleChange}
-          input={<OutlinedInput id="select-multiple-chip" label="Catégories" />}
+          value={value}
+          onChange={onChange}
+          input={<OutlinedInput id="categories-select" label="Catégories" />}
           renderValue={(selected) => (
             <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
               {selected.map((value) => (
@@ -76,7 +56,7 @@ export default function CategoriesSelect({
             <MenuItem
               key={category._id}
               value={category.name}
-              style={getStyles(category.name, categoriesSelected, theme)}
+              style={getStyles(category.name, value, theme)}
             >
               {category.name}
             </MenuItem>
@@ -94,5 +74,6 @@ CategoriesSelect.propTypes = {
       PropTypes.shape({ _id: PropTypes.string, name: PropTypes.string })
     ).isRequired,
   ]),
-  setActiveFilter: PropTypes.func.isRequired,
+  value: PropTypes.arrayOf(PropTypes.string).isRequired,
+  onChange: PropTypes.func.isRequired,
 };
