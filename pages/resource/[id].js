@@ -1,6 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
-import { format } from "date-fns";
-import frLocale from "date-fns/locale/fr";
+import React, { useContext, useEffect, useState, useCallback } from "react";
 import Layout from "../../components/Layout/Layout";
 import PropTypes from "prop-types";
 import {
@@ -23,14 +21,19 @@ import commentIcone from "../../public/icones/commentIcone.svg";
 import CommentForm from "../../components/Resource/CommentForm";
 import AuthContext from "../../context/authContext";
 
-export default function Resource({ resource, comments, resourceAuthor }) {
-  const { session, isAuthenticated, signOut } = useContext(AuthContext);
+export default function Resource({
+  resource,
+  comments,
+  resourceAuthor,
+  authorId,
+}) {
+  const { session, isAuthenticated } = useContext(AuthContext);
   const { createdAt, updatedAt } = resource;
-
-  const quillOptions = {
+  const [quillOptions, setQuillOptions] = useState({
     readOnly: true,
     modules: { toolbar: false },
-  };
+  });
+
   const { quill, quillRef } = useQuill(quillOptions);
   const [content, setContent] = useState([]);
 
@@ -40,6 +43,13 @@ export default function Resource({ resource, comments, resourceAuthor }) {
       setContent(currentContent);
     }
   }, [quill, resource]);
+
+  console.log(session, authorId);
+  // Vérifie si l'id de l'auteur de la ressource et celui de l'utilisateur connecté sont les mêmes
+  const isCreator = useCallback(
+    () => authorId === session.id,
+    [session, authorId]
+  );
 
   const formatDate = (date) => {
     const dateFormatOptions = {
@@ -53,6 +63,9 @@ export default function Resource({ resource, comments, resourceAuthor }) {
     const publicationDate = new Date(date);
     return publicationDate.toLocaleString("fr-FR", dateFormatOptions);
   };
+
+  const openEditor = () => {};
+
   // Mur de la honte du dry Mathieu
   // const formatedCreatedDate = resourceCreationDate.toLocaleString(
   //   "fr-FR",
@@ -82,21 +95,31 @@ export default function Resource({ resource, comments, resourceAuthor }) {
             ))}
           </Stack>
           <Divider orientation="vertical" flexItem />
-          <Stack direction="row" spacing={1} sx={{ ml: 1.2, mr: 1.2 }}>
-            <div>
-              <Typography variant="body2">
-                {createdAt === updatedAt
-                  ? `Publié le
+          <Stack
+            direction="row"
+            spacing={2}
+            sx={{ ml: 1.2, mr: 1.2 }}
+            alignItems="center"
+          >
+            <Typography variant="body2">
+              {createdAt === updatedAt
+                ? `Publié le
                     ${formatDate(createdAt)}`
-                  : `Mis à jour le
+                : `Mis à jour le
                     ${formatDate(updatedAt)}`}
-                {` par ${resourceAuthor.firstName} ${resourceAuthor.lastName}`}
-              </Typography>
-            </div>
+              {` par ${resourceAuthor.firstName} ${resourceAuthor.lastName}`}
+            </Typography>
+            <Stack justifyContent={"flex-end"}>
+              {isCreator() ? (
+                <Button variant="bleuBtn" onClick={() => openEditor()}>
+                  Editer
+                </Button>
+              ) : null}
+              {isAuthenticated && !isCreator() ? (
+                <Button variant="bleuBtn">+ Ajouter aux favoris</Button>
+              ) : null}
+            </Stack>
           </Stack>
-          {isAuthenticated ? (
-            <Button variant="bleuBtn">+ Ajouter aux favoris</Button>
-          ) : null}
         </Grid>
 
         <Grid container flexDirection="column" mt={2}>
@@ -150,6 +173,7 @@ export async function getStaticProps({ params }) {
   let contents = [];
   let comments = [];
   let resourceAuthor = [];
+  let authorId = "";
 
   try {
     const apiSResourceRequest = await apiService.getItem(
@@ -158,6 +182,7 @@ export async function getStaticProps({ params }) {
     );
     //mongo sending it back in an array even if there is juste one item :|
     resource = apiSResourceRequest.data.resource[0];
+    authorId = resource.author;
 
     const userReq = await apiService.getItem("users", resource.author);
     resourceAuthor = await userReq.data.user[0];
@@ -180,6 +205,7 @@ export async function getStaticProps({ params }) {
       contents,
       comments,
       resourceAuthor,
+      authorId,
     },
   };
 }
