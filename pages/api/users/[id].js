@@ -1,7 +1,6 @@
 import clientPromise from "../../../lib/mongodb";
 import { ObjectId } from "mongodb";
 import jwt from "jsonwebtoken";
-import CommandCursor from "mongodb/lib/command_cursor";
 
 export default function userId(req, res) {
   const connect = async () => {
@@ -45,6 +44,7 @@ export default function userId(req, res) {
   };
 
   const updateUser = async (id, db, user, res) => {
+    console.log("user fonction", user);
     const objectId = new ObjectId(id);
     try {
       const filter = { _id: objectId };
@@ -127,6 +127,8 @@ export default function userId(req, res) {
     const db = await connect();
     const user = req?.body ? req.body : null;
 
+    console.log("user", req.body);
+
     switch (req.method) {
       case "GET": {
         const id = req.query.id.trim();
@@ -136,7 +138,8 @@ export default function userId(req, res) {
         return await deleteUser(id.toString());
       case "PUT":
         const id = req.query.id.trim();
-        return await updateUser(id, db, user, res);
+        const body = req?.body ? req.body : null;
+        return await updateUser(id, db, body, res);
       case "POST":
         const query = req.query.data;
         const token = req.body.headers?.Authorization

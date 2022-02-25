@@ -93,10 +93,11 @@ export default function MultiActionAreaCard({ resourceData }) {
                 </IconButton>
               )}
             </div>
-
-            <Button variant="borderBtn" size="small" color="primary">
-              En savoir plus
-            </Button>
+            <Link href={`./resource/${resourceData._id}`}>
+              <Button variant="borderBtn" size="small" color="primary">
+                En savoir plus
+              </Button>
+            </Link>
           </CardActions>
         </Stack>
       </CardContent>
