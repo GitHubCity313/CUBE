@@ -8,11 +8,17 @@ import {
   CardActions,
   CardActionArea,
   Stack,
+  IconButton,
 } from "@mui/material";
 import Link from "next/link";
 import PropTypes from "prop-types";
+import FavoriteIcon from "@mui/icons-material/Favorite";
+import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
+import { red } from "@mui/material/colors";
 
 export default function MultiActionAreaCard({ resourceData }) {
+  const [isFavorite, setIsFavorite] = React.useState(false);
+
   return (
     <Card
       sx={{
@@ -73,14 +79,24 @@ export default function MultiActionAreaCard({ resourceData }) {
               px: 0,
             }}
           >
-            <Button variant="bleuBtn" size="small" color="primary">
-              Suivre
+            <div>
+              {isFavorite ? (
+                <IconButton
+                  color="primary"
+                  onClick={() => setIsFavorite(false)}
+                >
+                  <FavoriteIcon sx={{ color: red[500] }} />
+                </IconButton>
+              ) : (
+                <IconButton color="primary" onClick={() => setIsFavorite(true)}>
+                  <FavoriteBorderIcon sx={{ color: red[500] }} />
+                </IconButton>
+              )}
+            </div>
+
+            <Button variant="borderBtn" size="small" color="primary">
+              En savoir plus
             </Button>
-            <Link href={`./resource/${resourceData._id}`}>
-              <Button variant="borderBtn" size="small" color="primary">
-                En savoir plus
-              </Button>
-            </Link>
           </CardActions>
         </Stack>
       </CardContent>
