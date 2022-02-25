@@ -1,4 +1,5 @@
 import React, { useContext, useEffect, useState, useCallback } from "react";
+import Layout from "../../components/Layout/Layout";
 import PropTypes from "prop-types";
 import AuthContext from "../../context/authContext";
 import {
@@ -12,38 +13,57 @@ import {
   Typography,
   Chip,
   capitalize,
+  IconButton,
 } from "@mui/material";
 import { useQuill } from "react-quilljs";
 import "react-quill/dist/quill.snow.css";
 import Image from "next/image";
 import { useRouter } from "next/router";
-import Layout from "../../components/Layout/Layout";
 import CommentForm from "../../components/Resource/CommentForm";
 import Snackbar from "../../components/Snackbar";
 import apiService from "../../services/apiService";
 import editorUtils from "../../utils/editorUtils";
 import Comment from "../../components/Resource/Comment";
 // import axiosInstance from "../../services/instance";
+import FavoriteIcon from "@mui/icons-material/Favorite";
+import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
+import { red } from "@mui/material/colors";
 
 export default function Resource({
   resource,
   comments,
   resourceAuthor,
+  likes,
+  idPost,
   authorId,
 }) {
-  const { session, isAuthenticated, token, signOut } = useContext(AuthContext);
+  const { session, isAuthenticated, token, fetchProfile } =
+    useContext(AuthContext);
   const router = useRouter();
+  const options = editorUtils.getEditorOptions();
+  const { quill, quillRef } = useQuill(options);
   const { createdAt, updatedAt } = resource;
   const [editingMode, setEditingMode] = useState(false);
   const [contents, setContents] = useState([]);
-  const options = editorUtils.getEditorOptions();
   const [snackbar, setSnackbar] = useState({
     open: false,
     message: "",
     severity: "success",
   });
+  const [isFavorite, setIsFavorite] = useState(false);
+  const [currentLikes, setCurrentLikes] = useState(likes);
+  const [userFavorite, setUserFavorite] = useState([]);
 
-  const { quill, quillRef } = useQuill(options);
+  useEffect(() => {
+    if (isAuthenticated) {
+      const getLikes = async () => {
+        const response = await fetchProfile();
+        console.log("jfezfklsdljfk", response);
+        setUserFavorite(response?.likes);
+      };
+      getLikes();
+    }
+  }, []);
 
   useEffect(() => {
     if (quill) {
@@ -137,6 +157,30 @@ export default function Resource({
     }
   };
 
+  const addLike = () => {
+    const addUserFav = userFavorite.push(idPost);
+    console.log("userFavorite", userFavorite);
+    setCurrentLikes(currentLikes + 1);
+    setIsFavorite(!isFavorite);
+    // apiService.updateItem(
+    //   "resources",
+    //   idPost,
+    //   { likes: currentLikes + 1 },
+    //   token
+    // );
+    apiService.updateItem("users", session.id, { likes: addUserFav }, token);
+  };
+  const removeLike = () => {
+    setCurrentLikes(currentLikes - 1);
+    setIsFavorite(!isFavorite);
+    apiService.updateItem(
+      "resources",
+      idPost,
+      { likes: currentLikes - 1 },
+      token
+    );
+  };
+
   return (
     <Layout title={resource.title} withSidebar withFooter>
       <Grid container flexDirection="column">
@@ -176,7 +220,31 @@ export default function Resource({
               {` par ${resourceAuthor.firstName} ${resourceAuthor.lastName}`}
             </Typography>
           </Stack>
-
+          <Stack
+            direction="row"
+            justifyContent="center"
+            alignItems="center"
+            marginRight={3}
+          >
+            {isFavorite ? (
+              <IconButton
+                disabled={!isAuthenticated}
+                color="primary"
+                onClick={removeLike}
+              >
+                <FavoriteIcon sx={{ color: red[500] }} />
+              </IconButton>
+            ) : (
+              <IconButton
+                disabled={!isAuthenticated}
+                color="primary"
+                onClick={addLike}
+              >
+                <FavoriteBorderIcon sx={{ color: red[500] }} />
+              </IconButton>
+            )}
+            <Typography variant="p">{currentLikes}</Typography>
+          </Stack>
           <Stack direction="row" spacing={2}>
             {isCreator() && (
               <>
@@ -273,7 +341,11 @@ export async function getStaticProps({ params }) {
   let resourceAuthor = [];
   let authorId = "";
 
+  let likes = 0;
+  let idPost = params.id;
+  console.log("idPost :", idPost);
   try {
+    // RESOURCE GET
     const apiSResourceRequest = await apiService.getItem(
       "resources",
       params.id
@@ -284,6 +356,8 @@ export async function getStaticProps({ params }) {
 
     const userReq = await apiService.getItem("users", resource.author);
     resourceAuthor = await userReq.data.user[0];
+
+    likes = resource.likes;
 
     const commentsReq = await apiService.getItem("comments", resource._id);
     comments = await commentsReq.data.comments;
@@ -298,6 +372,8 @@ export async function getStaticProps({ params }) {
       comments,
       resourceAuthor,
       authorId,
+      likes,
+      idPost,
     },
   };
 }
