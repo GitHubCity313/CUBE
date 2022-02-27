@@ -12,6 +12,7 @@ import {
   Box,
 } from "@mui/material";
 import Typography from "@mui/material/Typography";
+import { useTheme } from "@mui/material/styles";
 import apiService from "../../services/apiService";
 import Chip from "@mui/material/Chip";
 import { useQuill } from "react-quilljs";
@@ -20,6 +21,7 @@ import Image from "next/image";
 import commentIcone from "../../public/icones/commentIcone.svg";
 import CommentForm from "../../components/Resource/CommentForm";
 import AuthContext from "../../context/authContext";
+import Snackbar from "../../components/Snackbar";
 
 export default function Resource({
   resource,
@@ -27,24 +29,27 @@ export default function Resource({
   resourceAuthor,
   authorId,
 }) {
-  const { session, isAuthenticated } = useContext(AuthContext);
+  const theme = useTheme();
+  // Recupere toutes les couleurs du theme pour les injecter dans l'editeur
+  const colors = Object.values(theme.palette.gov).map((c) => c);
+  const { session, isAuthenticated, token } = useContext(AuthContext);
   const { createdAt, updatedAt } = resource;
-  const [quillOptions, setQuillOptions] = useState({
-    readOnly: true,
-    modules: { toolbar: false },
+  const [editingMode, setEditingMode] = useState(false);
+  const [contents, setContents] = useState([]);
+  const { quill, quillRef } = useQuill({ readOnly: true });
+  const [snackbar, setSnackbar] = useState({
+    open: false,
+    message: "",
+    severity: "success",
   });
-
-  const { quill, quillRef } = useQuill(quillOptions);
-  const [content, setContent] = useState([]);
 
   useEffect(() => {
     if (quill) {
-      const currentContent = quill.setContents(resource.content);
-      setContent(currentContent);
+      const contents = quill.setContents(resource.content);
+      setContents(contents);
     }
-  }, [quill, resource]);
+  }, [resource, quill]);
 
-  console.log(session, authorId);
   // Vérifie si l'id de l'auteur de la ressource et celui de l'utilisateur connecté sont les mêmes
   const isCreator = useCallback(
     () => authorId === session.id,
@@ -64,7 +69,62 @@ export default function Resource({
     return publicationDate.toLocaleString("fr-FR", dateFormatOptions);
   };
 
-  const openEditor = () => {};
+  const openEditor = (e) => {
+    e.preventDefault();
+    const toolbar = [
+      ["bold", "italic", "underline", "strike"],
+      [{ align: [] }],
+
+      [{ list: "ordered" }, { list: "bullet" }],
+      [{ indent: "-1" }, { indent: "+1" }],
+
+      [{ size: ["small", "medium", "large", false] }],
+      [{ header: [1, 2, 3, 4, 5, 6, false] }],
+      ["image"],
+      [{ color: colors }],
+
+      ["clean"],
+    ];
+
+    quill.enable();
+    quill.focus();
+    setEditingMode(true);
+  };
+
+  const updateResource = async () => {
+    const newContent = quill.getContents().ops;
+    console.log("resources", resource._id, newContent, token);
+
+    try {
+      const updateArticle = await apiService.updateItem(
+        "resources",
+        resource._id,
+        { content: newContent },
+        token
+      );
+      if (updateArticle.status === 204) {
+        console.log("yes", updateArticle);
+        setEditingMode(false);
+        setSnackbar({
+          open: true,
+          message: "Modifications enregistrées",
+          severity: "success",
+        });
+      }
+    } catch (err) {
+      setSnackbar({
+        open: true,
+        message: "Erreur pendant la modification",
+        severity: "error",
+      });
+    }
+  };
+
+  const resetRessource = () => {
+    quill.setContents(contents);
+  };
+
+  const deleteResource = () => {};
 
   // Mur de la honte du dry Mathieu
   // const formatedCreatedDate = resourceCreationDate.toLocaleString(
@@ -87,20 +147,22 @@ export default function Resource({
           </Breadcrumbs>
         </Grid>
         <Typography variant="h1">{resource.title}</Typography>
-        <Grid container sx={{ mt: 2, mb: 2 }}></Grid>
-        <Grid container flexDirection="row" alignItems="center">
-          <Stack direction="row" spacing={1} sx={{ mr: 1.2 }}>
-            {resource.categories.map((cat) => (
-              <Chip key={`id-${cat}`} label={cat} color="primary" />
-            ))}
-          </Stack>
-          <Divider orientation="vertical" flexItem />
+        <Grid
+          container
+          flexDirection="row"
+          alignItems="center"
+          justifyContent="space-between"
+        >
           <Stack
             direction="row"
             spacing={2}
-            sx={{ ml: 1.2, mr: 1.2 }}
+            sx={{ m: 1.2 }}
             alignItems="center"
           >
+            {resource.categories.map((cat) => (
+              <Chip key={`id-${cat}`} label={cat} color="primary" />
+            ))}
+            <Divider orientation="vertical" flexItem />
             <Typography variant="body2">
               {createdAt === updatedAt
                 ? `Publié le
@@ -109,23 +171,61 @@ export default function Resource({
                     ${formatDate(updatedAt)}`}
               {` par ${resourceAuthor.firstName} ${resourceAuthor.lastName}`}
             </Typography>
-            <Stack justifyContent={"flex-end"}>
-              {isCreator() ? (
-                <Button variant="bleuBtn" onClick={() => openEditor()}>
-                  Editer
-                </Button>
-              ) : null}
-              {isAuthenticated && !isCreator() ? (
-                <Button variant="bleuBtn">+ Ajouter aux favoris</Button>
-              ) : null}
-            </Stack>
+          </Stack>
+
+          <Stack direction="row" spacing={2} sx={{ mt: 2 }}>
+            {isCreator() && (
+              <>
+                {editingMode ? (
+                  <>
+                    <Button variant="redBtn" onClick={resetRessource}>
+                      Annuler
+                    </Button>
+                    <Button variant="bleuBtn" onClick={updateResource}>
+                      Modifier
+                    </Button>
+                  </>
+                ) : (
+                  <>
+                    <Button variant="bleuBtn" onClick={openEditor}>
+                      Editer
+                    </Button>
+                    <Button variant="redBtn" onClick={deleteResource}>
+                      Supprimer
+                    </Button>
+                  </>
+                )}
+              </>
+            )}
+            {isAuthenticated && !isCreator() ? (
+              <Button variant="bleuBtn">+ Ajouter aux favoris</Button>
+            ) : null}
           </Stack>
         </Grid>
 
-        <Grid container flexDirection="column" mt={2}>
+        <Grid
+          container
+          flexDirection="column"
+          mt={2}
+          sx={{
+            "& div.ql-toolbar": {
+              border: "none",
+              display: !editingMode ? "none" : "default",
+              backgroundColor: "rgba(122, 177, 232, 0.3)",
+            },
+          }}
+        >
           <Box
+            sx={{
+              "&.ql-container.ql-snow": {
+                border: "rgba(122, 177, 232, 0.3)",
+                backgroundColor: editingMode && "whitesmoke",
+              },
+              "&.ql-tooltip": {
+                display: "none",
+              },
+            }}
             ref={quillRef}
-            sx={{ p: 2, mb: 2, border: "1px solid transparent" }}
           />
         </Grid>
         <CommentForm />
@@ -163,6 +263,12 @@ export default function Resource({
             }
           })}
         </Grid>
+        <Snackbar
+          open={snackbar.open}
+          severity={snackbar.severity}
+          message={snackbar.message}
+          onClick={() => setSnackbar({ ...snackbar, open: false })}
+        />
       </Grid>
     </Layout>
   );

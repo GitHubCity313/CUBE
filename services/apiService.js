@@ -8,7 +8,7 @@ const apiService = {
     axiosInstance.post(`${item}`, JSON.stringify(data), {
       headers: { Authorization: token },
     }),
-  updateItem: (item, id, data) =>
+  updateItem: (item, id, data, token) =>
     axiosInstance.put(`${item}/${id}`, JSON.stringify(data), {
       headers: { Authorization: token },
     }),

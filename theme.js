@@ -89,6 +89,27 @@ const theme = createTheme(
               },
             },
           },
+           {
+            props: { variant: "redBtn" },
+            style: {
+              backgroundColor: "#E1000F",
+              color: "#FFFFFF",
+              textTransform: "capitalize",
+              borderRadius: "0px",
+              boxShadow: "0px 0px 0px 0px rgba(0,0,0,0.2)",
+              padding: "0.3rem 1.3rem 0.3rem 1.3rem",
+              border: "1px solid #E1000F",
+              ":hover": {
+                backgroundColor: "transparent",
+                border: "1px solid #E1000F",
+                color: "#E1000F",
+              },
+              ":disabled": {
+                backgroundColor: "lightgrey",
+                border: "1px solid lightgrey",
+              },
+            },
+          },
           {
             props: { variant: "textBtn" },
             style: {
