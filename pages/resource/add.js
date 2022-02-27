@@ -20,13 +20,16 @@ import CategoriesSelect from "../../components/Home/CategoriesSelect";
 
 import apiService from "../../services/apiService";
 import AuthContext from "../../context/authContext";
+import editorUtils from "../../utils/editorUtils";
 
 const AddArticle = ({ categories }) => {
-  const quillOptions = {
+  const options = editorUtils.getEditorOptions();
+  const { quill, quillRef } = useQuill({
+    ...options,
     readOnly: false,
-    placeholder: "Saissisez ici le contenu de votre présentation",
-  };
-  const { quill, quillRef } = useQuill(quillOptions);
+    placeholder:
+      "Exemple : Adieu les prises de tête face à la liste de fournitures scolaires ! Cette année à Lille, la mairie fournit gratuitement et sans condition de ressources des kits scolaires. Une initiative saluée par les parents qui n'y voient que des avantages.",
+  });
   const { token } = useContext(AuthContext);
   // Snackbar apres soumission de la ressource
   const [isSnackbarOpen, setIsSnackbarOpen] = useState(false);
@@ -87,8 +90,8 @@ const AddArticle = ({ categories }) => {
       content,
       thumbnail,
       description,
-      endDate: endDate.toISOString(),
-      startDate: startDate.toISOString(),
+      endDate: endDate,
+      startDate: startDate,
     };
 
     try {
@@ -243,7 +246,7 @@ const AddArticle = ({ categories }) => {
             </Typography>
             <Box
               ref={quillRef}
-              sx={{ p: 2, minHeight: "300px", mb: 2 }}
+              sx={{ minHeight: "300px", mb: 2 }}
               onChange={() =>
                 setNewResource({
                   ...newResource,

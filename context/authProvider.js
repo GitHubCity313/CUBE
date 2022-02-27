@@ -27,9 +27,9 @@ const AuthProvider = (props) => {
   // Genere une session utilisateur avec les infos du token
   const getSession = useCallback((token) => {
     const decoded = jwt.decode(token);
-    const { lastName, firstName, role, profilePic } = decoded.data;
+    const { lastName, firstName, role, profilePic, id } = decoded.data;
     setToken(token);
-    setSession({ lastName, firstName, profilePic });
+    setSession({ lastName, firstName, profilePic, id });
     setRole(role);
     return setIsAuthenticated(true);
   }, []);

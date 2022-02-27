@@ -9,11 +9,10 @@ import {
   CardActionArea,
   Stack,
 } from "@mui/material";
-import { getMatchingCategories } from "../utils";
 import Link from "next/link";
 import PropTypes from "prop-types";
 
-export default function MultiActionAreaCard({ resourceData, categories }) {
+export default function MultiActionAreaCard({ resourceData }) {
   return (
     <Card
       sx={{
@@ -25,17 +24,19 @@ export default function MultiActionAreaCard({ resourceData, categories }) {
       }}
     >
       <CardActionArea>
-        <CardMedia
-          variant="imageCard"
-          component="img"
-          src={resourceData?.thumbnail.url}
-          alt={resourceData?.thumbnail.alt}
-          sx={{
-            objectFit: "fill",
-            height: "100%",
-            padding: "0px",
-          }}
-        />
+        <Link href={`./resource/${resourceData._id}`}>
+          <CardMedia
+            variant="imageCard"
+            component="img"
+            src={resourceData?.thumbnail.url}
+            alt={resourceData?.thumbnail.alt}
+            sx={{
+              objectFit: "fill",
+              height: "100%",
+              padding: "0px",
+            }}
+          />
+        </Link>
       </CardActionArea>
       <CardContent
         sx={{
@@ -47,11 +48,15 @@ export default function MultiActionAreaCard({ resourceData, categories }) {
         }}
       >
         <Stack spacing={1} justifyContent="space-between" sx={{ mt: 2 }}>
-          <Typography variant="categoryTypo">
+          <Stack spacing={1} direction="row" sx={{ mt: 2 }}>
             {resourceData?.categories.map((resourceCategory) => {
-              return getMatchingCategories(resourceCategory, categories);
+              return (
+                <Typography variant="categoryTypo">
+                  {resourceCategory}
+                </Typography>
+              );
             })}
-          </Typography>
+          </Stack>
           <Typography gutterBottom variant="TitreCard" component="div">
             {resourceData?.title}
           </Typography>
@@ -85,5 +90,4 @@ export default function MultiActionAreaCard({ resourceData, categories }) {
 
 MultiActionAreaCard.propTypes = {
   resourceData: PropTypes.object,
-  categories: PropTypes.array,
 };
