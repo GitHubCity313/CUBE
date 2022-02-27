@@ -12,7 +12,7 @@ const apiService = {
     axiosInstance.put(`${item}/${id}`, JSON.stringify(data), {
       headers: { Authorization: token },
     }),
-  deleteItem: (item, id) =>
+  deleteItem: (item, id, token) =>
     axiosInstance.delete(`${item}/${id}`, {
       headers: { Authorization: token },
     }),

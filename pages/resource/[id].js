@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState, useCallback } from "react";
-import Layout from "../../components/Layout/Layout";
 import PropTypes from "prop-types";
+import AuthContext from "../../context/authContext";
 import {
   Breadcrumbs,
   Button,
@@ -10,18 +10,19 @@ import {
   Paper,
   Stack,
   Box,
+  Typography,
+  Chip,
 } from "@mui/material";
-import Typography from "@mui/material/Typography";
-import { useTheme } from "@mui/material/styles";
-import apiService from "../../services/apiService";
-import Chip from "@mui/material/Chip";
 import { useQuill } from "react-quilljs";
 import "react-quill/dist/quill.snow.css";
 import Image from "next/image";
-import commentIcone from "../../public/icones/commentIcone.svg";
+import { useRouter } from "next/router";
+import Layout from "../../components/Layout/Layout";
 import CommentForm from "../../components/Resource/CommentForm";
-import AuthContext from "../../context/authContext";
 import Snackbar from "../../components/Snackbar";
+import commentIcone from "../../public/icones/commentIcone.svg";
+import apiService from "../../services/apiService";
+import editorUtils from "../../utils/editorUtils";
 
 export default function Resource({
   resource,
@@ -29,19 +30,19 @@ export default function Resource({
   resourceAuthor,
   authorId,
 }) {
-  const theme = useTheme();
-  // Recupere toutes les couleurs du theme pour les injecter dans l'editeur
-  const colors = Object.values(theme.palette.gov).map((c) => c);
   const { session, isAuthenticated, token } = useContext(AuthContext);
+  const router = useRouter();
   const { createdAt, updatedAt } = resource;
   const [editingMode, setEditingMode] = useState(false);
   const [contents, setContents] = useState([]);
-  const { quill, quillRef } = useQuill({ readOnly: true });
+  const options = editorUtils.getEditorOptions();
   const [snackbar, setSnackbar] = useState({
     open: false,
     message: "",
     severity: "success",
   });
+
+  const { quill, quillRef } = useQuill(options);
 
   useEffect(() => {
     if (quill) {
@@ -71,21 +72,6 @@ export default function Resource({
 
   const openEditor = (e) => {
     e.preventDefault();
-    const toolbar = [
-      ["bold", "italic", "underline", "strike"],
-      [{ align: [] }],
-
-      [{ list: "ordered" }, { list: "bullet" }],
-      [{ indent: "-1" }, { indent: "+1" }],
-
-      [{ size: ["small", "medium", "large", false] }],
-      [{ header: [1, 2, 3, 4, 5, 6, false] }],
-      ["image"],
-      [{ color: colors }],
-
-      ["clean"],
-    ];
-
     quill.enable();
     quill.focus();
     setEditingMode(true);
@@ -93,7 +79,6 @@ export default function Resource({
 
   const updateResource = async () => {
     const newContent = quill.getContents().ops;
-    console.log("resources", resource._id, newContent, token);
 
     try {
       const updateArticle = await apiService.updateItem(
@@ -122,9 +107,35 @@ export default function Resource({
 
   const resetRessource = () => {
     quill.setContents(contents);
+    setEditingMode(false);
   };
 
-  const deleteResource = () => {};
+  const deleteResource = async () => {
+    const newContent = quill.getContents().ops;
+
+    try {
+      const deleteArticle = await apiService.deleteItem(
+        "resources",
+        resource._id,
+        token
+      );
+      if (deleteArticle.status === 204) {
+        setEditingMode(false);
+        setSnackbar({
+          open: true,
+          message: "Votre ressource a bien ete supprimee",
+          severity: "success",
+        });
+        setTimeout(() => router.push("/"), 3000);
+      }
+    } catch (err) {
+      setSnackbar({
+        open: true,
+        message: "Erreur pendant la suppression",
+        severity: "error",
+      });
+    }
+  };
 
   // Mur de la honte du dry Mathieu
   // const formatedCreatedDate = resourceCreationDate.toLocaleString(
