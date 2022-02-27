@@ -1,11 +1,7 @@
-import {capitalize} from "@mui/material";
+import { capitalize } from "@mui/material";
 
 export function getMatchingCategories(resourceCategory, categories) {
-  return categories.map((category) => {
-    if (category._id === resourceCategory) {
-      return `${capitalize(category.name)} `;
-    }
-  });
+  return categories.find((category) => category._id === resourceCategory);
 }
 
 export const getCategoryByName = (name, categories) =>

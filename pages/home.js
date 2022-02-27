@@ -6,7 +6,7 @@ import CategoriesSelect from "../components/Home/CategoriesSelect";
 import ResourceTypeSelect from "../components/Home/ResourceTypeSelect";
 import Layout from "../components/Layout/Layout";
 import apiService from "../services/apiService";
-import { indexResourceTypes, getCategoryByName } from "../utils";
+import { indexResourceTypes } from "../utils";
 
 export default function Home({ resources, categories, resourceTypes }) {
   const [activeFilter, setActiveFilter] = useState({
@@ -27,12 +27,8 @@ export default function Home({ resources, categories, resourceTypes }) {
 
       // Le filtrage par categories
       const filteredByCat = resources.reduce((val, acc) => {
-        const selectedCat = selectedCategories
-          .map((name) => getCategoryByName(name, categories))
-          .flat();
-
-        selectedCat.forEach((cat) => {
-          if (acc.categories.includes(cat._id)) {
+        selectedCategories.forEach((cat) => {
+          if (acc.categories.includes(cat)) {
             val.push(acc);
           }
         });
@@ -45,26 +41,16 @@ export default function Home({ resources, categories, resourceTypes }) {
       }
       // Le filtrage par type
       const filteredByType = resources.reduce((val, acc) => {
-        if (activeFilter.types.length === 1) {
-          if (
-            acc.resourceType === activeFilter.types[0] &&
-            !val.includes(acc)
-          ) {
+        activeFilter.types.forEach((type) => {
+          if (acc.resourceType === type) {
             val.push(acc);
           }
-        } else {
-          types.forEach((type) => {
-            if (acc.resourceType === type && !val.includes(acc)) {
-              val.push(acc);
-            }
-          });
-        }
-
+        });
         return val;
       }, []);
 
       // Si on a pas selectionne de categorie, on appliaue uniauement le filtre par type
-      if (categories.length === 0) {
+      if (selectedCategories.length === 0) {
         return setDisplayedEvents(filteredByType);
       }
 

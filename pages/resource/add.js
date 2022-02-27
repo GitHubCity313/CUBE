@@ -90,8 +90,8 @@ const AddArticle = ({ categories }) => {
       content,
       thumbnail,
       description,
-      endDate: endDate.toISOString(),
-      startDate: startDate.toISOString(),
+      endDate: endDate,
+      startDate: startDate,
     };
 
     try {

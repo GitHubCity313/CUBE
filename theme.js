@@ -151,6 +151,7 @@ const theme = createTheme(
             "@font-face": [marianne],
             fontFamily: "Marianne, Arial, sans-serif",
             backgroundColor: "rgb(7, 0, 145)",
+            color: "white"
           },
         },
       },

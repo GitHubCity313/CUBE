@@ -88,7 +88,6 @@ export default function Resource({
         token
       );
       if (updateArticle.status === 204) {
-        console.log("yes", updateArticle);
         setEditingMode(false);
         setSnackbar({
           open: true,
