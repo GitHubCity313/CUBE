@@ -14,7 +14,7 @@ import {
 import { useTheme } from "@mui/material/styles";
 import Layout from "../components/Layout/Layout";
 import Image from "next/image";
-import Logo from "../public/logoMini.svg";
+import Logo from "../public/img/login.jpg";
 import Link from "next/link";
 
 const Login = () => {
@@ -54,8 +54,6 @@ const Login = () => {
           >
             <Image
               src={Logo}
-              width={isMobile ? 125 : 250}
-              height={isMobile ? 125 : 250}
               alt="Gouv"
             />
           </Grid>

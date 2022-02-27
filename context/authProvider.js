@@ -176,6 +176,17 @@ const AuthProvider = (props) => {
     }
   };
 
+  const createdEvents = async (arr) => {
+    try {
+      console.log(token)
+      const events = await apiService.fetchCreatedEvents(token, arr);
+      return events.data.events;
+    } catch (err) {
+      console.log(err);
+      return [];
+    }
+  };
+
   const likes = async (arr) => {
     try {
       const likes = await apiService.fetchLikes(token, arr);
@@ -202,6 +213,7 @@ const AuthProvider = (props) => {
       fetchProfile: async () => await profile(),
       fetchLikes: async (arr) => await likes(arr),
       fetchEvents: async (arr) => await events(arr),
+      fetchCreatedEvents: async (arr) => await createdEvents(arr),
       // Petit util pour reset les erreurs sur le signIn quand on veux
       resetError: () => setError(""),
       signIn: async (credentials, callbackUrl) =>

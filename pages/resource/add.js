@@ -30,7 +30,7 @@ const AddArticle = ({ categories }) => {
     placeholder:
       "Exemple : Adieu les prises de tête face à la liste de fournitures scolaires ! Cette année à Lille, la mairie fournit gratuitement et sans condition de ressources des kits scolaires. Une initiative saluée par les parents qui n'y voient que des avantages.",
   });
-  const { token } = useContext(AuthContext);
+  const { token, session, fetchProfile } = useContext(AuthContext);
   // Snackbar apres soumission de la ressource
   const [isSnackbarOpen, setIsSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
@@ -95,12 +95,28 @@ const AddArticle = ({ categories }) => {
     };
 
     try {
+      const addItemToProfile = await apiService.updateItem("users", session.id);
       let createResource = await apiService.createItem(
         "resources",
         resource,
         token
       );
+
+      console.log(createResource);
       if (createResource.status === 201) {
+        const profile = await fetchProfile();
+        const events = profile.hasEventsCreated;
+        const newResource = [createResource.data.add.insertedId];
+        const newEvents = events.concat(newResource);
+        console.log(events.concat(newResource), events);
+        await apiService.updateItem(
+          "users",
+          session.id,
+          {
+            hasEventsCreated: newEvents,
+          },
+          token
+        );
         setNewResource({
           title: "",
           startDate: new Date(),

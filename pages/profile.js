@@ -18,16 +18,25 @@ import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
 import Layout from "../components/Layout/Layout";
 import Link from "next/link";
+import Logo from "../public/logoMini.svg";
+import Image from "next/image";
 
 export default function Profile() {
-  const { isAuthenticated, fetchProfile, fetchLikes, fetchEvents } =
-    useContext(AuthContext);
+  const {
+    isAuthenticated,
+    fetchProfile,
+    fetchLikes,
+    fetchEvents,
+    fetchCreatedEvents,
+  } = useContext(AuthContext);
   const [isFetching, setIsFetching] = useState(true);
   const [fetchingError, setFetchingError] = useState(false);
   const [user, setUser] = useState({});
   const router = useRouter();
-  // State pour les evenements
+  // State pour les evenements prevus
   const [events, setEvents] = useState([]);
+  // State pour les evenements cree par l'utilisateur
+  const [userEvents, setUserEvents] = useState([]);
   // State pour les favoris
   const [favorites, setFavorites] = useState([]);
   // State pour les infos utilisateurs
@@ -39,15 +48,23 @@ export default function Profile() {
     } else {
       try {
         const profile = await fetchProfile();
+        console.log(profile);
         setUser(profile);
         setIsFetching(false);
         if (profile.likes.length > 0) {
           const likes = await fetchLikes(profile.likes);
           setFavorites(likes);
         }
-        if (profile.hasEvents > 0) {
+        if (profile.hasEvents.length > 0) {
           const events = await fetchEvents(profile.hasEvents);
           setEvents(events);
+        }
+        console.log(profile.hasEventsCreated);
+        if (profile.hasEventsCreated.length > 0) {
+          console.log("pouet");
+          const events = await fetchCreatedEvents(profile.hasEventsCreated);
+          console.log(events);
+          setUserEvents(events);
         }
       } catch (err) {
         setIsFetching(false);
@@ -96,43 +113,13 @@ export default function Profile() {
                   component="div"
                   sx={{ color: "gov.blue" }}
                 >
-                  Mes informations personnelles
-                </Typography>
-                <Typography variant="body2" color="text.secondary">
-                  Vous pouvez à tout moment mettre à jour et modifier vos
-                  informations.
-                </Typography>
-                <Stack justifyContent="end">
-                  <Button
-                    sx={{ m: 4, alignSelf: "flex-end" }}
-                    variant="borderBtn"
-                    size="small"
-                    color="primary"
-                    startIcon={<SettingsIcon />}
-                    onClick={() => router.push("/events")}
-                  >
-                    Modifier
-                  </Button>
-                </Stack>
-              </CardContent>
-            </Card>
-          </Grid>
-          <Grid item xs={12}>
-            <Card sx={{ p: 3 }}>
-              <CardContent>
-                <Typography
-                  gutterBottom
-                  variant="h5"
-                  component="div"
-                  sx={{ color: "gov.blue" }}
-                >
                   Mes évènements
                 </Typography>
                 <Typography variant="body2" color="text.secondary">
                   Suivez le déroulement des projets qui vous tiennent à coeur.
                 </Typography>
                 <Box>
-                  {events.length === 0 ? (
+                  {userEvents.length === 0 ? (
                     <>
                       <Typography sx={{ my: 2, fontStyle: "italic" }}>
                         Vous n'avez aucun évènement créé
@@ -152,8 +139,76 @@ export default function Profile() {
                     </>
                   ) : (
                     <Stack direction="row">
-                      {events.map((e) => (
-                        <Card sx={{ display: "flex", my: 4, mr: 4 }} key={e._id}>
+                      {userEvents.map((e) => (
+                        <Card
+                          sx={{
+                            display: "flex",
+                            my: 4,
+                            mr: 4,
+                            alignItems: "center",
+                          }}
+                          key={e._id}
+                        >
+                          <Typography variant="caption" component="div">
+                            {e.title}
+                          </Typography>
+                          <Link href={`/resource/${e._id}`}>
+                            <CardActionArea>
+                              {e?.thumbnail?.url ? (
+                                <CardMedia
+                                  component="img"
+                                  sx={{
+                                    width: 125,
+                                    heigth: 125,
+                                    borderRadius: "16px",
+                                    objectFit: "cover",
+                                  }}
+                                  image={`${e.thumbnail.url}`}
+                                />
+                              ) : (
+                                <Image
+                                  src={Logo}
+                                  width={50}
+                                  height={50}
+                                  alt="Gouv"
+                                />
+                              )}
+                            </CardActionArea>
+                          </Link>
+                        </Card>
+                      ))}
+                    </Stack>
+                  )}
+                </Box>
+              </CardContent>
+            </Card>
+          </Grid>
+          <Grid item xs={12}>
+            <Card sx={{ p: 3 }}>
+              <CardContent>
+                <Typography
+                  gutterBottom
+                  variant="h5"
+                  component="div"
+                  sx={{ color: "gov.blue" }}
+                >
+                  Bientôt
+                </Typography>
+                <Typography variant="body2" color="text.secondary">
+                  Vos prochains évènements à venir
+                </Typography>
+                <Box>
+                  {events.length === 0 ? (
+                    <Typography sx={{ my: 2, fontStyle: "italic" }}>
+                      Aucun évènement prévu dans le mois
+                    </Typography>
+                  ) : (
+                    <Stack direction="row">
+                      {events.map((f) => (
+                        <Card
+                          sx={{ display: "flex", my: 4, mr: 4 }}
+                          key={f._id}
+                        >
                           <Link href={`/resource/${f._id}`}>
                             <CardActionArea>
                               <CardMedia
@@ -164,7 +219,7 @@ export default function Profile() {
                                   borderRadius: "16px",
                                   objectFit: "cover",
                                 }}
-                                image={`${e.thumbnail.url}`}
+                                image={`${f.thumbnail.url}`}
                                 alt=""
                               />
                             </CardActionArea>
@@ -199,7 +254,10 @@ export default function Profile() {
                   ) : (
                     <Stack direction="row">
                       {favorites.map((f) => (
-                        <Card sx={{ display: "flex", my: 4, mr: 4 }} key={f._id}>
+                        <Card
+                          sx={{ display: "flex", my: 4, mr: 4 }}
+                          key={f._id}
+                        >
                           <Link href={`/resource/${f._id}`}>
                             <CardActionArea>
                               <CardMedia
@@ -220,6 +278,36 @@ export default function Profile() {
                     </Stack>
                   )}
                 </Box>
+              </CardContent>
+            </Card>
+          </Grid>
+          <Grid item xs={12}>
+            <Card sx={{ p: 3 }}>
+              <CardContent>
+                <Typography
+                  gutterBottom
+                  variant="h5"
+                  component="div"
+                  sx={{ color: "gov.blue" }}
+                >
+                  Mes informations personnelles
+                </Typography>
+                <Typography variant="body2" color="text.secondary">
+                  Vous pouvez à tout moment mettre à jour et modifier vos
+                  informations.
+                </Typography>
+                <Stack justifyContent="end">
+                  <Button
+                    sx={{ m: 4, alignSelf: "flex-end" }}
+                    variant="borderBtn"
+                    size="small"
+                    color="primary"
+                    startIcon={<SettingsIcon />}
+                    onClick={() => router.push("/events")}
+                  >
+                    Modifier
+                  </Button>
+                </Stack>
               </CardContent>
             </Card>
           </Grid>
