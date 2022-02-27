@@ -1,25 +1,12 @@
 import React, { useContext, useEffect, useState } from "react";
-import {
-  Grid,
-  Stack,
-  Box,
-  Card,
-  CardContent,
-  CardMedia,
-  CardActionArea,
-  Typography,
-  CircularProgress,
-  Button,
-} from "@mui/material";
+import { Grid, Stack, Typography, CircularProgress } from "@mui/material";
 import AuthContext from "../context/authContext";
 import { useRouter } from "next/router";
 import SettingsIcon from "@mui/icons-material/Settings";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
 import Layout from "../components/Layout/Layout";
-import Link from "next/link";
-import Logo from "../public/logoMini.svg";
-import Image from "next/image";
+import UserInfoCard from "../components/Profile/UserInfoCard";
 
 export default function Profile() {
   const {
@@ -48,7 +35,6 @@ export default function Profile() {
     } else {
       try {
         const profile = await fetchProfile();
-        console.log(profile);
         setUser(profile);
         setIsFetching(false);
         if (profile.likes.length > 0) {
@@ -61,9 +47,7 @@ export default function Profile() {
         }
         console.log(profile.hasEventsCreated);
         if (profile.hasEventsCreated.length > 0) {
-          console.log("pouet");
           const events = await fetchCreatedEvents(profile.hasEventsCreated);
-          console.log(events);
           setUserEvents(events);
         }
       } catch (err) {
@@ -105,211 +89,52 @@ export default function Profile() {
       {!isFetching && !fetchingError && (
         <Grid container spacing={2}>
           <Grid item xs={12}>
-            <Card sx={{ p: 3 }}>
-              <CardContent>
-                <Typography
-                  gutterBottom
-                  variant="h5"
-                  component="div"
-                  sx={{ color: "gov.blue" }}
-                >
-                  Mes évènements
-                </Typography>
-                <Typography variant="body2" color="text.secondary">
-                  Suivez le déroulement des projets qui vous tiennent à coeur.
-                </Typography>
-                <Box>
-                  {userEvents.length === 0 ? (
-                    <>
-                      <Typography sx={{ my: 2, fontStyle: "italic" }}>
-                        Vous n'avez aucun évènement créé
-                      </Typography>
-                      <Stack justifyContent="end">
-                        <Button
-                          sx={{ m: 4, alignSelf: "flex-end" }}
-                          variant="borderBtn"
-                          size="small"
-                          color="primary"
-                          startIcon={<AddCircleOutlineIcon />}
-                          onClick={() => router.push("/login")}
-                        >
-                          Créer
-                        </Button>
-                      </Stack>
-                    </>
-                  ) : (
-                    <Stack direction="row">
-                      {userEvents.map((e) => (
-                        <Card
-                          sx={{
-                            display: "flex",
-                            my: 4,
-                            mr: 4,
-                            alignItems: "center",
-                          }}
-                          key={e._id}
-                        >
-                          <Typography variant="caption" component="div">
-                            {e.title}
-                          </Typography>
-                          <Link href={`/resource/${e._id}`}>
-                            <CardActionArea>
-                              {e?.thumbnail?.url ? (
-                                <CardMedia
-                                  component="img"
-                                  sx={{
-                                    width: 125,
-                                    heigth: 125,
-                                    borderRadius: "16px",
-                                    objectFit: "cover",
-                                  }}
-                                  image={`${e.thumbnail.url}`}
-                                />
-                              ) : (
-                                <Image
-                                  src={Logo}
-                                  width={50}
-                                  height={50}
-                                  alt="Gouv"
-                                />
-                              )}
-                            </CardActionArea>
-                          </Link>
-                        </Card>
-                      ))}
-                    </Stack>
-                  )}
-                </Box>
-              </CardContent>
-            </Card>
+            <UserInfoCard
+              title="Mes événements"
+              list={userEvents}
+              subtitle="  Suivez le déroulement des projets qui vous tiennent à coeur."
+              isEmptyLabel="Vous n'avez encore crée aucun événement"
+              hasActionButton
+              actionButton={{
+                label: "créer",
+                icon: <AddCircleOutlineIcon />,
+                onClick: () => router.push("/login"),
+              }}
+            />
           </Grid>
           <Grid item xs={12}>
-            <Card sx={{ p: 3 }}>
-              <CardContent>
-                <Typography
-                  gutterBottom
-                  variant="h5"
-                  component="div"
-                  sx={{ color: "gov.blue" }}
-                >
-                  Bientôt
-                </Typography>
-                <Typography variant="body2" color="text.secondary">
-                  Vos prochains évènements à venir
-                </Typography>
-                <Box>
-                  {events.length === 0 ? (
-                    <Typography sx={{ my: 2, fontStyle: "italic" }}>
-                      Aucun évènement prévu dans le mois
-                    </Typography>
-                  ) : (
-                    <Stack direction="row">
-                      {events.map((f) => (
-                        <Card
-                          sx={{ display: "flex", my: 4, mr: 4 }}
-                          key={f._id}
-                        >
-                          <Link href={`/resource/${f._id}`}>
-                            <CardActionArea>
-                              <CardMedia
-                                component="img"
-                                sx={{
-                                  width: 125,
-                                  heigth: 125,
-                                  borderRadius: "16px",
-                                  objectFit: "cover",
-                                }}
-                                image={`${f.thumbnail.url}`}
-                                alt=""
-                              />
-                            </CardActionArea>
-                          </Link>
-                        </Card>
-                      ))}
-                    </Stack>
-                  )}
-                </Box>
-              </CardContent>
-            </Card>
+            <UserInfoCard
+              title="Bientôt"
+              list={events}
+              subtitle="    Vos prochains évènements à venir"
+              isEmptyLabel="       Aucun évènement prévu dans le mois"
+              hasActionButton={false}
+            />
+          </Grid>
+
+          <Grid item xs={12}>
+            <UserInfoCard
+              title="Mes favoris"
+              list={favorites}
+              subtitle="      Qui suivez-vous en ce moment ?"
+              isEmptyLabel="                  Vous n'avez pas encore de favoris"
+              hasActionButton={false}
+            />
           </Grid>
           <Grid item xs={12}>
-            <Card sx={{ p: 3 }}>
-              <CardContent>
-                <Typography
-                  gutterBottom
-                  variant="h5"
-                  component="div"
-                  sx={{ color: "gov.blue" }}
-                >
-                  Mes favoris
-                </Typography>
-                <Typography variant="body2" color="text.secondary">
-                  Qui suivez-vous en ce moment ?
-                </Typography>
-                <Box>
-                  {favorites.length === 0 ? (
-                    <Typography sx={{ my: 2, fontStyle: "italic" }}>
-                      Vous n'avez pas encore de favoris
-                    </Typography>
-                  ) : (
-                    <Stack direction="row">
-                      {favorites.map((f) => (
-                        <Card
-                          sx={{ display: "flex", my: 4, mr: 4 }}
-                          key={f._id}
-                        >
-                          <Link href={`/resource/${f._id}`}>
-                            <CardActionArea>
-                              <CardMedia
-                                component="img"
-                                sx={{
-                                  width: 125,
-                                  heigth: 125,
-                                  borderRadius: "16px",
-                                  objectFit: "cover",
-                                }}
-                                image={`${f.thumbnail.url}`}
-                                alt=""
-                              />
-                            </CardActionArea>
-                          </Link>
-                        </Card>
-                      ))}
-                    </Stack>
-                  )}
-                </Box>
-              </CardContent>
-            </Card>
-          </Grid>
-          <Grid item xs={12}>
-            <Card sx={{ p: 3 }}>
-              <CardContent>
-                <Typography
-                  gutterBottom
-                  variant="h5"
-                  component="div"
-                  sx={{ color: "gov.blue" }}
-                >
-                  Mes informations personnelles
-                </Typography>
-                <Typography variant="body2" color="text.secondary">
-                  Vous pouvez à tout moment mettre à jour et modifier vos
-                  informations.
-                </Typography>
-                <Stack justifyContent="end">
-                  <Button
-                    sx={{ m: 4, alignSelf: "flex-end" }}
-                    variant="borderBtn"
-                    size="small"
-                    color="primary"
-                    startIcon={<SettingsIcon />}
-                    onClick={() => router.push("/events")}
-                  >
-                    Modifier
-                  </Button>
-                </Stack>
-              </CardContent>
-            </Card>
+            <UserInfoCard
+              title="Mes infos"
+              list={[]}
+              subtitle="     Vous pouvez à tout moment mettre à jour et modifier vos
+                  informations."
+              isEmptyLabel="                 "
+              hasActionButton
+              actionButton={{
+                label: "modifier",
+                icon: <SettingsIcon />,
+                onClick: () => console.log("pouet"),
+              }}
+            />
           </Grid>
         </Grid>
       )}
