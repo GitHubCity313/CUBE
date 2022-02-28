@@ -102,13 +102,11 @@ const AddArticle = ({ categories }) => {
         token
       );
 
-      console.log(createResource);
       if (createResource.status === 201) {
         const profile = await fetchProfile();
         const events = profile.hasEventsCreated;
         const newResource = [createResource.data.add.insertedId];
         const newEvents = events.concat(newResource);
-        console.log(events.concat(newResource), events);
         await apiService.updateItem(
           "users",
           session.id,

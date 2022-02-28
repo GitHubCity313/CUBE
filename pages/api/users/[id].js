@@ -99,9 +99,6 @@ export default function userId(req, res) {
           },
         })
         .toArray();
-
-      console.log(events);
-
       return res.status(200).json({ events });
     } catch (err) {
       return res.status(404).json({ err });
@@ -145,8 +142,6 @@ export default function userId(req, res) {
         const token = req.body.headers?.Authorization
           ? req.body.headers.Authorization
           : null;
-
-        console.log("nique toi", token);
 
         if (query === "likes") {
           const body = req.body;

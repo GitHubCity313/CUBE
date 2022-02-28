@@ -27,9 +27,9 @@ const AuthProvider = (props) => {
   // Genere une session utilisateur avec les infos du token
   const getSession = useCallback((token) => {
     const decoded = jwt.decode(token);
-    const { lastName, firstName, role, profilePic, id } = decoded.data;
+    const { lastName, firstName, role, id } = decoded.data;
     setToken(token);
-    setSession({ lastName, firstName, profilePic, id });
+    setSession({ lastName, firstName, id });
     setRole(role);
     return setIsAuthenticated(true);
   }, []);
@@ -178,7 +178,6 @@ const AuthProvider = (props) => {
 
   const createdEvents = async (arr) => {
     try {
-      console.log(token)
       const events = await apiService.fetchCreatedEvents(token, arr);
       return events.data.events;
     } catch (err) {
@@ -210,6 +209,7 @@ const AuthProvider = (props) => {
       role,
       error,
       isSignUpPending,
+      refresh: () => getSession(token),
       fetchProfile: async () => await profile(),
       fetchLikes: async (arr) => await likes(arr),
       fetchEvents: async (arr) => await events(arr),
@@ -222,7 +222,7 @@ const AuthProvider = (props) => {
         await createAccount(user, callbackUrl),
       signOut: async (callbackUrl) => await logOut(callbackUrl),
     }),
-    [isAuthenticated, error, isSignUpPending]
+    [isAuthenticated, error, isSignUpPending, session]
   );
 
   return (

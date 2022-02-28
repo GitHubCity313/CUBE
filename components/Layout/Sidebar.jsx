@@ -1,14 +1,30 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Box, Avatar, ListItem, ListItemText, Button } from "@mui/material";
 import { useRouter } from "next/router";
 import SettingsIcon from "@mui/icons-material/Settings";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import Link from "next/link";
 import AuthContext from "../../context/authContext";
+import UserInfoCard from "../Profile/UserInfoCard";
 
 export default function Sidebar() {
-  const { session, isAuthenticated, signOut } = useContext(AuthContext);
+  const { session, fetchProfile, isAuthenticated, signOut, token } =
+    useContext(AuthContext);
   const router = useRouter();
+  const [user, setUser] = useState({});
+
+  useEffect(() => {
+    const getProfile = async () => {
+      try {
+        const profile = await fetchProfile(token);
+        setUser(profile);
+      } catch (err) {}
+    };
+
+    const onLoad = async () => await getProfile();
+
+    return onLoad();
+  }, [session]);
 
   const handleDisconnexion = () => {
     signOut();
@@ -32,13 +48,11 @@ export default function Sidebar() {
         <Box sx={{ p: 2 }}>
           <ListItem sx={{ mb: 2 }}>
             <Avatar
-              alt={`${session?.firstName}`}
-              src={`${session?.profilePic}`}
+              alt={`${user?.firstName}`}
+              src={`${user?.profilePic}`}
               sx={{ mr: 2 }}
             />
-            <ListItemText
-              primary={`${session?.firstName} ${session?.lastName}`}
-            />
+            <ListItemText primary={`${user?.firstName} ${user?.lastName}`} />
           </ListItem>
 
           <Link href="/">

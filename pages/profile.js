@@ -1,12 +1,16 @@
 import React, { useContext, useEffect, useState } from "react";
-import { Grid, Stack, Typography, CircularProgress } from "@mui/material";
-import AuthContext from "../context/authContext";
 import { useRouter } from "next/router";
+import AuthContext from "../context/authContext";
+import { Grid, Stack, Typography, CircularProgress } from "@mui/material";
 import SettingsIcon from "@mui/icons-material/Settings";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
 import Layout from "../components/Layout/Layout";
 import UserInfoCard from "../components/Profile/UserInfoCard";
+import UserEditDialog from "../components/Profile/UserEditDialog";
+import Snackbar from "../components/Snackbar";
+import apiService from "../services/apiService";
+import authService from "../services/authService";
 
 export default function Profile() {
   const {
@@ -15,6 +19,8 @@ export default function Profile() {
     fetchLikes,
     fetchEvents,
     fetchCreatedEvents,
+    token,
+    refresh,
   } = useContext(AuthContext);
   const [isFetching, setIsFetching] = useState(true);
   const [fetchingError, setFetchingError] = useState(false);
@@ -26,8 +32,12 @@ export default function Profile() {
   const [userEvents, setUserEvents] = useState([]);
   // State pour les favoris
   const [favorites, setFavorites] = useState([]);
-  // State pour les infos utilisateurs
-  const [data, setData] = useState([]);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [snackbar, setSnackbar] = useState({
+    open: false,
+    message: "",
+    severity: "success",
+  });
 
   useEffect(async () => {
     if (isAuthenticated === false) {
@@ -45,7 +55,6 @@ export default function Profile() {
           const events = await fetchEvents(profile.hasEvents);
           setEvents(events);
         }
-        console.log(profile.hasEventsCreated);
         if (profile.hasEventsCreated.length > 0) {
           const events = await fetchCreatedEvents(profile.hasEventsCreated);
           setUserEvents(events);
@@ -56,6 +65,35 @@ export default function Profile() {
       }
     }
   }, [isAuthenticated]);
+
+  const handleChangeOnUserInfos = async () => {
+    try {
+      const { lastName, firstName, profilePic, email } = user;
+      const updatedUser = await apiService.updateItem(
+        "users",
+        user._id,
+        { lastName, firstName, profilePic, email },
+        token
+      );
+      if (updatedUser.status === 204) {
+        // Bricole => refresh le state de la session pour provoauer l'update de l'image de la sidebar
+        refresh();
+        setSnackbar({
+          open: true,
+          message: "Votre profil est bien mis à jour",
+          severity: "success",
+        });
+        setIsDialogOpen(false)
+      }
+    } catch (err) {
+      console.log(err);
+      setSnackbar({
+        open: true,
+        message: "Erreur pendant la mise à jour",
+        severity: "error",
+      });
+    }
+  };
 
   return (
     <Layout title="Cube | Profil">
@@ -106,8 +144,8 @@ export default function Profile() {
             <UserInfoCard
               title="Bientôt"
               list={events}
-              subtitle="    Vos prochains évènements à venir"
-              isEmptyLabel="       Aucun évènement prévu dans le mois"
+              subtitle="Vos prochains évènements à venir"
+              isEmptyLabel="Aucun évènement prévu dans le mois"
               hasActionButton={false}
             />
           </Grid>
@@ -116,8 +154,8 @@ export default function Profile() {
             <UserInfoCard
               title="Mes favoris"
               list={favorites}
-              subtitle="      Qui suivez-vous en ce moment ?"
-              isEmptyLabel="                  Vous n'avez pas encore de favoris"
+              subtitle="Qui suivez-vous en ce moment ?"
+              isEmptyLabel="Vous n'avez pas encore de favoris"
               hasActionButton={false}
             />
           </Grid>
@@ -125,19 +163,32 @@ export default function Profile() {
             <UserInfoCard
               title="Mes infos"
               list={[]}
-              subtitle="     Vous pouvez à tout moment mettre à jour et modifier vos
+              subtitle="Vous pouvez à tout moment mettre à jour et modifier vos
                   informations."
-              isEmptyLabel="                 "
+              isEmptyLabel=""
               hasActionButton
               actionButton={{
                 label: "modifier",
                 icon: <SettingsIcon />,
-                onClick: () => console.log("pouet"),
+                onClick: () => setIsDialogOpen(true),
               }}
             />
           </Grid>
+          <UserEditDialog
+            open={isDialogOpen}
+            handleClose={() => setIsDialogOpen(false)}
+            user={user}
+            setUser={setUser}
+            handleChangeOnUserInfos={handleChangeOnUserInfos}
+          />
         </Grid>
       )}
+      <Snackbar
+        open={snackbar.open}
+        severity={snackbar.severity}
+        message={snackbar.message}
+        onClick={() => setSnackbar({ ...snackbar, open: false })}
+      />
     </Layout>
   );
 }
