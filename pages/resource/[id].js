@@ -23,6 +23,7 @@ import Snackbar from "../../components/Snackbar";
 import commentIcone from "../../public/icones/commentIcone.svg";
 import apiService from "../../services/apiService";
 import editorUtils from "../../utils/editorUtils";
+// import axiosInstance from "../../services/instance";
 
 export default function Resource({
   resource,
@@ -30,7 +31,7 @@ export default function Resource({
   resourceAuthor,
   authorId,
 }) {
-  const { session, isAuthenticated, token } = useContext(AuthContext);
+  const { session, isAuthenticated, token, signOut } = useContext(AuthContext);
   const router = useRouter();
   const { createdAt, updatedAt } = resource;
   const [editingMode, setEditingMode] = useState(false);
@@ -56,6 +57,36 @@ export default function Resource({
     () => authorId === session.id,
     [session, authorId]
   );
+
+  //Recupérer le token
+
+  // console.log(`token : ${typeof token} ${token}`);
+  //envoyer le content du commentaire en body avec le token
+  //coté api
+  //vérfier le token
+  //le body
+  //créer le commentaire
+  // console.log("session :");
+  // console.log(session);
+  // console.log(`isAuthenticated : ${isAuthenticated}`);
+  // const resourceCreationDate = new Date(resource.createdAt * 1000);
+  // const resourceUpdatedDate = new Date(resource.updatedAt * 1000);
+  const dateFormatOptions = {
+    weekday: "long",
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+    hour: "numeric",
+    minute: "numeric",
+  };
+  // const formatedCreatedDate = resourceCreationDate.toLocaleString(
+  //   "fr-FR",
+  //   dateFormatOptions
+  // );
+  // const formatedUpdatedDate = resourceUpdatedDate.toLocaleString(
+  //   "fr-FR",
+  //   dateFormatOptions
+  // );
 
   const formatDate = (date) => {
     const dateFormatOptions = {
@@ -136,15 +167,6 @@ export default function Resource({
     }
   };
 
-  // Mur de la honte du dry Mathieu
-  // const formatedCreatedDate = resourceCreationDate.toLocaleString(
-  //   "fr-FR",
-  //   dateFormatOptions
-  // );
-  // const formatedUpdatedDate = resourceUpdatedDate.toLocaleString(
-  //   "fr-FR",
-  //   dateFormatOptions
-  // );
   return (
     <Layout title={resource.title} withSidebar withFooter>
       <Grid container flexDirection="column">
@@ -245,7 +267,23 @@ export default function Resource({
             ref={quillRef}
           />
         </Grid>
-        <CommentForm />
+        <Grid container flexDirection="column">
+          {contents.content.map((content) => {
+            return (
+              <div
+                key={contents.content.indexOf(content)}
+                className={content.type}
+              >
+                {content.type !== "image" ? (
+                  <Typography variant="body2">{content.value}</Typography>
+                ) : (
+                  <Image width={450} height={150} src={content.url} />
+                )}
+              </div>
+            );
+          })}
+        </Grid>
+        <CommentForm resourceId={resource._id} />
         <Grid sx={{ mt: 2, mb: 2 }} flexDirection="column">
           <Typography variant="h3">Commentaires</Typography>
           {comments.map((comment) => {
@@ -358,4 +396,5 @@ Resource.propTypes = {
   contents: PropTypes.object,
   comments: PropTypes.array,
   resourceAuthor: PropTypes.object,
+  authorId: PropTypes.string,
 };
