@@ -37,7 +37,7 @@ export default function EventShortCard({ event }) {
             </Typography>
 
             <Stack justifyContent="space-between" sx={{ ml: 3 }}>
-              {event.isValidated ? (
+              {event.validationStatus ? (
                 <Tooltip title="Votre ressource est disponible sur la plateforme">
                   <TaskAltIcon sx={{ color: "gov.lightMenthe" }} />
                 </Tooltip>
