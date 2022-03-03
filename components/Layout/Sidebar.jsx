@@ -11,20 +11,6 @@ export default function Sidebar() {
   const { session, fetchProfile, isAuthenticated, signOut, token } =
     useContext(AuthContext);
   const router = useRouter();
-  const [user, setUser] = useState({});
-
-  useEffect(() => {
-    const getProfile = async () => {
-      try {
-        const profile = await fetchProfile(token);
-        setUser(profile);
-      } catch (err) {}
-    };
-
-    const onLoad = async () => await getProfile();
-
-    return onLoad();
-  }, [session]);
 
   const handleDisconnexion = () => {
     signOut();
@@ -46,15 +32,6 @@ export default function Sidebar() {
     >
       {isAuthenticated && (
         <Box sx={{ p: 2 }}>
-          <ListItem sx={{ mb: 2 }}>
-            <Avatar
-              alt={`${user?.firstName}`}
-              src={`${user?.profilePic}`}
-              sx={{ mr: 2 }}
-            />
-            <ListItemText primary={`${user?.firstName} ${user?.lastName}`} />
-          </ListItem>
-
           <Link href="/">
             <ListItem sx={{ borderBottom: `1px solid ${"gov.blue"}` }}>
               <Button variant="textBtn">Accueil</Button>

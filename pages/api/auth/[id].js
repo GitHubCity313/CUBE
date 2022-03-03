@@ -239,10 +239,13 @@ export default function auth(req, res) {
  *           schema:
  *             type: object
  *             properties:
- *               email:
+ *               credentials:
+ *                 type: object
+ *                 schema: 
+ *                 $ref: '#/components/schemas/Credentials'
+ *               refetchInterval:
  *                 type: string
- *               password:
- *                 type: string
+ *                 example: "1d"
  *     responses:
  *       200:
  *         description: L'utilisateur a été crée

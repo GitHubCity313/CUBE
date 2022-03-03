@@ -1,4 +1,4 @@
-import * as React from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { styled, alpha } from "@mui/material/styles";
 import {
   Drawer,
@@ -8,6 +8,7 @@ import {
   InputBase,
   Toolbar,
   useMediaQuery,
+  Avatar,
 } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import SearchIcon from "@mui/icons-material/Search";
@@ -15,59 +16,28 @@ import Image from "next/image";
 import Link from "next/link";
 import Logo from "../../public/logoMini.svg";
 import Sidebar from "./Sidebar";
-
-const Search = styled("div")(({ theme }) => ({
-  position: "relative",
-  borderRadius: theme.shape.borderRadius,
-  backgroundColor: alpha(theme.palette.common.white, 0.15),
-  "&:hover": {
-    backgroundColor: alpha(theme.palette.common.white, 0.25),
-  },
-  marginLeft: 0,
-  width: "100%",
-  [theme.breakpoints.up("sm")]: {
-    marginLeft: theme.spacing(1),
-    width: "auto",
-  },
-}));
-
-const SearchIconWrapper = styled("div")(({ theme }) => ({
-  padding: theme.spacing(0, 2),
-  height: "100%",
-  borderRaduis: "10px",
-  backgroundColor: theme.palette.primary.main,
-  color: theme.palette.common.white,
-  position: "absolute",
-  pointerEvents: "none",
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "center",
-}));
-
-const StyledInputBase = styled(InputBase)(({ theme }) => ({
-  color: "inherit",
-  marginRight: "100px",
-  borderRadius: "0px",
-  textAlign: "left",
-  "& .MuiInputBase-input": {
-    padding: theme.spacing(1, 1, 1, 0),
-    // vertical padding + font size from searchIcon
-    paddingLeft: `calc(1em + ${theme.spacing(4)})`,
-    transition: theme.transitions.create("width"),
-    width: "100%",
-    [theme.breakpoints.up("sm")]: {
-      width: "12ch",
-      "&:focus": {
-        width: "20ch",
-      },
-    },
-  },
-}));
+import AuthContext from "../../context/authContext";
 
 const Header = (props) => {
   const { withSidebar } = props;
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
+  const { session, fetchProfile, isAuthenticated, signOut, token } =
+    useContext(AuthContext);
+  const [user, setUser] = useState({});
+
+  useEffect(() => {
+    const getProfile = async () => {
+      try {
+        const profile = await fetchProfile(token);
+        setUser(profile);
+      } catch (err) {}
+    };
+
+    const onLoad = async () => await getProfile();
+
+    return onLoad();
+  }, [session]);
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar
@@ -95,25 +65,15 @@ const Header = (props) => {
           >
             Ressources Relationnelles
           </Typography>
-          <Search
-            variant="searchHeader"
-            style={{
-              borderBottom: "2px solid #000091",
-              display: "flex",
-              flexDirection: "row-reverse",
-              justifyContent: "space-between",
-              backgroundColor: "#EEEEEE",
-              width: "300px",
-            }}
-          >
-            <SearchIconWrapper>
-              <SearchIcon />
-            </SearchIconWrapper>
-            <StyledInputBase
-              placeholder="Rechercher"
-              inputProps={{ "aria-label": "search" }}
-            />
-          </Search>
+          <Typography
+            variant="body2"
+            sx={{ color: "gov.blue" }}
+          >{`${user?.firstName} ${user?.lastName}`}</Typography>
+          <Avatar
+            alt={`${user?.firstName}`}
+            src={`${user?.profilePic}`}
+            sx={{ mr: 2, ml: 2 }}
+          />
         </Toolbar>
       </AppBar>
       {withSidebar && !isMobile && (
