@@ -1,6 +1,7 @@
 import clientPromise from "../../../lib/mongodb";
 import { ObjectId } from "mongodb";
 import jwt from "jsonwebtoken";
+import CommandCursor from "mongodb/lib/command_cursor";
 
 export default function userId(req, res) {
   const connect = async () => {
@@ -71,7 +72,7 @@ export default function userId(req, res) {
 
   const getEvents = async (db, res, body) => {
     try {
-      const likesArr = body.map((i) => ObjectId(i));
+      const likesArr = body.map((i) => i !== "" && ObjectId(i));
       const events = await db
         .collection("resources")
         .find({
@@ -87,9 +88,26 @@ export default function userId(req, res) {
     }
   };
 
+  const getCreatedEvents = async (db, res, body) => {
+    try {
+      const likesArr = body.map((i) => i !== "" && ObjectId(i));
+      const events = await db
+        .collection("resources")
+        .find({
+          _id: {
+            $in: likesArr,
+          },
+        })
+        .toArray();
+      return res.status(200).json({ events });
+    } catch (err) {
+      return res.status(404).json({ err });
+    }
+  };
+
   const getLikes = async (db, res, body) => {
     try {
-      const likesArr = body.map((i) => ObjectId(i));
+      const likesArr = body.map((i) => i !== "" && ObjectId(i));
       const resources = await db
         .collection("resources")
         .find({
@@ -117,6 +135,7 @@ export default function userId(req, res) {
       case "DELETE":
         return await deleteUser(id.toString());
       case "PUT":
+        const id = req.query.id.trim();
         return await updateUser(id, db, user, res);
       case "POST":
         const query = req.query.data;
@@ -139,7 +158,12 @@ export default function userId(req, res) {
               expiredAt: err.expiredAt,
             });
           }
-        } else if (query === "events") {
+        }
+        if (query === "events") {
+          const body = req.body;
+          const reqToken = req.headers?.authorization
+            ? req.headers?.authorization
+            : null;
           try {
             jwt.verify(reqToken, process.env.JWT_SECRET);
             return await getEvents(db, res, body);
@@ -149,6 +173,13 @@ export default function userId(req, res) {
               expiredAt: err.expiredAt,
             });
           }
+        }
+        if (query === "eventsCreation") {
+          const body = req.body;
+          const reqToken = req.headers?.authorization
+            ? req.headers?.authorization
+            : null;
+          return await getCreatedEvents(db, res, body);
         } else {
           try {
             jwt.verify(token, process.env.JWT_SECRET);
@@ -255,7 +286,7 @@ export default function userId(req, res) {
  *         description: Le complément d'informations souhaité.
  *         schema:
  *           type: string
- *           enum: ["events", "likes"]
+ *           enum: ["events", "likes", "eventsCreation"]
  *     responses:
  *       200:
  *         description: L'utilisateur demandé

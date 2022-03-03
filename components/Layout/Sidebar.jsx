@@ -1,13 +1,12 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Box, Avatar, ListItem, ListItemText, Button } from "@mui/material";
 import { useRouter } from "next/router";
 import SettingsIcon from "@mui/icons-material/Settings";
-import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import Link from "next/link";
 import AuthContext from "../../context/authContext";
 
 export default function Sidebar() {
-  const { session, isAuthenticated, signOut } = useContext(AuthContext);
+  const { isAuthenticated, signOut } = useContext(AuthContext);
   const router = useRouter();
 
   const handleDisconnexion = () => {
@@ -30,17 +29,6 @@ export default function Sidebar() {
     >
       {isAuthenticated && (
         <Box sx={{ p: 2 }}>
-          <ListItem sx={{ mb: 2 }}>
-            <Avatar
-              alt={`${session?.firstName}`}
-              src={`${session?.profilePic}`}
-              sx={{ mr: 2 }}
-            />
-            <ListItemText
-              primary={`${session?.firstName} ${session?.lastName}`}
-            />
-          </ListItem>
-
           <Link href="/">
             <ListItem sx={{ borderBottom: `1px solid ${"gov.blue"}` }}>
               <Button variant="textBtn">Accueil</Button>
@@ -54,6 +42,13 @@ export default function Sidebar() {
           <Link href="/profile">
             <ListItem>
               <Button variant="textBtn">Mon profil</Button>
+            </ListItem>
+          </Link>
+          <Link href="/admin">
+            <ListItem>
+              <Button variant="textBtn" sx={{ color: "gov.red" }}>
+                Administration
+              </Button>
             </ListItem>
           </Link>
         </Box>

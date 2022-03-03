@@ -23,9 +23,9 @@ export default function auth(req, res) {
         .toArray();
 
       if (user.length !== 0 && user[0].isValidated) {
-        const { firstName, lastName, role, _id, profilePic } = user.shift();
+        const { firstName, lastName, role, _id } = user.shift();
         const token = jwt.sign(
-          { data: { id: _id, firstName, lastName, role, profilePic } },
+          { data: { id: _id, firstName, lastName, role } },
           process.env.JWT_SECRET,
           {
             expiresIn: refetchInterval,
@@ -239,10 +239,13 @@ export default function auth(req, res) {
  *           schema:
  *             type: object
  *             properties:
- *               email:
+ *               credentials:
+ *                 type: object
+ *                 schema: 
+ *                 $ref: '#/components/schemas/Credentials'
+ *               refetchInterval:
  *                 type: string
- *               password:
- *                 type: string
+ *                 example: "1d"
  *     responses:
  *       200:
  *         description: L'utilisateur a été crée

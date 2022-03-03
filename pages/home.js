@@ -116,8 +116,10 @@ export async function getServerSideProps() {
     const fetchedResources = await apiService.getItems("resources");
     const fetchedCategories = await apiService.getItems("categories");
 
-    resources = await fetchedResources.data.resources;
+    const rawResources = await fetchedResources.data.resources;
+    resources = rawResources.filter(r => r.validationStatus)
     categories = await fetchedCategories.data.categories;
+
     resourceTypes = indexResourceTypes(resources);
   } catch (err) {
     console.log(err);

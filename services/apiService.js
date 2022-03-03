@@ -20,6 +20,10 @@ const apiService = {
     axiosInstance.post(`/users/profile`, {
       headers: { Authorization: token },
     }),
+  fetchCreatedEvents: (token, events) =>
+    axiosInstance.post(`/users/profile?data=eventsCreation`, JSON.stringify(events), {
+      headers: { Authorization: token },
+    }),
   fetchLikes: (token, likes) =>
     axiosInstance.post(`/users/profile?data=likes`, JSON.stringify(likes), {
       headers: { Authorization: token },

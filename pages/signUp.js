@@ -13,7 +13,7 @@ import {
 import { useTheme } from "@mui/material/styles";
 import Layout from "../components/Layout/Layout";
 import Image from "next/image";
-import Logo from "../public/logoMini.svg";
+import Logo from "../public/img/register.jpg";
 
 const SignUp = () => {
   const theme = useTheme();
@@ -46,20 +46,16 @@ const SignUp = () => {
         flexDirection={isMobile ? "column" : "row"}
         justifyContent="center"
         alignItems="center"
+        sx={{ minHeight: "50vh"}}
       >
-        <Grid item xs={12} md={4}>
+        <Grid item xs={12} md={4} >
           <Grid
             container
             justifyContent="center"
             alignItems="center"
             pt={isMobile && 1}
           >
-            <Image
-              src={Logo}
-              width={isMobile ? 125 : 250}
-              height={isMobile ? 125 : 250}
-              alt="Gouv"
-            />
+            <Image src={Logo} alt="Gouv" />
           </Grid>
         </Grid>
         <Grid item xs={12} md={7}>
