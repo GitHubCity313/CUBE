@@ -136,7 +136,7 @@ export default function Profile() {
               actionButton={{
                 label: "créer",
                 icon: <AddCircleOutlineIcon />,
-                onClick: () => router.push("/login"),
+                onClick: () => router.push("/resource/add"),
               }}
             />
           </Grid>

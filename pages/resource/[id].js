@@ -148,7 +148,7 @@ export default function Resource({
   return (
     <Layout title={resource.title} withSidebar withFooter>
       <Grid container flexDirection="column">
-        <Grid container flexDirection="row" sx={{ mb: 3 }}>
+        <Grid container flexDirection="row" sx={{ mb: 3 }} >
           <Breadcrumbs aria-label="breadcrumb">
             <Link underline="hover" color="inherit" href="/">
               Accueil
@@ -156,7 +156,7 @@ export default function Resource({
             <Typography color="text.primary">{resource.title}</Typography>
           </Breadcrumbs>
         </Grid>
-        <Typography variant="h1">{resource.title}</Typography>
+        <Typography variant="h1" sx={{ color: "gov.blue"}}>{resource.title}</Typography>
         <Grid
           container
           flexDirection="row"
@@ -183,7 +183,7 @@ export default function Resource({
             </Typography>
           </Stack>
 
-          <Stack direction="row" spacing={2} sx={{ mt: 2 }}>
+          <Stack direction="row" spacing={2} >
             {isCreator() && (
               <>
                 {editingMode ? (
@@ -216,8 +216,11 @@ export default function Resource({
         <Grid
           container
           flexDirection="column"
-          mt={2}
+          mt={4}
           sx={{
+            borderTop: "1px dashed rgba(122, 177, 232, 0.3)",
+            borderBottom: "1px dashed rgba(122, 177, 232, 0.3)",
+            py: 4,
             "& div.ql-toolbar": {
               border: "none",
               display: !editingMode ? "none" : "default",

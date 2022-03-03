@@ -9,6 +9,7 @@ import {
   CardActionArea,
   CardMedia,
 } from "@mui/material";
+import EventShortCard from "./EventShortCard";
 import Link from "next/link";
 import Image from "next/image";
 import Logo from "../../public/logoMini.svg";
@@ -53,38 +54,8 @@ export default function UserInfoCard(props) {
             </>
           ) : (
             <Stack direction="row">
-              {list.map((e) => (
-                <Card
-                  sx={{
-                    display: "flex",
-                    my: 4,
-                    mr: 4,
-                    alignItems: "center",
-                  }}
-                  key={e._id}
-                >
-                  <Typography variant="caption" component="div">
-                    {e.title}
-                  </Typography>
-                  <Link href={`/resource/${e._id}`}>
-                    <CardActionArea>
-                      {e?.thumbnail?.url ? (
-                        <CardMedia
-                          component="img"
-                          sx={{
-                            width: 125,
-                            heigth: 125,
-                            borderRadius: "16px",
-                            objectFit: "cover",
-                          }}
-                          image={`${e.thumbnail.url}`}
-                        />
-                      ) : (
-                        <Image src={Logo} width={50} height={50} alt="Gouv" />
-                      )}
-                    </CardActionArea>
-                  </Link>
-                </Card>
+              {list.map((event) => (
+                <EventShortCard event={event} />
               ))}
             </Stack>
           )}

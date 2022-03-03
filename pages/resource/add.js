@@ -14,7 +14,7 @@ import {
 } from "@mui/material";
 import Layout from "../../components/Layout/Layout";
 import DatePicker from "../../components/DatePicker";
-import TypeRadio from "../../components/Event/TypeRadio";
+//import TypeRadio from "../../components/Event/TypeRadio";
 import Snackbar from "../../components/Snackbar";
 import CategoriesSelect from "../../components/Home/CategoriesSelect";
 
@@ -86,6 +86,7 @@ const AddArticle = ({ categories }) => {
     const { endDate, startDate } = newResource;
 
     const resource = {
+      eventType: 'event',
       ...newResource,
       content,
       thumbnail,
@@ -159,7 +160,7 @@ const AddArticle = ({ categories }) => {
             >
               Ajouter une ressource
             </Typography>
-            <TypeRadio
+            {/* <TypeRadio
               onChange={(e) =>
                 setNewResource({
                   ...newResource,
@@ -169,7 +170,7 @@ const AddArticle = ({ categories }) => {
               value={newResource.resourceType}
               label=" Type de ressources"
               isEvent={isEvent}
-            />
+            /> */}
           </Grid>
           <Grid item xs={12} m={2}>
             <Typography
