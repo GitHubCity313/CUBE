@@ -225,6 +225,7 @@ export default function Resource({
               border: "none",
               display: !editingMode ? "none" : "default",
               backgroundColor: "rgba(122, 177, 232, 0.3)",
+       
             },
           }}
         >
@@ -237,6 +238,9 @@ export default function Resource({
               "&.ql-tooltip": {
                 display: "none",
               },
+              "& input": {
+                display: "none"
+              }
             }}
             ref={quillRef}
           />
