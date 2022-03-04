@@ -170,7 +170,7 @@ export default function Resource({
   return (
     <Layout title={resource.title} withSidebar withFooter>
       <Grid container flexDirection="column">
-        <Grid container flexDirection="row" sx={{ mb: 3 }} >
+        <Grid container flexDirection="row" sx={{ mb: 3 }}>
           <Breadcrumbs aria-label="breadcrumb">
             <Link underline="hover" color="inherit" href="/">
               Accueil
@@ -178,7 +178,9 @@ export default function Resource({
             <Typography color="text.primary">{resource.title}</Typography>
           </Breadcrumbs>
         </Grid>
-        <Typography variant="h1" sx={{ color: "gov.blue"}}>{resource.title}</Typography>
+        <Typography variant="h1" sx={{ color: "gov.blue" }}>
+          {resource.title}
+        </Typography>
         <Grid
           container
           flexDirection="row"
@@ -205,7 +207,7 @@ export default function Resource({
             </Typography>
           </Stack>
 
-          <Stack direction="row" spacing={2} >
+          <Stack direction="row" spacing={2}>
             {isCreator() && (
               <>
                 {editingMode ? (
@@ -247,7 +249,6 @@ export default function Resource({
               border: "none",
               display: !editingMode ? "none" : "default",
               backgroundColor: "rgba(122, 177, 232, 0.3)",
-       
             },
           }}
         >
@@ -261,27 +262,11 @@ export default function Resource({
                 display: "none",
               },
               "& input": {
-                display: "none"
-              }
+                display: "none",
+              },
             }}
             ref={quillRef}
           />
-        </Grid>
-        <Grid container flexDirection="column">
-          {contents.content.map((content) => {
-            return (
-              <div
-                key={contents.content.indexOf(content)}
-                className={content.type}
-              >
-                {content.type !== "image" ? (
-                  <Typography variant="body2">{content.value}</Typography>
-                ) : (
-                  <Image width={450} height={150} src={content.url} />
-                )}
-              </div>
-            );
-          })}
         </Grid>
         <CommentForm resourceId={resource._id} />
         <Grid sx={{ mt: 2, mb: 2 }} flexDirection="column">
