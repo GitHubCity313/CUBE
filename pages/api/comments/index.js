@@ -36,14 +36,14 @@ export default function comments(req, res) {
     console.log(user);
 
     const newComment = {
-      relatedResource,
+      relatedResource: ObjectId(relatedResource),
       author: ObjectId(user.id.toString()),
       title,
       value,
       createdAt: dateToIso,
       isReported: false,
       isModerated: false,
-      authorName: `${user.firstName} ${user.LastName}`,
+      authorName: `${user.firstName} ${user.lastName}`,
     };
     return newComment;
   };

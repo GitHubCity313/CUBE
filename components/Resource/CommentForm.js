@@ -26,7 +26,7 @@ export default function CommentForm(resourceId) {
       const comment = {
         title: document.getElementById("commentTitle").value,
         value: document.getElementById("commentTextArea").value,
-        // relatedResource: ObjectId(resourceId.resourceId.toString()),
+        relatedResource: resourceId.resourceId.toString(),
       };
       // console.log("comment");
       // console.log(comment);
@@ -63,6 +63,7 @@ export default function CommentForm(resourceId) {
           // onClick={sendComment(token, document.getElementById("commentTextArea").value)}
           onClick={submitComment}
           variant="bleuBtn"
+          disabled={!isAuthenticated}
         >
           Envoyer
         </Button>
