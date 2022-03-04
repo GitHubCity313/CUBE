@@ -13,23 +13,29 @@ export default function CommentForm(resourceId) {
   // console.log(resourceId.resourceId);
 
   const { session, isAuthenticated, token } = useContext(AuthContext);
+  const [newComment, setNewComment] = useState({
+    title: "",
+    value: "",
+  });
   // const [fields, setFields] = useState({ comment: "" });
   let placeHolderText = "Laissez votre commentaire..";
   if (!isAuthenticated) {
     placeHolderText = "Veuillez vous connecter pour laisser un commentaire";
   }
+
+  const isCommentFormValid = () => {
+    const { title, value } = newComment;
+    return isAuthenticated && title !== "" && value !== "";
+  };
+
   const submitComment = async () => {
     if (isAuthenticated) {
-      const content = document.getElementById("commentTextArea").value;
-      // console.log(content);
-      //call the api' create item
       const comment = {
         title: document.getElementById("commentTitle").value,
         value: document.getElementById("commentTextArea").value,
         relatedResource: resourceId.resourceId.toString(),
       };
-      // console.log("comment");
-      // console.log(comment);
+      //call the api' create item
       try {
         let postReq = await apiService.createItem("comments", comment, token);
         if (postReq.status === 201) {
@@ -50,20 +56,32 @@ export default function CommentForm(resourceId) {
       flexDirection="column"
     >
       <Typography variant="h6">Poster un commentaire</Typography>
-      <OutlinedInput id="commentTitle" placeholder="Titre" />
+      <OutlinedInput
+        id="commentTitle"
+        placeholder="Titre"
+        onChange={(titleEvent) =>
+          setNewComment({ ...newComment, title: titleEvent.target.value })
+        }
+      />
       <TextareaAutosize
         id="commentTextArea"
         className={styles.textArea}
         aria-label="Laisser un commentaire"
         minRows={3}
         placeholder={placeHolderText}
+        onChange={(valueEvent) =>
+          setNewComment({
+            ...newComment,
+            value: valueEvent.target.value,
+          })
+        }
       />
       <Grid sx={{ mt: 1 }}>
         <Button
           // onClick={sendComment(token, document.getElementById("commentTextArea").value)}
           onClick={submitComment}
           variant="bleuBtn"
-          disabled={!isAuthenticated}
+          disabled={!isCommentFormValid()}
         >
           Envoyer
         </Button>
