@@ -23,6 +23,11 @@ export default function CommentForm(resourceId) {
     placeHolderText = "Veuillez vous connecter pour laisser un commentaire";
   }
 
+  const clearCommentInputs = () => {
+    document.getElementById("commentTitle").value = "";
+    document.getElementById("commentTextArea").value = "";
+  };
+
   const isCommentFormValid = () => {
     const { title, value } = newComment;
     return isAuthenticated && title !== "" && value !== "";
@@ -46,6 +51,7 @@ export default function CommentForm(resourceId) {
         console.log("Error in try of submitComment - CommentForm");
         console.log(e);
       }
+      clearCommentInputs();
     }
   };
   return (
