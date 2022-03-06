@@ -7,5 +7,5 @@ export default function Custom404({ resources, categories, resourceTypes }) {
 
   useEffect(() => router.push("/home"));
 
-  return <Layout title="Cube | 404" withSidebar={false} withFooter />;
+  return <Layout title="Cube | 404" withSidebar={false} withFooter={true} />;
 }

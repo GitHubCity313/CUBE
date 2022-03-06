@@ -66,8 +66,6 @@ export default function comments(req, res) {
     try {
       const newComment = await createCommentModel(comment, token);
       const validation = await validateComment(newComment);
-      console.log("in addComment - newComment:");
-      await console.log(newComment);
       const insertComment = await db
         .collection("comments")
         .insertOne(newComment);
@@ -88,6 +86,15 @@ export default function comments(req, res) {
     }
   };
 
+  const getAllComments = async (db, res) => {
+    try {
+      const users = await db.collection("comments").find({}).toArray();
+      return res.status(200).json({ users });
+    } catch (err) {
+      return res.status(404).json({ err });
+    }
+  };
+
   const getRoute = async (req, res) => {
     let bodyR;
     const db = await connect();
@@ -95,6 +102,14 @@ export default function comments(req, res) {
     //   ? req.body.headers.Authorization
     //   : null;
     switch (req.method) {
+      case "GET": {
+        bodyR = req.body;
+        const token = req.headers?.authorization
+          ? req.headers.authorization
+          : null;
+
+        return await getAllComments(db, res, token);
+      }
       case "POST": {
         bodyR = req.body;
         const token = req.headers?.authorization

@@ -22,7 +22,7 @@ const Header = (props) => {
   const { withSidebar } = props;
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
-  const { session, fetchProfile, isAuthenticated, signOut, token } =
+  const { session, fetchProfile, isAuthenticated, token } =
     useContext(AuthContext);
   const [user, setUser] = useState({});
 
@@ -65,15 +65,19 @@ const Header = (props) => {
           >
             Ressources Relationnelles
           </Typography>
-          <Typography
-            variant="body2"
-            sx={{ color: "gov.blue" }}
-          >{`${user?.firstName} ${user?.lastName}`}</Typography>
-          <Avatar
-            alt={`${user?.firstName}`}
-            src={`${user?.profilePic}`}
-            sx={{ mr: 2, ml: 2 }}
-          />
+          {isAuthenticated && (
+            <>
+              <Typography
+                variant="body2"
+                sx={{ color: "gov.blue" }}
+              >{`${user?.firstName} ${user?.lastName}`}</Typography>
+              <Avatar
+                alt={`${user?.firstName}`}
+                src={`${user?.profilePic}`}
+                sx={{ mr: 2, ml: 2 }}
+              />{" "}
+            </>
+          )}
         </Toolbar>
       </AppBar>
       {withSidebar && !isMobile && (
