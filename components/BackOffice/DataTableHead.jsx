@@ -28,6 +28,12 @@ const headCells = [
     label: "Statut",
   },
   {
+    id: "moderation",
+    numeric: false,
+    disablePadding: true,
+    label: "Signalé",
+  },
+  {
     id: "validate",
     numeric: false,
     disablePadding: true,

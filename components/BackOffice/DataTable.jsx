@@ -17,9 +17,11 @@ import {
 import PageviewIcon from "@mui/icons-material/Pageview";
 import CheckIcon from "@mui/icons-material/Check";
 import HourglassEmptyIcon from "@mui/icons-material/HourglassEmpty";
+import WarningIcon from "@mui/icons-material/Warning";
 import DataTableHead from "./DataTableHead";
 import DataHead from "./DataHead";
 import Editor from "../Resource/Editor";
+import CommentView from "../Resource/CommentView";
 import CustomDialog from "../Dialog";
 import apiService from "../../services/apiService";
 import Snackbar from "../Snackbar";
@@ -251,6 +253,20 @@ export default function DataTable({ title, data, type }) {
                         </Stack>
                       </TableCell>
                       <TableCell align="left">
+                        <Stack direction="row" alignItems={"center"}>
+                          {row.isReported ? (
+                            <WarningIcon sx={{ color: "gov.red", mr: 1 }} />
+                          ) : (
+                            <CheckIcon
+                              sx={{ color: "gov.lightMenthe", mr: 1 }}
+                            />
+                          )}
+                          {row.isReported
+                            ? "En attente de modération"
+                            : "Valide"}
+                        </Stack>
+                      </TableCell>
+                      <TableCell align={type !== "users" ? "left" : "right"}>
                         <Button
                           variant="bleuBtn"
                           sx={{
@@ -265,16 +281,19 @@ export default function DataTable({ title, data, type }) {
                           {row.validationStatus ? "Suspendre" : "Publier"}
                         </Button>
                       </TableCell>
+
                       <TableCell align="left">
-                        <Button
-                          variant="bleuBtn"
-                          startIcon={<PageviewIcon />}
-                          onClick={(e) =>
-                            handleModalOpening(row._id, "itemView")
-                          }
-                        >
-                          Aperçu
-                        </Button>
+                        {type !== "users" && (
+                          <Button
+                            variant="bleuBtn"
+                            startIcon={<PageviewIcon />}
+                            onClick={(e) =>
+                              handleModalOpening(row._id, "itemView")
+                            }
+                          >
+                            Aperçu
+                          </Button>
+                        )}
                       </TableCell>
                     </TableRow>
                   );
@@ -308,9 +327,15 @@ export default function DataTable({ title, data, type }) {
         handleClose={() => setIsModalOpen({ ...isModalOpen, itemView: false })}
         title={data.filter((d) => d._id === targetItem)[0]?.title}
         children={
-          <Editor resource={data.filter((d) => d._id === targetItem).shift()}>
-            hello view
-          </Editor>
+          type === "resource" ? (
+            <Editor
+              resource={data.filter((d) => d._id === targetItem).shift()}
+            />
+          ) : (
+            <CommentView
+              comment={data.filter((d) => d._id === targetItem).shift()}
+            />
+          )
         }
       />
       <Snackbar
