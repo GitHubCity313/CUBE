@@ -111,9 +111,9 @@ export default function users(req, res) {
  *           type: string
  *           description: Le hash du mot de passe.
  *           example: 8745de6abbc5a0b632fccdae08e53b3f
- *         enabled:
+ *         isReported:
  *           type: boolean
- *           description: L'utilisateur est actif.
+ *           description: L'utilisateur a été signalé comme problématiaue.
  *           example: true
  *         profilePic:
  *           type: string

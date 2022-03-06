@@ -114,7 +114,6 @@ export default function auth(req, res) {
       firstName,
       email,
       password,
-      enabled: true,
       profilePic: "",
       seen: [],
       hasEvents: [],
@@ -125,6 +124,7 @@ export default function auth(req, res) {
       createdAt: Date.now(),
       updatedAt: Date.now(),
       confirmationCode: generateConfimationCode(),
+      isReported: false
     };
 
     return newUser;

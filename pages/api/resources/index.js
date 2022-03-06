@@ -19,7 +19,6 @@ export default function ressources(req, res) {
       categories: Joi.array().items(Joi.string().trim()).min(1).required(),
       author: Joi.string().alphanum().required().trim(),
       hasParticipants: Joi.array().items(Joi.string()).required(),
-      moderationValidation: Joi.boolean(),
       publicationStatus: Joi.string()
         .valid("public", "private")
         .required()
@@ -42,6 +41,7 @@ export default function ressources(req, res) {
       }),
       description: Joi.string().required().trim(),
       validationStatus: Joi.boolean(),
+      isReported: Joi.boolean()
     });
   };
 
@@ -82,6 +82,7 @@ export default function ressources(req, res) {
       thumbnail,
       description,
       validationStatus: false,
+      isReported: false
     };
 
     return newUser;
@@ -187,9 +188,9 @@ export default function ressources(req, res) {
  *           type: array
  *           description: Les utilisateurs inscrits pour l'evenement.
  *           example: ["uuid wanted"]
- *         moderationValidation:
+ *         isReported:
  *           type: boolean
- *           description: La ressource a été validée par un administrateur.
+ *           description: La ressource a été signalée comme problématiaue.
  *           example: true
  *         publicationStatus:
  *           type: string

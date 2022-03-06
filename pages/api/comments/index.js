@@ -53,7 +53,7 @@ export default function comments(req, res) {
       value,
       createdAt: dateToIso,
       isReported: false,
-      isModerated: false,
+      validationStatus: true,
       authorName: `${user.firstName} ${user.lastName}`,
     };
     return newComment;
@@ -90,7 +90,6 @@ export default function comments(req, res) {
       return res.status(404).json({ err });
     }
   };
-
 
   const getRoute = async (req, res) => {
     let bodyR;
@@ -160,7 +159,7 @@ export default function comments(req, res) {
  *           type: boolean
  *           description: La ressource a été reportee comme problematique par un utilisateur.
  *           example: true
- *         isModerated:
+ *         validationStatus:
  *           type: boolean
  *           description: La ressource a été moderée par un administrateur.
  *           example: true
