@@ -75,6 +75,18 @@ export default function comments(req, res) {
 
     }}
 
+  const deleteComment = async (id, db, res) => {
+    const objectId = new ObjectId(id);
+    try {
+      const resource = await db
+        .collection("comments")
+        .deleteOne({ _id: objectId });
+      return res.status(204).json({ resource });
+    } catch (err) {
+      return res.status(404).json({ err });
+    }
+  };
+
   const getRoute = async (req, res) => {
     const db = await connect();
     const id = req.query.id.trim();
@@ -87,6 +99,7 @@ export default function comments(req, res) {
       case "DELETE": {
         return await deleteComment(db, res, id);
       }
+<<<<<<< HEAD
       case "PUT": {
         delete comment._id;
         delete comment.relatedResource;
@@ -95,6 +108,11 @@ export default function comments(req, res) {
       // case "PUT": {
       //   return await updateComment(id, db, req.body, res);
        }
+=======
+      case "DELETE": {
+        return await deleteComment(id, db, res);
+      }
+>>>>>>> :sparkles: (Admin) On peut effacer les items des tableaux
       default:
         return res.status(405).end(`Method ${req.method} Not Allowed`);
     }

@@ -111,7 +111,7 @@ export default function DataTable({ title, data, type }) {
   const isSelected = (_id) => selected.indexOf(_id) !== -1;
 
   const emptyRows =
-    page > 0 ? Math.max(0, (1 + page) * rowsPerPage - data.length) : 0;
+    page > 0 ? Math.max(0, (1 + page) * rowsPerPage - displayedData.length) : 0;
 
   const handleChangeOnResource = async (id) => {
     try {
@@ -147,10 +147,42 @@ export default function DataTable({ title, data, type }) {
     }
   };
 
+  const handleResourceDeletion = async () => {
+    try {
+      const itemsToDelete = displayedData.filter((d) =>
+        selected.includes(d._id)
+      );
+
+      const deletionArr = await Promise.all(
+        itemsToDelete.map((i) => apiService.deleteItem(type, i._id, token))
+      );
+      if (deletionArr.every((e) => e.status === 204)) {
+        const newData = displayedData.filter((d) => !selected.includes(d._id));
+        setDisplayedData(newData);
+        setSelected([]);
+        setSnackbar({
+          open: true,
+          message: "La sélection a été modifiée",
+          severity: "success",
+        });
+      }
+    } catch (err) {
+      setSnackbar({
+        open: true,
+        message: "La selection n'a pas pu être supprimée",
+        severity: "error",
+      });
+    }
+  };
+
   return (
     <Box sx={{ width: "100%" }}>
       <Paper sx={{ width: "100%", mb: 2 }}>
-        <DataHead numSelected={selected.length} title={title} />
+        <DataHead
+          numSelected={selected.length}
+          title={title}
+          handleResourceDeletion={handleResourceDeletion}
+        />
         <TableContainer>
           <Table
             sx={{ minWidth: 750 }}
@@ -163,7 +195,7 @@ export default function DataTable({ title, data, type }) {
               orderBy={orderBy}
               onSelectAllClick={handleSelectAllClick}
               onRequestSort={handleRequestSort}
-              rowCount={data.length}
+              rowCount={displayedData.length}
             />
             <TableBody>
               {displayedData
@@ -262,7 +294,7 @@ export default function DataTable({ title, data, type }) {
         <TablePagination
           rowsPerPageOptions={[5, 10, 25]}
           component="div"
-          count={data.length}
+          count={displayedData.length}
           rowsPerPage={rowsPerPage}
           page={page}
           onPageChange={handleChangePage}

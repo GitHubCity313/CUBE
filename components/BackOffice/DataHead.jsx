@@ -8,7 +8,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 
 // Contrôle l'apparence du header des tableaux de données
 const DataHead = (props) => {
-  const { numSelected, title } = props;
+  const { numSelected, title, handleResourceDeletion } = props;
 
   return (
     <Toolbar
@@ -32,7 +32,7 @@ const DataHead = (props) => {
         </Typography>
       ) : (
         <Typography
-          sx={{ flex: "1 1 100%" }}
+          sx={{ flex: "1 1 100%", color: "gov.blue" }}
           variant="h6"
           id="tableTitle"
           component="div"
@@ -43,7 +43,7 @@ const DataHead = (props) => {
 
       {numSelected > 0 && (
         <Tooltip title="Effacer la sélection">
-          <IconButton sx={{ color: "white" }}>
+          <IconButton sx={{ color: "white" }} onClick={handleResourceDeletion}>
             <DeleteIcon />
           </IconButton>
         </Tooltip>
@@ -54,6 +54,8 @@ const DataHead = (props) => {
 
 DataHead.propTypes = {
   numSelected: PropTypes.number.isRequired,
+  title: PropTypes.string.isRequired,
+  handleResourceDeletion: PropTypes.func.isRequired,
 };
 
 export default DataHead;

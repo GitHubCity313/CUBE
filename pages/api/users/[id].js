@@ -35,7 +35,7 @@ export default function userId(req, res) {
       user.result.n > 0
         ? console.log(`[SUCCESS] deletion confirmed`)
         : console.log(`[WARNING] No item deleted. Bad userId ? (${id})`);
-      return res.status(200).json({ user });
+      return res.status(204).json({ user });
     } catch (err) {
       // [server_logs]
       console.log(`[FAILED] DELETE user with id : ${id} : `);
@@ -46,7 +46,7 @@ export default function userId(req, res) {
 
   const updateUser = async (id, db, resource, res) => {
     const objectId = new ObjectId(id);
-    console.log(resource)
+    console.log(resource);
     try {
       const filter = { _id: objectId };
       const updatedResource = {
@@ -123,16 +123,15 @@ export default function userId(req, res) {
   const getRoute = async (req, res) => {
     const db = await connect();
     const user = req?.body ? req.body : null;
+    const id = req.query.id.trim();
 
     switch (req.method) {
       case "GET": {
-        const id = req.query.id.trim();
         return await getUser(id, db, res);
       }
       case "DELETE":
-        return await deleteUser(id.toString());
+        return await deleteUser(id);
       case "PUT":
-        const id = req.query.id.trim();
         return await updateUser(id, db, user, res);
       case "POST":
         const query = req.query.data;

@@ -41,12 +41,14 @@ export default function CustomDialog(props) {
 
 CustomDialog.defaultProps = {
   hasNoConfirmation: false,
+  handleConfirmation: () => {},
+  title: "",
 };
 
 CustomDialog.propTypes = {
   open: PropTypes.bool.isRequired,
-  title: PropTypes.string.isRequired,
+  title: PropTypes.string,
   handleClose: PropTypes.func.isRequired,
-  handleConfirmation: PropTypes.func.isRequired,
+  handleConfirmation: PropTypes.func,
   hasNoConfirmation: PropTypes.bool,
 };

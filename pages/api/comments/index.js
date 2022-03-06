@@ -45,9 +45,6 @@ export default function comments(req, res) {
 
     //vérifier le token en amont pour récupérer le nom prénom si il est ok
     const user = await getUserFromToken(token);
-    console.log("user in getUserFromToken");
-    console.log(typeof user);
-    console.log(user);
 
     const newComment = {
       relatedResource: ObjectId(relatedResource),
@@ -71,7 +68,6 @@ export default function comments(req, res) {
         .insertOne(newComment);
       return res.status(201).json({ insertComment });
     } catch (e) {
-      console.log("COUCOU");
       console.log(e);
       return res.status(404).json({ e });
     }
@@ -99,8 +95,6 @@ export default function comments(req, res) {
   const getRoute = async (req, res) => {
     let bodyR;
     const db = await connect();
-
-    console.log(req)
     // const token = req.body.headers?.Authorization
     //   ? req.body.headers.Authorization
     //   : null;
