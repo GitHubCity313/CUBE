@@ -9,8 +9,6 @@ export default function Editor({ resource }) {
   const [, setContents] = useState([]);
   const options = editorUtils.getEditorOptions();
 
-  console.log(resource);
-
   const { quill, quillRef } = useQuill(options);
 
   useEffect(() => {

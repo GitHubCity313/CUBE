@@ -22,7 +22,7 @@ export default function auth(req, res) {
         .find({ email, password })
         .toArray();
 
-      if (user.length !== 0 && user[0].isValidated) {
+      if (user.length !== 0 && user[0].validationStatus) {
         const { firstName, lastName, role, _id } = user.shift();
         const token = jwt.sign(
           { data: { id: _id, firstName, lastName, role } },
@@ -35,7 +35,7 @@ export default function auth(req, res) {
           token,
         });
       } else {
-        if (!user[0].isValidated) {
+        if (!user[0].validationStatus) {
           return res.status(401).json({
             message: "Vous devez vérifier votre compte avant de vous connecter",
           });
@@ -121,7 +121,7 @@ export default function auth(req, res) {
       hasEventsCreated: [],
       likes: [],
       role: ObjectId("61e165463d88f191f3f4e0d4"),
-      isValidated: false,
+      validationStatus: false,
       createdAt: Date.now(),
       updatedAt: Date.now(),
       confirmationCode: generateConfimationCode(),
@@ -138,7 +138,7 @@ export default function auth(req, res) {
       const updatedUser = {
         $set: {
           confirmationCode: "",
-          isValidated: true,
+          validationStatus: true,
           updatedAt: Date.now(),
         },
       };

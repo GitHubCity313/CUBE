@@ -36,7 +36,6 @@ export default function AdminPanel({ resources, comments, users }) {
           return {
             ...c,
             createdAt: format(new Date(c.createdAt), "dd/MM/yyyy"),
-            validationStatus: !c.Reported,
           };
         });
         return commentTable;
@@ -46,7 +45,6 @@ export default function AdminPanel({ resources, comments, users }) {
             ...u,
             title: u.lastName + " " + u.firstName,
             createdAt: format(new Date(u.createdAt), "dd/MM/yyyy"),
-            validationStatus: u.isValidated,
           };
         });
         return userTable;
@@ -71,13 +69,25 @@ export default function AdminPanel({ resources, comments, users }) {
             </TabList>
           </Box>
           <TabPanel value={"0"}>
-            <DataTable title="Ressources" data={formatData(resources)} />
+            <DataTable
+              title="Ressources"
+              data={formatData(resources)}
+              type="resources"
+            />
           </TabPanel>
           <TabPanel value="1">
-            <DataTable title="Commentaires" data={formatData(comments)} />
+            <DataTable
+              title="Commentaires"
+              data={formatData(comments)}
+              type="comments"
+            />
           </TabPanel>
           <TabPanel value="2">
-            <DataTable title="Utilisateurs" data={formatData(users)} />
+            <DataTable
+              title="Utilisateurs"
+              data={formatData(users)}
+              type="users"
+            />
           </TabPanel>
           <TabPanel value="3">Staaaaats</TabPanel>
         </TabContext>

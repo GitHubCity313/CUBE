@@ -105,7 +105,7 @@ UserEditDialog.propTypes = {
     hasEventsCreated: PropTypes.arrayOf(PropTypes.string).isRequired,
     likes: PropTypes.number.isRequired,
     role: PropTypes.string.isRequired,
-    isValidated: PropTypes.bool.isRequired,
+    validationStatus: PropTypes.bool.isRequired,
     createdAt: PropTypes.string.isRequired,
     updatedAt: PropTypes.string.isRequired,
     confirmationCode: PropTypes.string.isRequired,

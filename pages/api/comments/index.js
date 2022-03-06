@@ -95,9 +95,12 @@ export default function comments(req, res) {
     }
   };
 
+
   const getRoute = async (req, res) => {
     let bodyR;
     const db = await connect();
+
+    console.log(req)
     // const token = req.body.headers?.Authorization
     //   ? req.body.headers.Authorization
     //   : null;
@@ -115,13 +118,9 @@ export default function comments(req, res) {
         const token = req.headers?.authorization
           ? req.headers.authorization
           : null;
-        console.log("FROM API\n======");
-        console.log(req);
-        console.log(req.body);
-        console.log(token);
-        console.log("======");
         return await addComment(db, res, bodyR, token);
       }
+
       default:
         return res.status(405).end(`Method ${req.method} Not Allowed`);
     }

@@ -49,8 +49,26 @@ export default function comments(req, res) {
     } catch (e) {
       console.log(e);
       return res.status(404).json({ e });
-    }
-  };
+  // const updateComment = async (id, db, resource, res) => {
+  //   const objectId = new ObjectId(id);
+  //   try {
+  //     const filter = { _id: objectId };
+
+  //     const updatedResource = {
+  //       $set: {
+  //         ...resource,
+  //       },
+  //     };
+  //     const update = await db
+  //       .collection("comments")
+  //       .updateOne(filter, updatedResource);
+  //     return res.status(204).json({ update });
+  //   } catch (err) {
+  //     return res.status(404).json({ err });
+  //   }
+  // };
+
+    }}
 
   const getRoute = async (req, res) => {
     const db = await connect();
@@ -69,7 +87,9 @@ export default function comments(req, res) {
         delete comment.relatedResource;
         delete comment.author;
         return await updateComment(db, res, comment, id);
-      }
+      // case "PUT": {
+      //   return await updateComment(id, db, req.body, res);
+       }
       default:
         return res.status(405).end(`Method ${req.method} Not Allowed`);
     }

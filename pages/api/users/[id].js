@@ -44,25 +44,25 @@ export default function userId(req, res) {
     }
   };
 
-  const updateUser = async (id, db, user, res) => {
+  
+    const updateUser = async (id, db, resource, res) => {
     const objectId = new ObjectId(id);
     try {
       const filter = { _id: objectId };
-      const updatedUser = {
+      const updatedResource = {
         $set: {
-          ...user,
+          ...resource,
         },
       };
       const update = await db
         .collection("users")
-        .updateOne(filter, updatedUser);
+        .updateOne(filter, updatedResource);
       return res.status(204).json({ update });
     } catch (err) {
-      console.log("error in updateUser");
-      console.log(err);
       return res.status(404).json({ err });
     }
   };
+
 
   const fetchProfile = async (db, res, token) => {
     const user = jwt.decode(token);

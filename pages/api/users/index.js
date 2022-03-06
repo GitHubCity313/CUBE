@@ -139,7 +139,7 @@ export default function users(req, res) {
  *           type: string
  *           description: Le rôle de l'utilisateur.
  *           example: 8745de6abbc5a0b632fccdae08e53b3f
- *         isValidated:
+ *         validationStatus:
  *           type: boolean
  *           description: Le compte de l'utilisateur a été confirmé.
  *           example: true

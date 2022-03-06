@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useContext, useEffect } from "react";
+import AuthContext from "../../context/authContext";
 import PropTypes from "prop-types";
 import {
   TableBody,
@@ -11,20 +12,32 @@ import {
   Checkbox,
   Box,
   Table,
-  Typography,
+  Stack,
 } from "@mui/material";
-
+import PageviewIcon from "@mui/icons-material/Pageview";
+import CheckIcon from "@mui/icons-material/Check";
+import HourglassEmptyIcon from "@mui/icons-material/HourglassEmpty";
 import DataTableHead from "./DataTableHead";
 import DataHead from "./DataHead";
 import Editor from "../Resource/Editor";
 import CustomDialog from "../Dialog";
+import apiService from "../../services/apiService";
+import Snackbar from "../Snackbar";
 
-export default function DataTable({ title, data }) {
+export default function DataTable({ title, data, type }) {
+  useEffect(() => setDisplayedData(data), [data]);
+  const { token } = useContext(AuthContext);
   const [isModalOpen, setIsModalOpen] = useState({
     itemValidation: false,
     itemView: false,
     itemDeletion: false,
   });
+  const [snackbar, setSnackbar] = useState({
+    open: false,
+    message: "",
+    severity: "success",
+  });
+  const [displayedData, setDisplayedData] = useState(data);
   const [targetItem, setTargetItem] = useState("");
   const [order, setOrder] = useState("asc");
   const [orderBy, setOrderBy] = useState("title");
@@ -97,9 +110,43 @@ export default function DataTable({ title, data }) {
 
   const isSelected = (_id) => selected.indexOf(_id) !== -1;
 
-  // Avoid a layout jump when reaching the last page with empty rows.
   const emptyRows =
     page > 0 ? Math.max(0, (1 + page) * rowsPerPage - data.length) : 0;
+
+  const handleChangeOnResource = async (id) => {
+    try {
+      const targetedItem = data.filter((d) => d._id === id).shift();
+      const updatedInfos = { validationStatus: !targetedItem.validationStatus };
+      const updatedItem = await apiService.updateItem(
+        type,
+        id,
+        updatedInfos,
+        token
+      );
+      if (updatedItem.status === 204) {
+        const newData = displayedData.map((d) => {
+          if (d._id === targetedItem._id) {
+            return { ...d, validationStatus: !d.validationStatus };
+          } else {
+            return d;
+          }
+        });
+
+        setDisplayedData(newData);
+        setSnackbar({
+          open: true,
+          message: "La sélection a été modifiée",
+          severity: "success",
+        });
+      }
+    } catch (err) {
+      setSnackbar({
+        open: true,
+        message: "Erreur pendant la mise à jour",
+        severity: "error",
+      });
+    }
+  };
 
   return (
     <Box sx={{ width: "100%" }}>
@@ -120,7 +167,7 @@ export default function DataTable({ title, data }) {
               rowCount={data.length}
             />
             <TableBody>
-              {data
+              {displayedData
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .sort(getComparator(order, orderBy))
                 .map((row, index) => {
@@ -152,20 +199,45 @@ export default function DataTable({ title, data }) {
                         id={labelId}
                         scope="row"
                         padding="none"
+                        sx={{ maxWidth: "200px" }}
+                        align="left"
                       >
                         {row.title}
                       </TableCell>
-                      <TableCell align="right">{row.createdAt}</TableCell>
-                      <TableCell align="right">
-                        {row.validationStatus ? "Validé" : "En attente"}
+                      <TableCell align="left">{row.createdAt}</TableCell>
+                      <TableCell align="left">
+                        <Stack direction="row" alignItems={"center"}>
+                          {row.validationStatus ? (
+                            <CheckIcon
+                              sx={{ color: "gov.lightMenthe", mr: 1 }}
+                            />
+                          ) : (
+                            <HourglassEmptyIcon
+                              sx={{ color: "gov.lightTuile", mr: 1 }}
+                            />
+                          )}
+                          {row.validationStatus ? "Validé" : "En attente"}
+                        </Stack>
                       </TableCell>
-                      <TableCell align="right">
-                        <Button>
-                          {row.validationStatus ? "Suspendre" : "Valider"}
+                      <TableCell align="left">
+                        <Button
+                          variant="bleuBtn"
+                          sx={{
+                            width: "100px",
+                            border: "1px solid transparent",
+                            backgroundColor: row.validationStatus
+                              ? "gov.red"
+                              : "gov.lightMenthe",
+                          }}
+                          onClick={() => handleChangeOnResource(row._id)}
+                        >
+                          {row.validationStatus ? "Suspendre" : "Publier"}
                         </Button>
                       </TableCell>
-                      <TableCell align="right">
+                      <TableCell align="left">
                         <Button
+                          variant="bleuBtn"
+                          startIcon={<PageviewIcon />}
                           onClick={(e) =>
                             handleModalOpening(row._id, "itemView")
                           }
@@ -209,6 +281,12 @@ export default function DataTable({ title, data }) {
             hello view
           </Editor>
         }
+      />
+      <Snackbar
+        open={snackbar.open}
+        severity={snackbar.severity}
+        message={snackbar.message}
+        onClick={() => setSnackbar({ ...snackbar, open: false })}
       />
     </Box>
   );
