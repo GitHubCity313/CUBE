@@ -37,9 +37,7 @@ export default function ressources(req, res) {
     try {
       const filter = { _id: objectId };
       const updatedResource = {
-        $set: {
-          ...resource,
-        },
+        $set: resource,
       };
       const update = await db
         .collection("resources")

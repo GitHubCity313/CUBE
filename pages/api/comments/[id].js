@@ -33,6 +33,7 @@ export default function comments(req, res) {
     }
   };
 
+<<<<<<< HEAD
   const updateComment = async (db, res, comment, id) => {
     const itemId = new ObjectId(id);
     try {
@@ -41,6 +42,10 @@ export default function comments(req, res) {
         $set: {
           ...comment,
         },
+=======
+      const updatedResource = {
+        $set: resource,
+>>>>>>> :bug: (API) La mise a jour des items se fait correctement
       };
       const updatedItem = await db
         .collection("comments")

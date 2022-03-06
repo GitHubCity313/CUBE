@@ -44,15 +44,13 @@ export default function userId(req, res) {
     }
   };
 
-  
-    const updateUser = async (id, db, resource, res) => {
+  const updateUser = async (id, db, resource, res) => {
     const objectId = new ObjectId(id);
+    console.log(resource)
     try {
       const filter = { _id: objectId };
       const updatedResource = {
-        $set: {
-          ...resource,
-        },
+        $set: resource,
       };
       const update = await db
         .collection("users")
@@ -62,7 +60,6 @@ export default function userId(req, res) {
       return res.status(404).json({ err });
     }
   };
-
 
   const fetchProfile = async (db, res, token) => {
     const user = jwt.decode(token);

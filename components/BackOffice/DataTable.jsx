@@ -115,12 +115,11 @@ export default function DataTable({ title, data, type }) {
 
   const handleChangeOnResource = async (id) => {
     try {
-      const targetedItem = data.filter((d) => d._id === id).shift();
-      const updatedInfos = { validationStatus: !targetedItem.validationStatus };
+      const targetedItem = displayedData.filter((d) => d._id === id).shift();
       const updatedItem = await apiService.updateItem(
         type,
         id,
-        updatedInfos,
+        { validationStatus: !targetedItem.validationStatus },
         token
       );
       if (updatedItem.status === 204) {
