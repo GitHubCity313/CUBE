@@ -4,6 +4,7 @@ import { ObjectId } from "mongodb";
 import jwt from "jsonwebtoken";
 import { v4 as uuidv4 } from "uuid";
 import Joi from "joi";
+import { getPaperUtilityClass } from "@mui/material";
 
 export default function auth(req, res) {
   const connect = async () => {
@@ -124,7 +125,7 @@ export default function auth(req, res) {
       createdAt: Date.now(),
       updatedAt: Date.now(),
       confirmationCode: generateConfimationCode(),
-      isReported: false
+      isReported: false,
     };
 
     return newUser;
@@ -170,6 +171,15 @@ export default function auth(req, res) {
     return res.status(200).json();
   };
 
+  const getPermissions = async (id) => {
+    try {
+      const db = await connect();
+      const userRole = await db.collection("roles").find({ id }).toArray();
+    } catch (err) {
+      return res.status(404).json({ err });
+    }
+  };
+
   const getRoute = async (req, res) => {
     const id = req.query.id;
     const token = req.body.headers?.Authorization
@@ -188,6 +198,9 @@ export default function auth(req, res) {
       case "confirm":
         const code = req.query.code;
         return await confirmSignUp(code);
+      case "permissions":
+        console.log(req.body);
+        return await getPermissions(id);
       default:
         return res.status(405).end(`Method ${req.method} Not Allowed`);
     }
@@ -241,7 +254,7 @@ export default function auth(req, res) {
  *             properties:
  *               credentials:
  *                 type: object
- *                 schema: 
+ *                 schema:
  *                 $ref: '#/components/schemas/Credentials'
  *               refetchInterval:
  *                 type: string

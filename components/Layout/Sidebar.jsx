@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext } from "react";
 import { Box, Avatar, ListItem, ListItemText, Button } from "@mui/material";
 import { useRouter } from "next/router";
 import SettingsIcon from "@mui/icons-material/Settings";
@@ -6,7 +6,7 @@ import Link from "next/link";
 import AuthContext from "../../context/authContext";
 
 export default function Sidebar() {
-  const { isAuthenticated, signOut } = useContext(AuthContext);
+  const { isAuthenticated, signOut, role } = useContext(AuthContext);
   const router = useRouter();
 
   const handleDisconnexion = () => {
@@ -46,9 +46,12 @@ export default function Sidebar() {
           </Link>
           <Link href="/admin">
             <ListItem>
-              <Button variant="textBtn" sx={{ color: "gov.red" }}>
-                Administration
-              </Button>
+              {role === "admin" ||
+                (role === "moderateur" && (
+                  <Button variant="textBtn" sx={{ color: "gov.red" }}>
+                    Administration
+                  </Button>
+                ))}
             </ListItem>
           </Link>
         </Box>

@@ -29,7 +29,7 @@ const AuthProvider = (props) => {
     const decoded = jwt.decode(token);
     const { lastName, firstName, role, id } = decoded.data;
     setToken(token);
-    setSession({ lastName, firstName, id });
+    setSession({ lastName, firstName, id, role });
     setRole(role);
     return setIsAuthenticated(true);
   }, []);
@@ -99,6 +99,7 @@ const AuthProvider = (props) => {
       // Redirige vers le callback souhaité
       return router.push(callbackUrl);
     } catch (err) {
+      console.log(err)
       if (err.response !== undefined) {
         // Recupere la reponse de l'API
         const { message } = err.response.data;
@@ -196,6 +197,16 @@ const AuthProvider = (props) => {
     }
   };
 
+  const getUserRole = async (id) => {
+    try {
+      const role = await authService.getRole(session.role);
+      console.log("hey", role);
+      setRole(role.data);
+    } catch (err) {
+      setRole("citoyen");
+    }
+  };
+
   // Ici, ce sont les infos du contexte que l'on interroge dans l'app. SignIn et SignOut peuvent être appelees
   // l'exterieur et servir a interroger les methodes a l'interieur du contexte
   // Les crochets en bas servent a determiner quand le contexte se met a jour
@@ -209,12 +220,13 @@ const AuthProvider = (props) => {
       role,
       error,
       isSignUpPending,
-      refresh: () => getSession(token),
+      checkRole: async () => await getUserRole(),
       fetchProfile: async () => await profile(),
       fetchLikes: async (arr) => await likes(arr),
       fetchEvents: async (arr) => await events(arr),
       fetchCreatedEvents: async (arr) => await createdEvents(arr),
       // Petit util pour reset les erreurs sur le signIn quand on veux
+      refresh: () => getSession(token),
       resetError: () => setError(""),
       signIn: async (credentials, callbackUrl) =>
         await authenticate(credentials, callbackUrl),
@@ -222,7 +234,7 @@ const AuthProvider = (props) => {
         await createAccount(user, callbackUrl),
       signOut: async (callbackUrl) => await logOut(callbackUrl),
     }),
-    [isAuthenticated, error, isSignUpPending, session]
+    [isAuthenticated, error, isSignUpPending, session, role]
   );
 
   return (

@@ -1,19 +1,32 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { format } from "date-fns";
+import AuthContext from "../context/authContext";
 import { useRouter } from "next/router";
 import Layout from "../components/Layout/Layout";
-import Box from "@mui/material/Box";
-import Tab from "@mui/material/Tab";
-import TabContext from "@mui/lab/TabContext";
-import TabList from "@mui/lab/TabList";
-import TabPanel from "@mui/lab/TabPanel";
-import { Typography } from "@mui/material";
+import {
+  Box,
+  Tab,
+  TabContext,
+  TabList,
+  TabPanel,
+  Typography,
+  CircularProgress,
+} from "@mui/material";
 import DataTable from "../components/BackOffice/DataTable";
 import apiService from "../services/apiService";
 
 export default function AdminPanel({ resources, comments, users }) {
   const router = useRouter();
   const [value, setValue] = useState("0");
+  const { role, isAuthenticated } = useContext(AuthContext);
+  const [isFetching, setIsFetching] = useState(true);
+  useEffect(() => {
+    if (!isAuthenticated || role === "citoyen") {
+      router.push("/");
+    } else {
+      setIsFetching(false);
+    }
+  }, [role, isAuthenticated]);
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -55,43 +68,63 @@ export default function AdminPanel({ resources, comments, users }) {
 
   return (
     <Layout title="Cube | Admin" withSidebar={false}>
-      <Typography variant="h1" sx={{ color: "gov.blue", mt: 2 }}>
-        Administration
-      </Typography>
-      <Box sx={{ width: "100%", typography: "body1", minHeight: "70vh" }}>
-        <TabContext value={value}>
-          <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
-            <TabList onChange={handleChange} aria-label="lab API tabs example">
-              <Tab label="Gestion des publications" value={"0"} />
-              <Tab label="Gestion des commentaires" value={"1"} />
-              <Tab label="Gestion des utilisateurs" value={"2"} />
-              <Tab label="Statistiques" value={"3"} />
-            </TabList>
+      {isFetching ? (
+        <Box
+          sx={{
+            width: "100%",
+            typography: "body1",
+            minHeight: "70vh",
+            color: "gov.lightMenthe",
+            display: "flex",
+            justifyContent: "center"
+          }}
+        >
+          <CircularProgress sx={{ color: "inherit" }} />
+        </Box>
+      ) : (
+        <>
+          <Typography variant="h1" sx={{ color: "gov.blue", mt: 2 }}>
+            Administration
+          </Typography>
+          <Box sx={{ width: "100%", typography: "body1", minHeight: "70vh" }}>
+            <TabContext value={value}>
+              <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
+                <TabList
+                  onChange={handleChange}
+                  aria-label="lab API tabs example"
+                >
+                  <Tab label="Gestion des publications" value={"0"} />
+                  <Tab label="Gestion des commentaires" value={"1"} />
+                  <Tab label="Gestion des utilisateurs" value={"2"} />
+                  <Tab label="Statistiques" value={"3"} />
+                </TabList>
+              </Box>
+              <TabPanel value={"0"}>
+                <DataTable
+                  title="Ressources"
+                  data={formatData(resources)}
+                  type="resources"
+                />
+              </TabPanel>
+              <TabPanel value="1">
+                <DataTable
+                  title="Commentaires"
+                  data={formatData(comments)}
+                  type="comments"
+                />
+              </TabPanel>
+              <TabPanel value="2">
+                <DataTable
+                  title="Utilisateurs"
+                  data={formatData(users)}
+                  type="users"
+                />
+              </TabPanel>
+              <TabPanel value="3">Staaaaats</TabPanel>
+            </TabContext>
           </Box>
-          <TabPanel value={"0"}>
-            <DataTable
-              title="Ressources"
-              data={formatData(resources)}
-              type="resources"
-            />
-          </TabPanel>
-          <TabPanel value="1">
-            <DataTable
-              title="Commentaires"
-              data={formatData(comments)}
-              type="comments"
-            />
-          </TabPanel>
-          <TabPanel value="2">
-            <DataTable
-              title="Utilisateurs"
-              data={formatData(users)}
-              type="users"
-            />
-          </TabPanel>
-          <TabPanel value="3">Staaaaats</TabPanel>
-        </TabContext>
-      </Box>
+        </>
+      )}
     </Layout>
   );
 }
