@@ -11,12 +11,21 @@ import {
   Checkbox,
   Box,
   Table,
+  Typography,
 } from "@mui/material";
 
 import DataTableHead from "./DataTableHead";
 import DataHead from "./DataHead";
+import Editor from "../Resource/Editor";
+import CustomDialog from "../Dialog";
 
 export default function DataTable({ title, data }) {
+  const [isModalOpen, setIsModalOpen] = useState({
+    itemValidation: false,
+    itemView: false,
+    itemDeletion: false,
+  });
+  const [targetItem, setTargetItem] = useState("");
   const [order, setOrder] = useState("asc");
   const [orderBy, setOrderBy] = useState("title");
   const [selected, setSelected] = useState([]);
@@ -69,7 +78,6 @@ export default function DataTable({ title, data }) {
         selected.slice(selectedIndex + 1)
       );
     }
-
     setSelected(newSelected);
   };
 
@@ -80,6 +88,11 @@ export default function DataTable({ title, data }) {
   const handleChangeRowsPerPage = (event) => {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
+  };
+
+  const handleModalOpening = (id, modalItem) => {
+    setTargetItem(id);
+    setIsModalOpen({ ...isModalOpen, [modalItem]: true });
   };
 
   const isSelected = (_id) => selected.indexOf(_id) !== -1;
@@ -116,6 +129,7 @@ export default function DataTable({ title, data }) {
 
                   return (
                     <TableRow
+                      id={row._id}
                       hover
                       onClick={(event) => handleClick(event, row._id)}
                       role="checkbox"
@@ -151,7 +165,13 @@ export default function DataTable({ title, data }) {
                         </Button>
                       </TableCell>
                       <TableCell align="right">
-                        <Button>Aperçu</Button>
+                        <Button
+                          onClick={(e) =>
+                            handleModalOpening(row._id, "itemView")
+                          }
+                        >
+                          Aperçu
+                        </Button>
                       </TableCell>
                     </TableRow>
                   );
@@ -178,6 +198,18 @@ export default function DataTable({ title, data }) {
           onRowsPerPageChange={handleChangeRowsPerPage}
         />
       </Paper>
+      <CustomDialog
+        id={"itemView"}
+        open={isModalOpen.itemView}
+        hasNoConfirmation
+        handleClose={() => setIsModalOpen({ ...isModalOpen, itemView: false })}
+        title={data.filter((d) => d._id === targetItem)[0]?.title}
+        children={
+          <Editor resource={data.filter((d) => d._id === targetItem).shift()}>
+            hello view
+          </Editor>
+        }
+      />
     </Box>
   );
 }
