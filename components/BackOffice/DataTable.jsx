@@ -134,6 +134,7 @@ export default function DataTable({ title, data, type }) {
         });
 
         setDisplayedData(newData);
+        setSelected([]);
         setSnackbar({
           open: true,
           message: "La sélection a été modifiée",

@@ -41,7 +41,7 @@ export default function ressources(req, res) {
       }),
       description: Joi.string().required().trim(),
       validationStatus: Joi.boolean(),
-      isReported: Joi.boolean()
+      isReported: Joi.boolean(),
     });
   };
 
@@ -65,7 +65,7 @@ export default function ressources(req, res) {
       categories,
       author: ObjectId(await getAuthor(token)),
       hasParticipants: [],
-      moderationValidation: false,
+      isModerated: false,
       publicationStatus: "public",
       title,
       content,
@@ -82,7 +82,7 @@ export default function ressources(req, res) {
       thumbnail,
       description,
       validationStatus: false,
-      isReported: false
+      isReported: false,
     };
 
     return newUser;
@@ -158,7 +158,6 @@ export default function ressources(req, res) {
   return getRoute(req, res);
 }
 
-//! Detail de la structure de media, externalLink et place a faire + corriger les oneOf
 /**
  * @swagger
  * components:
@@ -203,13 +202,9 @@ export default function ressources(req, res) {
  *           description: Le titre de la ressource
  *           example: Distribution de fournitures scolaires pour la rentrée
  *         contentId:
- *           type: uuid
- *           description: Le contenu rattaché à la ressource
- *           example: "61e165463d88f191f3f4e0d4"
- *         externalLinks:
  *           type: array
- *           description: Les liens externes de la ressource.
- *           example: [{active: false, type: "twitter",link: "https://twitter.com/lillefrance/status/1409978077015388168?s=20"}]
+ *           description: Le contenu de la ressource.
+ *           example: [{insert: "Bonjour"}, {insert: "Ressources relationnelles"}]
  *         likes:
  *           type: int
  *           description: Le nombre de likes attachés à la publication.
@@ -234,10 +229,10 @@ export default function ressources(req, res) {
  *           type: object
  *           description: La localisation de la ressource.
  *           example: {"city": "Lille","zipCode": "59000","region": "Hauts-de-France"}
- *         media:
- *           type: array
- *           description: Les fichiers media attachées a la ressource.
- *           example: [url: "https://media.giphy.com/media/Lopx9eUi34rbq/giphy.gif"]
+ *         isModerated:
+ *           type: boolean
+ *           description: La ressource a été modérée.
+ *           example: true
  */
 
 /**
