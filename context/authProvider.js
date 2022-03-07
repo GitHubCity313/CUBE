@@ -17,7 +17,7 @@ const AuthProvider = (props) => {
   const [token, setToken] = useState("");
   const [session, setSession] = useState({});
   // Je mets les rôles a part pour le moment
-  const [role, setRole] = useState(null);
+  const [role, setRole] = useState("citoyen");
   // Erreur a la connexion pour être affichee sur le formulaire
   const [error, setError] = useState("");
   // Acces au router pour les redirections
@@ -30,13 +30,12 @@ const AuthProvider = (props) => {
     const { lastName, firstName, role, id } = decoded.data;
     setToken(token);
     setSession({ lastName, firstName, id, role });
-    setRole(role);
     return setIsAuthenticated(true);
   }, []);
 
   // Efface toutes les infos
   const shutSession = useCallback(() => {
-    setRole("");
+    setRole("citoyen");
     setSession({});
     setToken("");
     return setIsAuthenticated(false);
@@ -59,7 +58,8 @@ const AuthProvider = (props) => {
           const check = await verifyToken();
           if (check.status === 200) {
             setToken(token);
-            return getSession(token);
+            getSession(token);
+            getUserRole(session.role);
           } else {
             logOut();
           }
@@ -99,7 +99,7 @@ const AuthProvider = (props) => {
       // Redirige vers le callback souhaité
       return router.push(callbackUrl);
     } catch (err) {
-      console.log(err)
+      console.log(err);
       if (err.response !== undefined) {
         // Recupere la reponse de l'API
         const { message } = err.response.data;
@@ -199,9 +199,8 @@ const AuthProvider = (props) => {
 
   const getUserRole = async (id) => {
     try {
-      const role = await authService.getRole(session.role);
-      console.log("hey", role);
-      setRole(role.data);
+      const role = await authService.getRole(id);
+      return setRole(role.data.userRole[0].type);
     } catch (err) {
       setRole("citoyen");
     }
@@ -236,6 +235,8 @@ const AuthProvider = (props) => {
     }),
     [isAuthenticated, error, isSignUpPending, session, role]
   );
+
+  console.log(role)
 
   return (
     <AuthContext.Provider value={authData}>{children}</AuthContext.Provider>

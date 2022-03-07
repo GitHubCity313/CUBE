@@ -40,7 +40,7 @@ export default function Profile() {
   });
 
   useEffect(async () => {
-    if (isAuthenticated === false) {
+    if (!isAuthenticated) {
       router.push("/");
     } else {
       try {

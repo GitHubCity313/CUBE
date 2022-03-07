@@ -46,12 +46,11 @@ export default function Sidebar() {
           </Link>
           <Link href="/admin">
             <ListItem>
-              {role === "admin" ||
-                (role === "moderateur" && (
-                  <Button variant="textBtn" sx={{ color: "gov.red" }}>
-                    Administration
-                  </Button>
-                ))}
+              {(role === "admin" || role === "moderateur") && (
+                <Button variant="textBtn" sx={{ color: "gov.red" }}>
+                  Administration
+                </Button>
+              )}
             </ListItem>
           </Link>
         </Box>

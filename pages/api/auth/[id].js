@@ -174,9 +174,13 @@ export default function auth(req, res) {
   const getPermissions = async (id) => {
     try {
       const db = await connect();
-      const userRole = await db.collection("roles").find({ id }).toArray();
+      const userRole = await db
+        .collection("roles")
+        .find({ _id: ObjectId(id.trim()) })
+        .toArray();
+      return res.status(200).json({ userRole });
     } catch (err) {
-      return res.status(404).json({ err });
+      return res.status(404).json({ message: "Aucun rôle trouvé" });
     }
   };
 
@@ -199,8 +203,7 @@ export default function auth(req, res) {
         const code = req.query.code;
         return await confirmSignUp(code);
       case "permissions":
-        console.log(req.body);
-        return await getPermissions(id);
+        return await getPermissions(req.body.id);
       default:
         return res.status(405).end(`Method ${req.method} Not Allowed`);
     }
@@ -270,4 +273,35 @@ export default function auth(req, res) {
  *               $ref: '#/components/schemas/Error'
  *             example:
  *               message: "Adresse mail ou mot de passe incorrect"
+ * /auth/getPermissions:
+ *   post:
+ *     tags : [users, auth]
+ *     description: Permet à un utilisateur de se connecter
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               id:
+ *                 type: string
+ *                 example: "61e165463d88f191f3f4e0d4"
+ *     responses:
+ *       200:
+ *         description: Le rôle de l'utilisateur.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Role'
+ *       404:
+ *         description: Echec de la requête.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *             example:
+ *               message: "Aucun rôle n'a été trouvé"
+ *
+ *
  */

@@ -134,19 +134,19 @@ export default function comments(req, res) {
  *         relatedResource:
  *           type: uuid
  *           description: La ressource associée au commentaire.
- *           example: uuid wanted
+ *           example: 61e165463d88f191f3f4e0d4
  *         author:
  *           type: int
  *           description: L'id de l'auteur de la ressource.
- *           example: uuid wanted
+ *           example: 61e165463d88f191f3f4e0d4
  *         title:
  *           type: string
  *           description: Le titre de la ressource.
- *           example: uuid wanted
+ *           example: 61e165463d88f191f3f4e0d4
  *         value:
  *           type: string
  *           description: Le contenu du commentaire.
- *           example: uuid wanted
+ *           example: 61e165463d88f191f3f4e0d4
  *         createdAt:
  *           type: date
  *           description: La date de création de la ressource.

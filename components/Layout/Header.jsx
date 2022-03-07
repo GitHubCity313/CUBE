@@ -65,7 +65,7 @@ const Header = (props) => {
           >
             Ressources Relationnelles
           </Typography>
-          {isAuthenticated && (
+          {isAuthenticated && user !== undefined && (
             <>
               <Typography
                 variant="body2"

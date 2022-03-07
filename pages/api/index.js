@@ -23,6 +23,18 @@
  *           type: string
  *           description: le mot de passe utilisateur.
  *           example: ac62218a80e48415349982a25907a000
+ * 
+ *     Role:
+ *       type: object
+ *       properties:
+ *         id:
+ *           type: string
+ *           description: l'id du rôle
+ *           example: 61e165463d88f191f3f4e0d4
+ *         type:
+ *           type: string
+ *           description: le nom du rôle.
+ *           example: citoyen
  */
 
 export default function apiHome(_, res) {

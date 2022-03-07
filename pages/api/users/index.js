@@ -73,7 +73,7 @@ export default function users(req, res) {
  *         id:
  *           type: uuid
  *           description: la description de l'erreur retournée.
- *           example: uuid wanted
+ *           example: 61e165463d88f191f3f4e0d4
  *         createdAt:
  *           type: date
  *           description: La date de création de la ressource.
@@ -122,19 +122,19 @@ export default function users(req, res) {
  *         seen:
  *           type: array
  *           description: Je sais pas ce que c'est.
- *           example: ["uuid wanted"]
+ *           example: ["61e165463d88f191f3f4e0d4"]
  *         hasEvents:
  *           type: array
  *           description: Les evenements auxquels l'utilisateur participe.
- *           example: ["uuid wanted"]
+ *           example: ["61e165463d88f191f3f4e0d4"]
  *         hasEventsCreated:
  *           type: array
  *           description: Les evenements crées par l'utilisateur.
- *           example: ["uuid wanted"]
+ *           example: ["61e165463d88f191f3f4e0d4"]
  *         likes:
  *           type: array
  *           description: Les ressources favorites de l'utilisateur.
- *           example: ["uuid wanted"]
+ *           example: ["61e165463d88f191f3f4e0d4"]
  *         role:
  *           type: string
  *           description: Le rôle de l'utilisateur.
@@ -154,7 +154,7 @@ export default function users(req, res) {
  *         confirmationCode:
  *           type: string
  *           description: le code de confirmation a l'inscription
- *           example: jfhgwsejhfgejshfgjhsegf
+ *           example: 61e165463d88f191f3f4e0d4
  */
 
 /**

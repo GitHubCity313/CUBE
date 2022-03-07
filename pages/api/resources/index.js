@@ -179,15 +179,15 @@ export default function ressources(req, res) {
  *         categories:
  *           type: array
  *           description: Les categories de la ressource.
- *           example: ["uuid wanted"]
+ *           example: ["61e165463d88f191f3f4e0d4"]
  *         author:
  *           type: int
  *           description: L'id de l'auteur de la ressource.
- *           example: uuid wanted
+ *           example: 61e165463d88f191f3f4e0d4
  *         hasParticipants:
  *           type: array
  *           description: Les utilisateurs inscrits pour l'evenement.
- *           example: ["uuid wanted"]
+ *           example: ["61e165463d88f191f3f4e0d4"]
  *         isReported:
  *           type: boolean
  *           description: La ressource a été signalée comme problématiaue.
@@ -205,7 +205,7 @@ export default function ressources(req, res) {
  *         contentId:
  *           type: uuid
  *           description: Le contenu rattaché à la ressource
- *           example: "uuid wanted"
+ *           example: "61e165463d88f191f3f4e0d4"
  *         externalLinks:
  *           type: array
  *           description: Les liens externes de la ressource.
