@@ -8,45 +8,6 @@ import Checkbox from "@mui/material/Checkbox";
 import { visuallyHidden } from "@mui/utils";
 import { Box } from "@mui/material";
 
-const headCells = [
-  {
-    id: "title",
-    numeric: false,
-    disablePadding: true,
-    label: "Titre",
-  },
-  {
-    id: "createdAt",
-    numeric: false,
-    disablePadding: true,
-    label: "Date de création",
-  },
-  {
-    id: "isValidated",
-    numeric: false,
-    disablePadding: true,
-    label: "Statut",
-  },
-  {
-    id: "moderation",
-    numeric: false,
-    disablePadding: true,
-    label: "Signalé",
-  },
-  {
-    id: "validate",
-    numeric: false,
-    disablePadding: true,
-    label: "",
-  },
-  {
-    id: "view",
-    numeric: false,
-    disablePadding: true,
-    label: "",
-  },
-];
-
 export default function DataTableHead(props) {
   const {
     onSelectAllClick,
@@ -55,7 +16,47 @@ export default function DataTableHead(props) {
     numSelected,
     rowCount,
     onRequestSort,
+    type,
   } = props;
+
+  const headCells = [
+    {
+      id: "title",
+      numeric: false,
+      disablePadding: true,
+      label: "Titre",
+    },
+    {
+      id: "createdAt",
+      numeric: false,
+      disablePadding: true,
+      label: "Date de création",
+    },
+    {
+      id: "isValidated",
+      numeric: false,
+      disablePadding: true,
+      label: "Statut",
+    },
+    {
+      id: type === "users" ? "role" : "moderation",
+      numeric: false,
+      disablePadding: true,
+      label: type === "users" ? "Rôle" : "Signalé",
+    },
+    {
+      id: "validate",
+      numeric: false,
+      disablePadding: true,
+      label: "",
+    },
+    {
+      id: "view",
+      numeric: false,
+      disablePadding: true,
+      label: "",
+    },
+  ];
   const createSortHandler = (property) => (event) => {
     onRequestSort(event, property);
   };
@@ -107,4 +108,5 @@ DataTableHead.propTypes = {
   order: PropTypes.oneOf(["asc", "desc"]).isRequired,
   orderBy: PropTypes.string.isRequired,
   rowCount: PropTypes.number.isRequired,
+  type: PropTypes.string.isRequired,
 };

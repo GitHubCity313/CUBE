@@ -15,13 +15,11 @@ import {
   Stack,
 } from "@mui/material";
 import PageviewIcon from "@mui/icons-material/Pageview";
-import CheckIcon from "@mui/icons-material/Check";
-import HourglassEmptyIcon from "@mui/icons-material/HourglassEmpty";
-import WarningIcon from "@mui/icons-material/Warning";
 import DataTableHead from "./DataTableHead";
 import DataHead from "./DataHead";
 import Editor from "../Resource/Editor";
 import CommentView from "../Resource/CommentView";
+import IconCell from "./IconCell";
 import CustomDialog from "../Dialog";
 import apiService from "../../services/apiService";
 import Snackbar from "../Snackbar";
@@ -199,6 +197,7 @@ export default function DataTable({ title, data, type }) {
               onSelectAllClick={handleSelectAllClick}
               onRequestSort={handleRequestSort}
               rowCount={displayedData.length}
+              type={type}
             />
             <TableBody>
               {displayedData
@@ -240,32 +239,10 @@ export default function DataTable({ title, data, type }) {
                       </TableCell>
                       <TableCell align="left">{row.createdAt}</TableCell>
                       <TableCell align="left">
-                        <Stack direction="row" alignItems={"center"}>
-                          {row.validationStatus ? (
-                            <CheckIcon
-                              sx={{ color: "gov.lightMenthe", mr: 1 }}
-                            />
-                          ) : (
-                            <HourglassEmptyIcon
-                              sx={{ color: "gov.lightTuile", mr: 1 }}
-                            />
-                          )}
-                          {row.validationStatus ? "Validé" : "En attente"}
-                        </Stack>
+                        <IconCell isValid={row.validationStatus} />
                       </TableCell>
                       <TableCell align="left">
-                        <Stack direction="row" alignItems={"center"}>
-                          {row.isReported ? (
-                            <WarningIcon sx={{ color: "gov.red", mr: 1 }} />
-                          ) : (
-                            <CheckIcon
-                              sx={{ color: "gov.lightMenthe", mr: 1 }}
-                            />
-                          )}
-                          {row.isReported
-                            ? "En attente de modération"
-                            : "Valide"}
-                        </Stack>
+                        <IconCell isReported={row.isReported} />
                       </TableCell>
                       <TableCell align={type !== "users" ? "left" : "right"}>
                         <Button
