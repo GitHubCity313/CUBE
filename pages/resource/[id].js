@@ -275,16 +275,6 @@ export default function Resource({
             console.log("comment in comments.map");
             console.log(comment);
             if (!comment.isModerated) {
-              const createdAtDate = new Date(comment.createdAt * 1000);
-              const updatedAtDate = new Date(comment.updatedAt * 1000);
-              const formatedCreatedDate = createdAtDate.toLocaleString(
-                "fr-FR",
-                dateFormatOptions
-              );
-              const formatedUpdatedDate = updatedAtDate.toLocaleString(
-                "fr-FR",
-                dateFormatOptions
-              );
               return (
                 <Paper key={comment._id} elevation={6} sx={{ p: 2, mb: 2 }}>
                   <Image src={commentIcone} />
@@ -295,9 +285,7 @@ export default function Resource({
                   <Typography variant="body1">« {comment.value} »</Typography>
                   <Grid container>
                     <Typography variant="body2">
-                      {!isNaN(updatedAtDate.getDate())
-                        ? `Mis à jour le ${formatedUpdatedDate}.`
-                        : `Écrit le ${formatedCreatedDate}.`}
+                      {`Publié le ${formatDate(comment.createdAt)}`}
                     </Typography>
                   </Grid>
                 </Paper>
@@ -335,7 +323,6 @@ export async function getStaticProps({ params }) {
     const userReq = await apiService.getItem("users", resource.author);
     resourceAuthor = await userReq.data.user[0];
 
-    console.log(`commentsReq comments of resource._id : ${resource._id}`);
     const commentsReq = await apiService.getItem("comments", resource._id);
     comments = await commentsReq.data.comments;
   } catch (e) {
