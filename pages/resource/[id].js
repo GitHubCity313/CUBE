@@ -272,6 +272,8 @@ export default function Resource({
         <Grid sx={{ mt: 2, mb: 2 }} flexDirection="column">
           <Typography variant="h3">Commentaires</Typography>
           {comments.map((comment) => {
+            console.log("comment in comments.map");
+            console.log(comment);
             if (!comment.isModerated) {
               const createdAtDate = new Date(comment.createdAt * 1000);
               const updatedAtDate = new Date(comment.updatedAt * 1000);
@@ -333,12 +335,7 @@ export async function getStaticProps({ params }) {
     const userReq = await apiService.getItem("users", resource.author);
     resourceAuthor = await userReq.data.user[0];
 
-    const contentsReq = await apiService.getItem(
-      "contents",
-      resource.contentId
-    );
-    contents = await contentsReq.data.content;
-
+    console.log(`commentsReq comments of resource._id : ${resource._id}`);
     const commentsReq = await apiService.getItem("comments", resource._id);
     comments = await commentsReq.data.comments;
   } catch (e) {
@@ -378,7 +375,7 @@ export async function getStaticPaths() {
 Resource.propTypes = {
   resource: PropTypes.object,
   categories: PropTypes.array,
-  contents: PropTypes.object,
+  contents: PropTypes.array,
   comments: PropTypes.array,
   resourceAuthor: PropTypes.object,
   authorId: PropTypes.string,
