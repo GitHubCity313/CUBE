@@ -8,7 +8,7 @@ import WarningIcon from "@mui/icons-material/Warning";
 export default function IconCell({ isValid, isReported }) {
   if (isValid) {
     return (
-      <Stack direction="row" alignItems={"center"}>
+      <Stack direction="row" alignItems={"center"} sx={{ minWidth: "100px" }}>
         <CheckIcon sx={{ color: "gov.lightMenthe", mr: 1 }} />
         Actif
       </Stack>
@@ -17,7 +17,7 @@ export default function IconCell({ isValid, isReported }) {
 
   if (!isValid && isValid !== null) {
     return (
-      <Stack direction="row" alignItems={"center"}>
+      <Stack direction="row" alignItems={"center"} sx={{ minWidth: "100px" }}>
         <HourglassEmptyIcon sx={{ color: "gov.lightTuile", mr: 1 }} />
         En attente
       </Stack>
@@ -26,7 +26,7 @@ export default function IconCell({ isValid, isReported }) {
 
   if (isReported) {
     return (
-      <Stack direction="row" alignItems={"center"}>
+      <Stack direction="row" alignItems={"center"} sx={{ minWidth: "100px" }}>
         <WarningIcon sx={{ color: "gov.red", mr: 1 }} />
         En attente de modération
       </Stack>
@@ -34,7 +34,7 @@ export default function IconCell({ isValid, isReported }) {
   }
 
   return (
-    <Stack direction="row" alignItems={"center"}>
+    <Stack direction="row" alignItems={"center"} justifyContent="center">
       -
     </Stack>
   );

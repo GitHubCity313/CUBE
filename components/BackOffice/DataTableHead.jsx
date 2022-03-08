@@ -78,7 +78,7 @@ export default function DataTableHead(props) {
         {headCells.map((headCell) => (
           <TableCell
             key={headCell.id}
-            align="left"
+            align={"left"}
             padding={"normal"}
             sortDirection={orderBy === headCell.id ? order : false}
           >

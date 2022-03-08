@@ -13,6 +13,7 @@ import {
   Box,
   Table,
   Stack,
+  Typography,
 } from "@mui/material";
 import PageviewIcon from "@mui/icons-material/Pageview";
 import DataTableHead from "./DataTableHead";
@@ -20,6 +21,7 @@ import DataHead from "./DataHead";
 import Editor from "../Resource/Editor";
 import CommentView from "../Resource/CommentView";
 import IconCell from "./IconCell";
+import RoleRadio from "./RoleRadio";
 import CustomDialog from "../Dialog";
 import apiService from "../../services/apiService";
 import Snackbar from "../Snackbar";
@@ -31,12 +33,14 @@ export default function DataTable({ title, data, type }) {
     itemValidation: false,
     itemView: false,
     itemDeletion: false,
+    roleCustom: false,
   });
   const [snackbar, setSnackbar] = useState({
     open: false,
     message: "",
     severity: "success",
   });
+  const [currentRole, setCurrentRole] = useState("");
   const [displayedData, setDisplayedData] = useState(data);
   const [targetItem, setTargetItem] = useState("");
   const [order, setOrder] = useState("asc");
@@ -108,6 +112,19 @@ export default function DataTable({ title, data, type }) {
     setIsModalOpen({ ...isModalOpen, [modalItem]: true });
   };
 
+  // Mur de la honte de la flemme de Perrine
+  const handleRoleValue = (value) => {
+    if (value.endsWith(4)) {
+      return "citoyen";
+    }
+    if (value.endsWith(5)) {
+      return "moderateur";
+    }
+    if (value.endsWith(6)) {
+      return "admin";
+    }
+  };
+
   const isSelected = (_id) => selected.indexOf(_id) !== -1;
 
   const emptyRows =
@@ -176,6 +193,16 @@ export default function DataTable({ title, data, type }) {
     }
   };
 
+  const confirmChangeOnUserRole = (e) => {
+    setCurrentRole(e.target.value);
+    setIsModalOpen({
+      ...isModalOpen,
+      roleCustom: true,
+    });
+  };
+
+  const handleChangeOnRoleUser = () => {};
+
   return (
     <Box sx={{ width: "100%" }}>
       <Paper sx={{ width: "100%", mb: 2 }}>
@@ -241,8 +268,15 @@ export default function DataTable({ title, data, type }) {
                       <TableCell align="left">
                         <IconCell isValid={row.validationStatus} />
                       </TableCell>
-                      <TableCell align="left">
-                        <IconCell isReported={row.isReported} />
+                      <TableCell align={"left"}>
+                        {type === "users" ? (
+                          <RoleRadio
+                            currentRole={handleRoleValue(row.role)}
+                            onChange={confirmChangeOnUserRole}
+                          />
+                        ) : (
+                          <IconCell isReported={row.isReported} />
+                        )}
                       </TableCell>
                       <TableCell align={type !== "users" ? "left" : "right"}>
                         <Button
@@ -305,15 +339,27 @@ export default function DataTable({ title, data, type }) {
         handleClose={() => setIsModalOpen({ ...isModalOpen, itemView: false })}
         title={data.filter((d) => d._id === targetItem)[0]?.title}
         children={
-          type === "resource" ? (
-            <Editor
-              resource={data.filter((d) => d._id === targetItem).shift()}
-            />
+          type === "resources" ? (
+            <Editor resource={data.filter((d) => d._id === targetItem)[0]} />
           ) : (
             <CommentView
               comment={data.filter((d) => d._id === targetItem).shift()}
             />
           )
+        }
+      />
+      <CustomDialog
+        id={"roleCustom"}
+        open={isModalOpen.roleCustom}
+        handleClose={() =>
+          setIsModalOpen({ ...isModalOpen, roleCustom: false })
+        }
+        handleConfirmation={handleChangeOnRoleUser}
+        title={"Modification du rôle"}
+        children={
+          <Typography variant="body2">
+            Donner à l'utilisateur le rôle {currentRole} ?
+          </Typography>
         }
       />
       <Snackbar

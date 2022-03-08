@@ -6,6 +6,7 @@ import "react-quill/dist/quill.snow.css";
 import editorUtils from "../../utils/editorUtils";
 
 export default function Editor({ resource }) {
+  console.log(resource);
   const [, setContents] = useState([]);
   const options = editorUtils.getEditorOptions();
 
