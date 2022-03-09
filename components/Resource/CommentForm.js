@@ -1,5 +1,11 @@
 import Typography from "@mui/material/Typography";
-import { Button, Grid, OutlinedInput, TextareaAutosize } from "@mui/material";
+import {
+  Button,
+  Container,
+  Grid,
+  OutlinedInput,
+  TextareaAutosize,
+} from "@mui/material";
 import React, { useContext, useState } from "react";
 import styles from "../../styles/CommentForm.module.css";
 import AuthContext from "../../context/authContext";
@@ -68,6 +74,8 @@ export default function CommentForm(resourceId) {
         onChange={(titleEvent) =>
           setNewComment({ ...newComment, title: titleEvent.target.value })
         }
+        sx={{ mt: 2, mb: 1 }}
+        disabled={!isAuthenticated}
       />
       <TextareaAutosize
         id="commentTextArea"
@@ -81,6 +89,7 @@ export default function CommentForm(resourceId) {
             value: valueEvent.target.value,
           })
         }
+        disabled={!isAuthenticated}
       />
       <Grid sx={{ mt: 1 }}>
         <Button
