@@ -278,7 +278,9 @@ export default function Resource({
               return (
                 <Paper key={comment._id} elevation={6} sx={{ p: 2, mb: 2 }}>
                   <Image src={commentIcone} />
-                  <Typography variant="h4">{comment.title}</Typography>
+                  <Typography variant="h4" sx={{ mt: 1.4, mb: 0.8 }}>
+                    {comment.title}
+                  </Typography>
                   <Typography variant="subtitle1">
                     {comment.authorName}
                   </Typography>
