@@ -285,9 +285,9 @@ export default function Resource({
                     {comment.authorName}
                   </Typography>
                   <Typography variant="body1">« {comment.value} »</Typography>
-                  <Grid container>
-                    <Typography variant="body2">
-                      {`Publié le ${formatDate(comment.createdAt)}`}
+                  <Grid container sx={{ mt: 0.8 }}>
+                    <Typography variant="body2" sx={{ fontSize: "0.83rem" }}>
+                      {`Publié le ${formatDate(comment.createdAt)}.`}
                     </Typography>
                   </Grid>
                 </Paper>
