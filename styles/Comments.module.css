@@ -1,0 +1,6 @@
+.buttons-row {
+    display: flex;
+}
+.buttons-row .buttons-col {
+    justify-self: end;
+}

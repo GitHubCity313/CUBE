@@ -7,7 +7,6 @@ import {
   Divider,
   Grid,
   Link,
-  Paper,
   Stack,
   Box,
   Typography,
@@ -20,9 +19,9 @@ import { useRouter } from "next/router";
 import Layout from "../../components/Layout/Layout";
 import CommentForm from "../../components/Resource/CommentForm";
 import Snackbar from "../../components/Snackbar";
-import commentIcone from "../../public/icones/commentIcone.svg";
 import apiService from "../../services/apiService";
 import editorUtils from "../../utils/editorUtils";
+import Comment from "../../components/Resource/Comment";
 // import axiosInstance from "../../services/instance";
 
 export default function Resource({
@@ -57,36 +56,6 @@ export default function Resource({
     () => authorId === session.id,
     [session, authorId]
   );
-
-  //Recupérer le token
-
-  // console.log(`token : ${typeof token} ${token}`);
-  //envoyer le content du commentaire en body avec le token
-  //coté api
-  //vérfier le token
-  //le body
-  //créer le commentaire
-  // console.log("session :");
-  // console.log(session);
-  // console.log(`isAuthenticated : ${isAuthenticated}`);
-  // const resourceCreationDate = new Date(resource.createdAt * 1000);
-  // const resourceUpdatedDate = new Date(resource.updatedAt * 1000);
-  const dateFormatOptions = {
-    weekday: "long",
-    day: "numeric",
-    month: "long",
-    year: "numeric",
-    hour: "numeric",
-    minute: "numeric",
-  };
-  // const formatedCreatedDate = resourceCreationDate.toLocaleString(
-  //   "fr-FR",
-  //   dateFormatOptions
-  // );
-  // const formatedUpdatedDate = resourceUpdatedDate.toLocaleString(
-  //   "fr-FR",
-  //   dateFormatOptions
-  // );
 
   const formatDate = (date) => {
     const dateFormatOptions = {
@@ -272,27 +241,13 @@ export default function Resource({
         <Grid sx={{ mt: 2, mb: 2 }} flexDirection="column">
           <Typography variant="h3">Commentaires</Typography>
           {comments.map((comment) => {
-            console.log("comment in comments.map");
-            console.log(comment);
-            if (!comment.isModerated) {
-              return (
-                <Paper key={comment._id} elevation={6} sx={{ p: 2, mb: 2 }}>
-                  <Image src={commentIcone} />
-                  <Typography variant="h4" sx={{ mt: 1.4, mb: 0.8 }}>
-                    {comment.title}
-                  </Typography>
-                  <Typography variant="subtitle1">
-                    {comment.authorName}
-                  </Typography>
-                  <Typography variant="body1">« {comment.value} »</Typography>
-                  <Grid container sx={{ mt: 0.8 }}>
-                    <Typography variant="body2" sx={{ fontSize: "0.83rem" }}>
-                      {`Publié le ${formatDate(comment.createdAt)}.`}
-                    </Typography>
-                  </Grid>
-                </Paper>
-              );
-            }
+            return (
+              <Comment
+                key={comment._id}
+                comment={comment}
+                formatDate={formatDate}
+              />
+            );
           })}
         </Grid>
         <Snackbar
