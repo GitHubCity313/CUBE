@@ -52,8 +52,37 @@ export default function Comment(props) {
       console.log(e);
       setSnackbar({
         open: true,
-        message: "Echec lors de la suppression",
+        message: "Erreur lors de la suppression",
         severity: "error",
+      });
+    }
+  };
+
+  const reportComment = async () => {
+    comment.isReported = true;
+    try {
+      const reportedItem = await apiService.updateItem(
+        "comments",
+        comment._id,
+        comment,
+        token
+      );
+      if (reportedItem.status === 204) {
+        console.log("le commentaire a bien été signalé");
+        setSnackbar({
+          open: true,
+          message: "Commentaire signalé",
+          severity: "success",
+        });
+        setTimeout(() => router.reload(), 800);
+      }
+    } catch (e) {
+      console.log("le commentaire n'a pas pu être signalé");
+      console.log(e);
+      setSnackbar({
+        open: true,
+        message: "Erreur lors du signalement",
+        severity: "success",
       });
     }
   };
@@ -73,7 +102,10 @@ export default function Comment(props) {
             {isCreator() && (
               <div className={styles.buttonsCol}>
                 <Button variant="text" onClick={deleteComment}>
-                  Supprimer
+                  ❌ Supprimer
+                </Button>
+                <Button variant="text" onClick={reportComment}>
+                  ⚠️ Signaler
                 </Button>
               </div>
             )}

@@ -33,9 +33,29 @@ export default function comments(req, res) {
     }
   };
 
+  const updateComment = async (db, res, comment, id) => {
+    const itemId = new ObjectId(id);
+    try {
+      const filter = { _id: itemId };
+      const update = {
+        $set: {
+          ...comment,
+        },
+      };
+      const updatedItem = await db
+        .collection("comments")
+        .updateOne(filter, update);
+      return res.status(204).json({ updatedItem });
+    } catch (e) {
+      console.log(e);
+      return res.status(404).json({ e });
+    }
+  };
+
   const getRoute = async (req, res) => {
     const db = await connect();
     const id = req.query.id.trim();
+    const comment = req?.body ? req.body : null;
 
     switch (req.method) {
       case "GET": {
@@ -43,6 +63,12 @@ export default function comments(req, res) {
       }
       case "DELETE": {
         return await deleteComment(db, res, id);
+      }
+      case "PUT": {
+        delete comment._id;
+        delete comment.relatedResource;
+        delete comment.author;
+        return await updateComment(db, res, comment, id);
       }
       default:
         return res.status(405).end(`Method ${req.method} Not Allowed`);
