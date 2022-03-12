@@ -1,24 +1,14 @@
 import Typography from "@mui/material/Typography";
-import {
-  Button,
-  Container,
-  Grid,
-  OutlinedInput,
-  TextareaAutosize,
-} from "@mui/material";
+import { Button, Grid, OutlinedInput, TextareaAutosize } from "@mui/material";
 import React, { useContext, useState } from "react";
 import styles from "../../styles/CommentForm.module.css";
 import AuthContext from "../../context/authContext";
-import axiosInstance from "../../services/instance";
 import apiService from "../../services/apiService";
-// import { ObjectId } from "mongodb";
+import { useRouter } from "next/router";
 
 export default function CommentForm(resourceId) {
-  // console.log(typeof resourceId);
-  // console.log(resourceId);
-  // console.log(resourceId.resourceId);
-
-  const { session, isAuthenticated, token } = useContext(AuthContext);
+  const { isAuthenticated, token } = useContext(AuthContext);
+  const router = useRouter();
   const [newComment, setNewComment] = useState({
     title: "",
     value: "",
@@ -28,11 +18,6 @@ export default function CommentForm(resourceId) {
   if (!isAuthenticated) {
     placeHolderText = "Veuillez vous connecter pour laisser un commentaire";
   }
-
-  const clearCommentInputs = () => {
-    document.getElementById("commentTitle").value = "";
-    document.getElementById("commentTextArea").value = "";
-  };
 
   const isCommentFormValid = () => {
     const { title, value } = newComment;
@@ -57,7 +42,7 @@ export default function CommentForm(resourceId) {
         console.log("Error in try of submitComment - CommentForm");
         console.log(e);
       }
-      clearCommentInputs();
+      router.reload();
     }
   };
   return (
@@ -93,7 +78,6 @@ export default function CommentForm(resourceId) {
       />
       <Grid sx={{ mt: 1 }}>
         <Button
-          // onClick={sendComment(token, document.getElementById("commentTextArea").value)}
           onClick={submitComment}
           variant="bleuBtn"
           disabled={!isCommentFormValid()}

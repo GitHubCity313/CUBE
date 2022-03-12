@@ -238,7 +238,7 @@ export default function Resource({
           />
         </Grid>
         <CommentForm resourceId={resource._id} />
-        {comments.length > 0 ?? (
+        {comments.length > 0 ? (
           <Grid sx={{ mt: 2, mb: 2 }} flexDirection="column">
             <Typography variant="h3">Commentaires</Typography>
             {comments.map((comment) => {
@@ -251,6 +251,8 @@ export default function Resource({
               );
             })}
           </Grid>
+        ) : (
+          <Grid sx={{ mt: 2, mb: 2 }}>Soyez le premier à commenter !</Grid>
         )}
         <Snackbar
           open={snackbar.open}
