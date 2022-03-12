@@ -11,6 +11,7 @@ import {
   Box,
   Typography,
   Chip,
+  capitalize,
 } from "@mui/material";
 import { useQuill } from "react-quilljs";
 import "react-quill/dist/quill.snow.css";
@@ -163,7 +164,7 @@ export default function Resource({
             alignItems="center"
           >
             {resource.categories.map((cat) => (
-              <Chip key={`id-${cat}`} label={cat} color="primary" />
+              <Chip key={`id-${cat}`} label={capitalize(cat)} color="primary" />
             ))}
             <Divider orientation="vertical" flexItem />
             <Typography variant="body2">
