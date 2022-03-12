@@ -1,12 +1,26 @@
 import clientPromise from "../../../lib/mongodb";
 import { ObjectId } from "mongodb";
 import jwt from "jsonwebtoken";
+import Joi from "joi";
 
 export default function comments(req, res) {
   const connect = async () => {
     const client = await clientPromise;
     const db = await client.db(process.env.MONGO_DB_NAME);
     return db;
+  };
+
+  const getCommentValidationSchema = () => {
+    return Joi.object({
+      relatedResource: Joi.string().alphanum().required().trim(),
+      author: Joi.string().alphanum().required().trim(),
+      title: Joi.string().required().trim(),
+      value: Joi.string().required().trim(),
+      createdAt: Joi.date().iso().required(),
+      updatedAt: Joi.date().iso().required(),
+      isReported: Joi.boolean(),
+      isModerated: Joi.boolean(),
+    });
   };
 
   const getUserFromToken = async (token) => {
@@ -51,16 +65,26 @@ export default function comments(req, res) {
   const addComment = async (db, res, comment, token) => {
     try {
       const newComment = await createCommentModel(comment, token);
+      const validation = await validateComment(newComment);
       console.log("in addComment - newComment:");
       await console.log(newComment);
       const insertComment = await db
         .collection("comments")
         .insertOne(newComment);
-      return res.status(200).json({ insertComment });
+      return res.status(201).json({ insertComment });
     } catch (e) {
       console.log("COUCOU");
       console.log(e);
       return res.status(404).json({ e });
+    }
+  };
+
+  const validateComment = async (comment) => {
+    try {
+      const schema = getCommentValidationSchema();
+      return await schema.validateAsync({ comment });
+    } catch (e) {
+      return e;
     }
   };
 
