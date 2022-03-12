@@ -238,18 +238,20 @@ export default function Resource({
           />
         </Grid>
         <CommentForm resourceId={resource._id} />
-        <Grid sx={{ mt: 2, mb: 2 }} flexDirection="column">
-          <Typography variant="h3">Commentaires</Typography>
-          {comments.map((comment) => {
-            return (
-              <Comment
-                key={comment._id}
-                comment={comment}
-                formatDate={formatDate}
-              />
-            );
-          })}
-        </Grid>
+        {comments.length > 0 ?? (
+          <Grid sx={{ mt: 2, mb: 2 }} flexDirection="column">
+            <Typography variant="h3">Commentaires</Typography>
+            {comments.map((comment) => {
+              return (
+                <Comment
+                  key={comment._id}
+                  comment={comment}
+                  formatDate={formatDate}
+                />
+              );
+            })}
+          </Grid>
+        )}
         <Snackbar
           open={snackbar.open}
           severity={snackbar.severity}
