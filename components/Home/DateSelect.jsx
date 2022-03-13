@@ -18,18 +18,9 @@ const MenuProps = {
   },
 };
 
-function getStyles(name, personName, theme) {
-  return {
-    fontWeight:
-      personName.indexOf(name) === -1
-        ? theme.typography.fontWeightRegular
-        : theme.typography.fontWeightMedium,
-  };
-}
-
 export default function DateSelect({ types, setActiveFilter, activeFilter }) {
   const theme = useTheme();
-  const [typesSelected, setTypesSelected] = useState([]);
+  const [value, setValue] = useState("");
 
   const handleChange = (event) => {
     const {
@@ -37,9 +28,9 @@ export default function DateSelect({ types, setActiveFilter, activeFilter }) {
     } = event;
     setActiveFilter({
       categories: activeFilter.categories,
-      types: value,
+      date: value,
     });
-    return setTypesSelected(value);
+    return setValue(value);
   };
 
   return (
@@ -47,20 +38,14 @@ export default function DateSelect({ types, setActiveFilter, activeFilter }) {
       <InputLabel id="demo-multiple-name-label">Date prévue</InputLabel>
       <Select
         labelId="demo-multiple-name-label"
-        id="demo-multiple-name"
-        multiple
-        value={typesSelected}
+        value={activeFilter.date}
         onChange={handleChange}
         input={<OutlinedInput label="Date prévue" />}
         MenuProps={MenuProps}
       >
         {types.map((type) => (
-          <MenuItem
-            key={type}
-            value={type}
-            style={getStyles(type, typesSelected, theme)}
-          >
-            {type}
+          <MenuItem key={type.key} value={type.key}>
+            {type.value}
           </MenuItem>
         ))}
       </Select>

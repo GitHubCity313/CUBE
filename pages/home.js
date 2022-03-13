@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useCallback } from "react";
 import PropTypes from "prop-types";
 import { Grid, Typography, useMediaQuery } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
@@ -11,9 +11,8 @@ import Searchbar from "../components/Home/Searchbar";
 
 export default function Home({ resources, categories, localities }) {
   const [activeFilter, setActiveFilter] = useState({
-    types: [],
+    date: "",
     categories: [],
-    localities: [],
   });
   const [displayedEvents, setDisplayedEvents] = useState([]);
   const theme = useTheme();
@@ -21,26 +20,30 @@ export default function Home({ resources, categories, localities }) {
 
   const handleSearch = (search) => {
     if (search.length === 0) {
-      return setDisplayedEvents(resources);
+      return setActiveFilter({
+        date: "",
+        categories: [],
+      });
     } else {
       let result = displayedEvents.filter(
         (e) =>
-          e.title.includes(search) ||
+          e.title.toLowerCase().includes(search) ||
           e.place.zipCode.includes(search.toString()) ||
           e.place.city.includes(search)
       );
+
       return setDisplayedEvents(result);
     }
   };
   useMemo(() => {
     if (
-      activeFilter.types.length === 0 &&
+      activeFilter.date.length === 0 &&
       activeFilter.categories.length === 0
     ) {
       return setDisplayedEvents(resources);
     } else {
       // L'alias est set pour ne pas confondre ces categories la avec celles que l'on recupere en props
-      const { types, categories: selectedCategories } = activeFilter;
+      const { date, categories: selectedCategories } = activeFilter;
 
       // Le filtrage par categories
       const filteredByCat = resources.reduce((val, acc) => {
@@ -53,27 +56,43 @@ export default function Home({ resources, categories, localities }) {
       }, []);
 
       // Si on a pas selectionne de types, on appliaue uniauement le filtre par categorie
-      if (types.length === 0) {
+      if (date.length === 0) {
         return setDisplayedEvents(filteredByCat);
       }
       // Le filtrage par type
-      const filteredByType = resources.reduce((val, acc) => {
-        activeFilter.types.forEach((type) => {
-          if (acc.resourceType === type) {
-            val.push(acc);
-          }
-        });
+      const filteredByDate = resources.reduce((val, acc) => {
+        const now = Date.now();
+        const currentDate = new Date(now);
+        const currentMonth = currentDate.getMonth();
+        const currentYear = currentDate.getFullYear();
+
+        const eventDate = new Date(acc.startDate);
+        const currentEventMonth = eventDate.getMonth();
+        const currentEventYear = eventDate.getFullYear();
+
+        if (date === "all") {
+          val.push(acc);
+        }
+        if (date === "today" && currentDate === eventDate) {
+          val.push(acc);
+        }
+        if (date === "month" && currentEventMonth === currentMonth) {
+          val.push(acc);
+        }
+        if (date === "year" && currentEventYear === currentYear) {
+          val.push(acc);
+        }
         return val;
       }, []);
 
       // Si on a pas selectionne de categorie, on appliaue uniauement le filtre par type
       if (selectedCategories.length === 0) {
-        return setDisplayedEvents(filteredByType);
+        return setDisplayedEvents(filteredByDate);
       }
 
       // Si on utilise les deux filtres, on affiche les elements sont presents dans les deux tableaux de filtres alors on les affiche
       const duplicates = filteredByCat.filter((val) =>
-        filteredByType.includes(val)
+        filteredByDate.includes(val)
       );
 
       return setDisplayedEvents(duplicates);
@@ -105,7 +124,12 @@ export default function Home({ resources, categories, localities }) {
             value={activeFilter.categories}
           />
           <DateSelect
-            types={["ce mois", "cette année"]}
+            types={[
+              { value: "tous", key: "all" },
+              { value: "aujourd'hui", key: "today" },
+              { value: "ce mois", key: "month" },
+              { value: "cette année", key: "year" },
+            ]}
             setActiveFilter={setActiveFilter}
             activeFilter={activeFilter}
           />

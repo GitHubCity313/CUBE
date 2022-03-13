@@ -415,7 +415,6 @@ export async function getStaticProps({ params }) {
 
   let likes = 0;
   let idPost = params.id;
-  console.log("idPost :", idPost);
   try {
     // RESOURCE GET
     const apiSResourceRequest = await apiService.getItem(

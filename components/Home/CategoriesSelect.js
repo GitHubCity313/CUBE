@@ -20,15 +20,6 @@ const MenuProps = {
   },
 };
 
-function getStyles(name, personName, theme) {
-  return {
-    fontWeight:
-      personName.indexOf(name) === -1
-        ? theme.typography.fontWeightRegular
-        : theme.typography.fontWeightMedium,
-  };
-}
-
 export default function CategoriesSelect({ value, onChange, categories }) {
   const theme = useTheme();
 
@@ -53,11 +44,7 @@ export default function CategoriesSelect({ value, onChange, categories }) {
           MenuProps={MenuProps}
         >
           {categories.map((category) => (
-            <MenuItem
-              key={category._id}
-              value={category.name}
-              style={getStyles(category.name, value, theme)}
-            >
+            <MenuItem key={category._id} value={category.name}>
               {category.name}
             </MenuItem>
           ))}
