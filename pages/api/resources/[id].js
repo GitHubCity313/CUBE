@@ -44,9 +44,30 @@ export default function ressources(req, res) {
         .updateOne(filter, updatedResource);
       return res.status(204).json({ update });
     } catch (err) {
+      console.log("erros ---->",err);
+      return res.status(404).json({ err });
+
+    }
+  };
+
+  const updateCategory = async (id, db, category, res) => {
+    const objectId = new ObjectId(id);
+    try {
+      const filter = { _id: objectId };
+      const updatedResource = {
+        $set: {
+          ...category,
+        },
+      };
+      const update = await db
+        .collection("categories")
+        .updateOne(filter, updatedResource);
+      return res.status(204).json({ update });
+    } catch (err) {
       return res.status(404).json({ err });
     }
   };
+
 
   const getRoute = async (req, res) => {
     const db = await connect();

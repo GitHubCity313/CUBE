@@ -156,9 +156,11 @@ const AuthProvider = (props) => {
   };
 
   const profile = async () => {
+    console.log("fetch", token)
     if (token !== "") {
       try {
         const profile = await apiService.fetchProfile(token);
+        console.log(profile);
         return profile.data.user.shift();
       } catch (err) {
         console.log(err);
