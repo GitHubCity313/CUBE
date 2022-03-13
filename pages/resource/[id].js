@@ -7,11 +7,11 @@ import {
   Divider,
   Grid,
   Link,
-  Paper,
   Stack,
   Box,
   Typography,
   Chip,
+  capitalize,
 } from "@mui/material";
 import { useQuill } from "react-quilljs";
 import "react-quill/dist/quill.snow.css";
@@ -20,9 +20,10 @@ import { useRouter } from "next/router";
 import Layout from "../../components/Layout/Layout";
 import CommentForm from "../../components/Resource/CommentForm";
 import Snackbar from "../../components/Snackbar";
-import commentIcone from "../../public/icones/commentIcone.svg";
 import apiService from "../../services/apiService";
 import editorUtils from "../../utils/editorUtils";
+import Comment from "../../components/Resource/Comment";
+// import axiosInstance from "../../services/instance";
 
 export default function Resource({
   resource,
@@ -30,7 +31,7 @@ export default function Resource({
   resourceAuthor,
   authorId,
 }) {
-  const { session, isAuthenticated, token } = useContext(AuthContext);
+  const { session, isAuthenticated, token, signOut } = useContext(AuthContext);
   const router = useRouter();
   const { createdAt, updatedAt } = resource;
   const [editingMode, setEditingMode] = useState(false);
@@ -136,19 +137,10 @@ export default function Resource({
     }
   };
 
-  // Mur de la honte du dry Mathieu
-  // const formatedCreatedDate = resourceCreationDate.toLocaleString(
-  //   "fr-FR",
-  //   dateFormatOptions
-  // );
-  // const formatedUpdatedDate = resourceUpdatedDate.toLocaleString(
-  //   "fr-FR",
-  //   dateFormatOptions
-  // );
   return (
     <Layout title={resource.title} withSidebar withFooter>
       <Grid container flexDirection="column">
-        <Grid container flexDirection="row" sx={{ mb: 3 }} >
+        <Grid container flexDirection="row" sx={{ mb: 3 }}>
           <Breadcrumbs aria-label="breadcrumb">
             <Link underline="hover" color="inherit" href="/">
               Accueil
@@ -156,7 +148,9 @@ export default function Resource({
             <Typography color="text.primary">{resource.title}</Typography>
           </Breadcrumbs>
         </Grid>
-        <Typography variant="h1" sx={{ color: "gov.blue"}}>{resource.title}</Typography>
+        <Typography variant="h1" sx={{ color: "gov.blue" }}>
+          {resource.title}
+        </Typography>
         <Grid
           container
           flexDirection="row"
@@ -170,7 +164,7 @@ export default function Resource({
             alignItems="center"
           >
             {resource.categories.map((cat) => (
-              <Chip key={`id-${cat}`} label={cat} color="primary" />
+              <Chip key={`id-${cat}`} label={capitalize(cat)} color="primary" />
             ))}
             <Divider orientation="vertical" flexItem />
             <Typography variant="body2">
@@ -183,7 +177,7 @@ export default function Resource({
             </Typography>
           </Stack>
 
-          <Stack direction="row" spacing={2} >
+          <Stack direction="row" spacing={2}>
             {isCreator() && (
               <>
                 {editingMode ? (
@@ -225,7 +219,6 @@ export default function Resource({
               border: "none",
               display: !editingMode ? "none" : "default",
               backgroundColor: "rgba(122, 177, 232, 0.3)",
-       
             },
           }}
         >
@@ -239,47 +232,29 @@ export default function Resource({
                 display: "none",
               },
               "& input": {
-                display: "none"
-              }
+                display: "none",
+              },
             }}
             ref={quillRef}
           />
         </Grid>
-        <CommentForm />
-        <Grid sx={{ mt: 2, mb: 2 }} flexDirection="column">
-          <Typography variant="h3">Commentaires</Typography>
-          {comments.map((comment) => {
-            if (!comment.isModerated) {
-              const createdAtDate = new Date(comment.createdAt * 1000);
-              const updatedAtDate = new Date(comment.updatedAt * 1000);
-              const formatedCreatedDate = createdAtDate.toLocaleString(
-                "fr-FR",
-                dateFormatOptions
-              );
-              const formatedUpdatedDate = updatedAtDate.toLocaleString(
-                "fr-FR",
-                dateFormatOptions
-              );
+        <CommentForm resourceId={resource._id} />
+        {comments.length > 0 ? (
+          <Grid sx={{ mt: 2, mb: 2 }} flexDirection="column">
+            <Typography variant="h3">Commentaires</Typography>
+            {comments.map((comment) => {
               return (
-                <Paper key={comment._id} elevation={6} sx={{ p: 2, mb: 2 }}>
-                  <Image src={commentIcone} />
-                  <Typography variant="h4">{comment.title}</Typography>
-                  <Typography variant="subtitle1">
-                    {comment.authorName}
-                  </Typography>
-                  <Typography variant="body1">« {comment.value} »</Typography>
-                  <Grid container>
-                    <Typography variant="body2">
-                      {!isNaN(updatedAtDate.getDate())
-                        ? `Mis à jour le ${formatedUpdatedDate}.`
-                        : `Écrit le ${formatedCreatedDate}.`}
-                    </Typography>
-                  </Grid>
-                </Paper>
+                <Comment
+                  key={comment._id}
+                  comment={comment}
+                  formatDate={formatDate}
+                />
               );
-            }
-          })}
-        </Grid>
+            })}
+          </Grid>
+        ) : (
+          <Grid sx={{ mt: 2, mb: 2 }}>Soyez le premier à commenter !</Grid>
+        )}
         <Snackbar
           open={snackbar.open}
           severity={snackbar.severity}
@@ -309,12 +284,6 @@ export async function getStaticProps({ params }) {
 
     const userReq = await apiService.getItem("users", resource.author);
     resourceAuthor = await userReq.data.user[0];
-
-    const contentsReq = await apiService.getItem(
-      "contents",
-      resource.contentId
-    );
-    contents = await contentsReq.data.content;
 
     const commentsReq = await apiService.getItem("comments", resource._id);
     comments = await commentsReq.data.comments;
@@ -355,7 +324,8 @@ export async function getStaticPaths() {
 Resource.propTypes = {
   resource: PropTypes.object,
   categories: PropTypes.array,
-  contents: PropTypes.object,
+  contents: PropTypes.array,
   comments: PropTypes.array,
   resourceAuthor: PropTypes.object,
+  authorId: PropTypes.string,
 };
