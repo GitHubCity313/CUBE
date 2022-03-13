@@ -17,7 +17,6 @@ import {
 } from "@mui/material";
 import { useQuill } from "react-quilljs";
 import "react-quill/dist/quill.snow.css";
-import Image from "next/image";
 import { useRouter } from "next/router";
 import CommentForm from "../../components/Resource/CommentForm";
 import Snackbar from "../../components/Snackbar";
@@ -27,7 +26,6 @@ import Comment from "../../components/Resource/Comment";
 // import axiosInstance from "../../services/instance";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
-import { red } from "@mui/material/colors";
 
 export default function Resource({
   resource,
@@ -56,16 +54,19 @@ export default function Resource({
   const [userEvents, setUserEvents] = useState([]);
 
   useEffect(() => {
+    console.log(resource);
     setCurrentLikes(resource.likes);
+
     if (isAuthenticated) {
       const getLikes = async () => {
         const response = await fetchProfile();
+        setIsFavorite(response?.likes.includes(resource._id));
         setUserFavorite(response?.likes);
         setUserEvents(response.hasEvents);
       };
       getLikes();
     }
-  }, []);
+  }, [resource]);
 
   useEffect(() => {
     if (quill) {
@@ -161,11 +162,14 @@ export default function Resource({
 
   const handleUserLikes = async (id) => {
     let newFavorites = userFavorite;
+    let newCount = currentLikes;
 
     if (newFavorites.includes(id)) {
       newFavorites = userEvents.filter((e) => e !== id);
+      newCount = currentLikes - 1;
     } else {
       newFavorites = [...newFavorites, id];
+      newCount = currentLikes + 1;
     }
     try {
       const updateUserLikes = await apiService.updateItem(
@@ -174,10 +178,18 @@ export default function Resource({
         { likes: newFavorites },
         token
       );
+
+      console.log(currentLikes, resource);
+      const updateResource = await apiService.updateItem(
+        "resources",
+        resource._id,
+        { likes: newCount },
+        token
+      );
       if (updateUserLikes.status === 204) {
         setSnackbar({
           open: true,
-          message:  !isFavorite ? "Favori ajouté" : "Favori retiré",
+          message: !isFavorite ? "Favori ajouté" : "Favori retiré",
           severity: "success",
         });
         setUserFavorite(newFavorites);
@@ -279,7 +291,7 @@ export default function Resource({
                 color="primary"
                 onClick={() => handleUserLikes(resource._id)}
               >
-                <FavoriteIcon sx={{ color: red[500] }} />
+                <FavoriteIcon sx={{ color: "gov.red" }} />
               </IconButton>
             ) : (
               <IconButton
@@ -287,7 +299,7 @@ export default function Resource({
                 color="primary"
                 onClick={() => handleUserLikes(resource._id)}
               >
-                <FavoriteBorderIcon sx={{ color: red[500] }} />
+                <FavoriteBorderIcon sx={{ color: "gov.red" }} />
               </IconButton>
             )}
             <Typography variant="p">{currentLikes}</Typography>
