@@ -260,7 +260,8 @@ export default function Resource({
             ? `Le ${formatDate(resource.startDate)}`
             : `Du ${formatDate(resource.startDate)} au ${formatDate(
                 resource.startDate
-              )}`}
+              )} `}
+              {` à ${resource.place.city} (${resource.place.zipCode})`}
         </Typography>
         <Grid
           container
