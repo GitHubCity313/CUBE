@@ -56,6 +56,7 @@ export default function Resource({
   const [userEvents, setUserEvents] = useState([]);
 
   useEffect(() => {
+    setCurrentLikes(resource.likes);
     if (isAuthenticated) {
       const getLikes = async () => {
         const response = await fetchProfile();
@@ -158,28 +159,41 @@ export default function Resource({
     }
   };
 
-  const addLike = () => {
-    const addUserFav = userFavorite.push(idPost);
-    console.log("userFavorite", userFavorite);
-    setCurrentLikes(currentLikes + 1);
-    setIsFavorite(!isFavorite);
-    // apiService.updateItem(
-    //   "resources",
-    //   idPost,
-    //   { likes: currentLikes + 1 },
-    //   token
-    // );
-    apiService.updateItem("users", session.id, { likes: addUserFav }, token);
-  };
-  const removeLike = () => {
-    setCurrentLikes(currentLikes - 1);
-    setIsFavorite(!isFavorite);
-    apiService.updateItem(
-      "resources",
-      idPost,
-      { likes: currentLikes - 1 },
-      token
-    );
+  const handleUserLikes = async (id) => {
+    let newFavorites = userFavorite;
+
+    if (newFavorites.includes(id)) {
+      newFavorites = userEvents.filter((e) => e !== id);
+    } else {
+      newFavorites = [...newFavorites, id];
+    }
+    try {
+      const updateUserLikes = await apiService.updateItem(
+        "users",
+        session.id,
+        { likes: newFavorites },
+        token
+      );
+      if (updateUserLikes.status === 204) {
+        setSnackbar({
+          open: true,
+          message:  !isFavorite ? "Favori ajouté" : "Favori retiré",
+          severity: "success",
+        });
+        setUserFavorite(newFavorites);
+
+        !isFavorite
+          ? setCurrentLikes(currentLikes + 1)
+          : setCurrentLikes(currentLikes - 1);
+        setIsFavorite(!isFavorite);
+      }
+    } catch (err) {
+      setSnackbar({
+        open: true,
+        message: "Erreur pendant l'enregistrement",
+        severity: "error",
+      });
+    }
   };
 
   const handleUserParticipation = async (id) => {
@@ -263,7 +277,7 @@ export default function Resource({
               <IconButton
                 disabled={!isAuthenticated}
                 color="primary"
-                onClick={removeLike}
+                onClick={() => handleUserLikes(resource._id)}
               >
                 <FavoriteIcon sx={{ color: red[500] }} />
               </IconButton>
@@ -271,7 +285,7 @@ export default function Resource({
               <IconButton
                 disabled={!isAuthenticated}
                 color="primary"
-                onClick={addLike}
+                onClick={() => handleUserLikes(resource._id)}
               >
                 <FavoriteBorderIcon sx={{ color: red[500] }} />
               </IconButton>

@@ -70,7 +70,7 @@ export default function MultiActionAreaCard({ resourceData }) {
             {resourceData?.description}...
           </Typography>
         </Stack>
-        <Stack spacing={2} justifyContent="space-evenly">
+        <Stack spacing={2} justifyContent="flex-end">
           <CardActions
             sx={{
               display: "flex",
@@ -79,20 +79,6 @@ export default function MultiActionAreaCard({ resourceData }) {
               px: 0,
             }}
           >
-            <div>
-              {isFavorite ? (
-                <IconButton
-                  color="primary"
-                  onClick={() => setIsFavorite(false)}
-                >
-                  <FavoriteIcon sx={{ color: red[500] }} />
-                </IconButton>
-              ) : (
-                <IconButton color="primary" onClick={() => setIsFavorite(true)}>
-                  <FavoriteBorderIcon sx={{ color: red[500] }} />
-                </IconButton>
-              )}
-            </div>
             <Link href={`./resource/${resourceData._id}`}>
               <Button variant="borderBtn" size="small" color="primary">
                 En savoir plus
