@@ -1,10 +1,4 @@
-import {
-  Button,
-  Grid,
-  Paper,
-  Snackbar,
-  Typography,
-} from "@mui/material";
+import { Button, Grid, Paper, Snackbar, Typography } from "@mui/material";
 import Image from "next/image";
 import commentIcone from "../../public/icones/commentIcone.svg";
 import React, { useCallback, useContext, useState } from "react";
@@ -57,12 +51,11 @@ export default function Comment(props) {
   };
 
   const reportComment = async () => {
-    comment.isReported = true;
     try {
       const reportedItem = await apiService.updateItem(
         "comments",
         comment._id,
-        comment,
+        { isReported: true },
         token
       );
       if (reportedItem.status === 204) {
@@ -78,7 +71,7 @@ export default function Comment(props) {
       setSnackbar({
         open: true,
         message: "Erreur lors du signalement",
-        severity: "success",
+        severity: "error",
       });
     }
   };

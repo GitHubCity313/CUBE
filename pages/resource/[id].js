@@ -149,7 +149,7 @@ export default function Resource({
           message: "Votre ressource a bien ete supprimee",
           severity: "success",
         });
-        //setTimeout(() => router.push("/"), 3000);
+        setTimeout(() => router.push("/"), 3000);
       }
     } catch (err) {
       setSnackbar({
@@ -179,7 +179,6 @@ export default function Resource({
         token
       );
 
-      console.log(currentLikes, resource);
       const updateResource = await apiService.updateItem(
         "resources",
         resource._id,
@@ -433,7 +432,9 @@ export async function getStaticProps({ params }) {
     likes = resource.likes;
 
     const commentsReq = await apiService.getItem("comments", resource._id);
-    comments = await commentsReq.data.comments;
+    comments = await commentsReq.data.comments.filter(
+      (c) => c.validationStatus === true
+    );
   } catch (e) {
     console.log(e);
   }
