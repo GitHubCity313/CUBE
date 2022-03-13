@@ -1,11 +1,13 @@
 import React, { useState, useMemo } from "react";
 import PropTypes from "prop-types";
-import { Grid, Typography } from "@mui/material";
+import { Grid, Typography, useMediaQuery } from "@mui/material";
+import { useTheme } from "@mui/material/styles";
 import Card from "../components/Card";
 import CategoriesSelect from "../components/Home/CategoriesSelect";
 import ResourceTypeSelect from "../components/Home/ResourceTypeSelect";
 import Layout from "../components/Layout/Layout";
 import apiService from "../services/apiService";
+import Searchbar from "../components/Home/Searchbar";
 import { indexResourceTypes } from "../utils";
 
 export default function Home({ resources, categories, resourceTypes }) {
@@ -14,7 +16,17 @@ export default function Home({ resources, categories, resourceTypes }) {
     categories: [],
   });
   const [displayedEvents, setDisplayedEvents] = useState([]);
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
 
+  const handleSearch = (search) => {
+    if (search.length === 0) {
+      return setDisplayedEvents(resources);
+    } else {
+      let result = displayedEvents.filter((e) => e.title.includes(search));
+      return setDisplayedEvents(result);
+    }
+  };
   useMemo(() => {
     if (
       activeFilter.types.length === 0 &&
@@ -77,11 +89,11 @@ export default function Home({ resources, categories, resourceTypes }) {
       <Grid container flexDirection="column" mt={2}>
         <Grid
           container
-          sx={{ ml: 3, pb: 3, borderBottom: "1px solid #E5E5E5" }}
+          sx={{ mr: 3, py: 3, borderBottom: "1px solid #E5E5E5" }}
           alignItems="center"
-          justifyContent="center"
+          justifyContent="space-between"
         >
-          <Typography sx={{ pr: 2, color: "gov.blue" }}>Filtrer par</Typography>
+          <Typography sx={{ pr: 2, color: "gov.blue" }}>Filtres</Typography>
           <CategoriesSelect
             onChange={(e) => handleCategoryChange(e)}
             categories={categories}
@@ -93,7 +105,28 @@ export default function Home({ resources, categories, resourceTypes }) {
             activeFilter={activeFilter}
           />
         </Grid>
-        <Grid container pt={2} justifyContent="center">
+        <Grid
+          container
+          flexDirection={isMobile && "column"}
+          sx={{ mr: 3, py: 3 }}
+          alignItems="center"
+          justifyContent="space-between"
+        >
+          <Typography sx={{ pr: 2, color: "gov.blue", pb: isMobile && 3 }}>
+            Tous les évènements
+          </Typography>
+
+          <Searchbar onChange={(e) => handleSearch(e.target.value)} />
+        </Grid>
+        {displayedEvents.length !== resources.length && (
+          <Typography
+            variant="body2"
+            sx={{ pr: 2, color: "gov.lightCumulus", pb: isMobile && 3 }}
+          >
+            {`${displayedEvents.length} évènement(s) trouvé(s)`}
+          </Typography>
+        )}
+        <Grid container pt={2} justifyContent="flex-start">
           {displayedEvents.map((resource) => {
             return (
               <Grid item key={resource._id} my={2} mx={3}>
@@ -117,7 +150,7 @@ export async function getServerSideProps() {
     const fetchedCategories = await apiService.getItems("categories");
 
     const rawResources = await fetchedResources.data.resources;
-    resources = rawResources.filter(r => r.validationStatus)
+    resources = rawResources.filter((r) => r.validationStatus);
     categories = await fetchedCategories.data.categories;
 
     resourceTypes = indexResourceTypes(resources);
