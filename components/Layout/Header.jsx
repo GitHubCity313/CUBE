@@ -1,22 +1,20 @@
 import React, { useState, useEffect, useContext } from "react";
-import { styled, alpha } from "@mui/material/styles";
 import {
   Drawer,
   AppBar,
   Box,
   Typography,
-  InputBase,
   Toolbar,
   useMediaQuery,
   Avatar,
 } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
-import SearchIcon from "@mui/icons-material/Search";
 import Image from "next/image";
 import Link from "next/link";
 import Logo from "../../public/logoMini.svg";
 import Sidebar from "./Sidebar";
 import AuthContext from "../../context/authContext";
+import Menu from "@mui/icons-material/Menu";
 
 const Header = (props) => {
   const { withSidebar } = props;
@@ -43,10 +41,24 @@ const Header = (props) => {
       <AppBar
         variant="header"
         position="fixed"
-        sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        sx={{ zIndex: (theme) => theme.zIndex.drawer + 1, flexGrow: 1, p: 2 }}
       >
-        <Toolbar>
-          <Box sx={{ cursor: "pointer" }}>
+        <Toolbar
+          disableGutters
+          sx={{
+            width: "100%",
+            display: "flex",
+            justifyContent: "space-between",
+          }}
+        >
+          <Box
+            sx={{
+              cursor: "pointer",
+              display: "flex",
+              alignItems: "center",
+              ml: "12px",
+            }}
+          >
             <Link href="/">
               <a>
                 <Image
@@ -57,29 +69,35 @@ const Header = (props) => {
                 />
               </a>
             </Link>
-          </Box>
-          <Typography
-            variant="h6"
-            noWrap
-            component="div"
-            style={{ marginLeft: 50 }}
-            sx={{ flexGrow: 1, display: { xs: "none", sm: "block" } }}
-          >
-            Ressources Relationnelles
-          </Typography>
-          {isAuthenticated && user !== undefined && (
-            <>
+            {!isMobile && (
               <Typography
-                variant="body2"
-                sx={{ color: "gov.blue" }}
-              >{`${user?.firstName} ${user?.lastName}`}</Typography>
-              <Avatar
-                alt={`${user?.firstName}`}
-                src={`${user?.profilePic}`}
-                sx={{ mr: 2, ml: 2 }}
-              />{" "}
-            </>
-          )}
+                variant="h6"
+                noWrap
+                component="div"
+                style={{ marginLeft: 50 }}
+                sx={{ flexGrow: 1, display: { xs: "none", sm: "block" } }}
+              >
+                Ressources Relationnelles
+              </Typography>
+            )}
+          </Box>
+
+          <Box sx={{ display: "flex", alignItems: "center" }}>
+            {isAuthenticated && session !== undefined && !isMobile && (
+              <>
+                <Typography
+                  variant="body2"
+                  sx={{ color: "gov.blue" }}
+                >{`${user?.firstName} ${user?.lastName}`}</Typography>
+                <Avatar
+                  alt={`${user?.firstName}`}
+                  src={`${user?.profilePic}`}
+                  sx={{ mr: 2, ml: 2 }}
+                />{" "}
+              </>
+            )}
+            {isMobile && <Menu sx={{ color: "gov.blue" }} />}
+          </Box>
         </Toolbar>
       </AppBar>
       {withSidebar && !isMobile && (
