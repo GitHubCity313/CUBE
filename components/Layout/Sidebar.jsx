@@ -18,13 +18,11 @@ export default function Sidebar() {
     <Box
       sx={{
         mt: "126px",
-        backgroundColor: "transparent",
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
         justifyContent: "center",
         height: "100vh",
-        width: "20vw",
       }}
     >
       {isAuthenticated && (

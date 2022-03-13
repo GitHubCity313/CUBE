@@ -15,11 +15,13 @@ import Logo from "../../public/logoMini.svg";
 import Sidebar from "./Sidebar";
 import AuthContext from "../../context/authContext";
 import Menu from "@mui/icons-material/Menu";
+import Close from "@mui/icons-material/Close";
 
 const Header = (props) => {
   const { withSidebar } = props;
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const { session, fetchProfile, isAuthenticated, token } =
     useContext(AuthContext);
   const [user, setUser] = useState({});
@@ -96,10 +98,24 @@ const Header = (props) => {
                 />{" "}
               </>
             )}
-            {isMobile && <Menu sx={{ color: "gov.blue" }} />}
+            {isMobile && !isDrawerOpen && (
+              <Menu
+                sx={{ color: "gov.blue", cursor: "pointer" }}
+                onClick={() => setIsDrawerOpen(!isDrawerOpen)}
+              />
+            )}
+            {isDrawerOpen && (
+              <Close
+                sx={{ color: "gov.blue", cursor: "pointer" }}
+                onClick={() => setIsDrawerOpen(!isDrawerOpen)}
+              />
+            )}
           </Box>
         </Toolbar>
       </AppBar>
+      <Drawer open={isDrawerOpen} anchor="top">
+        <Sidebar />
+      </Drawer>
       {withSidebar && !isMobile && (
         <Drawer variant="permanent" sx={{ backgroundColor: "transparent" }}>
           <Sidebar />
