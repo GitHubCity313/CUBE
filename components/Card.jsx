@@ -1,7 +1,7 @@
 import * as React from "react";
 import { useTheme } from "@mui/material/styles";
 import Link from "next/link";
-import { Box, Stack, Button } from "@mui/material";
+import { Box, Stack, Button, useMediaQuery } from "@mui/material";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import CardMedia from "@mui/material/CardMedia";
@@ -9,18 +9,26 @@ import Typography from "@mui/material/Typography";
 
 export default function MediaControlCard({ resourceData }) {
   const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
   return (
     <Card sx={{ display: "flex" }}>
-      <CardMedia
-        component="img"
-        sx={{ width: 151 }}
-        src={resourceData?.thumbnail.url}
-        alt={resourceData?.thumbnail.alt}
-      />
-      <Box sx={{ display: "flex", flexDirection: "column" }}>
+      {resourceData?.thumbnail.url && (
+        <CardMedia
+          component="img"
+          sx={{ width: isMobile ? 125 : 250 }}
+          src={resourceData?.thumbnail.url}
+          alt={resourceData?.thumbnail.alt}
+        />
+      )}
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+        }}
+      >
         <CardContent sx={{ flex: "1 0 auto" }}>
-          <Stack>
+          <Stack spacing={1}>
             <Typography gutterBottom variant="TitreCard" component="div">
               {resourceData?.title}
             </Typography>
