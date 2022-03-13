@@ -55,9 +55,9 @@ export default function MultiActionAreaCard({ resourceData }) {
       >
         <Stack spacing={1} justifyContent="space-between" sx={{ mt: 2 }}>
           <Stack spacing={1} direction="row" sx={{ mt: 2 }}>
-            {resourceData?.categories.map((resourceCategory) => {
+            {resourceData?.categories.map((resourceCategory, index) => {
               return (
-                <Typography variant="categoryTypo">
+                <Typography variant="categoryTypo" key={index}>
                   {resourceCategory}
                 </Typography>
               );

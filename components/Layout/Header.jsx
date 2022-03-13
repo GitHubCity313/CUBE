@@ -48,12 +48,14 @@ const Header = (props) => {
         <Toolbar>
           <Box sx={{ cursor: "pointer" }}>
             <Link href="/">
-              <Image
-                src={Logo}
-                width={120}
-                height={102}
-                alt="Picture of the author"
-              />
+              <a>
+                <Image
+                  src={Logo}
+                  width={120}
+                  height={102}
+                  alt="Picture of the author"
+                />
+              </a>
             </Link>
           </Box>
           <Typography

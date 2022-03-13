@@ -10,9 +10,6 @@ import {
   CardMedia,
 } from "@mui/material";
 import EventShortCard from "./EventShortCard";
-import Link from "next/link";
-import Image from "next/image";
-import Logo from "../../public/logoMini.svg";
 
 export default function UserInfoCard(props) {
   const { title, subtitle, isEmptyLabel, list, hasActionButton, actionButton } =
@@ -55,7 +52,7 @@ export default function UserInfoCard(props) {
           ) : (
             <Stack direction="row">
               {list.map((event) => (
-                <EventShortCard event={event} />
+                <EventShortCard event={event} key={event._id} />
               ))}
             </Stack>
           )}
