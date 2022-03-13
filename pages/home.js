@@ -4,16 +4,16 @@ import { Grid, Typography, useMediaQuery } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import Card from "../components/Card";
 import CategoriesSelect from "../components/Home/CategoriesSelect";
-import ResourceTypeSelect from "../components/Home/ResourceTypeSelect";
+import DateSelect from "../components/Home/DateSelect";
 import Layout from "../components/Layout/Layout";
 import apiService from "../services/apiService";
 import Searchbar from "../components/Home/Searchbar";
-import { indexResourceTypes } from "../utils";
 
-export default function Home({ resources, categories, resourceTypes }) {
+export default function Home({ resources, categories, localities }) {
   const [activeFilter, setActiveFilter] = useState({
     types: [],
     categories: [],
+    localities: [],
   });
   const [displayedEvents, setDisplayedEvents] = useState([]);
   const theme = useTheme();
@@ -23,7 +23,12 @@ export default function Home({ resources, categories, resourceTypes }) {
     if (search.length === 0) {
       return setDisplayedEvents(resources);
     } else {
-      let result = displayedEvents.filter((e) => e.title.includes(search));
+      let result = displayedEvents.filter(
+        (e) =>
+          e.title.includes(search) ||
+          e.place.zipCode.includes(search.toString()) ||
+          e.place.city.includes(search)
+      );
       return setDisplayedEvents(result);
     }
   };
@@ -89,9 +94,9 @@ export default function Home({ resources, categories, resourceTypes }) {
       <Grid container flexDirection="column" mt={2}>
         <Grid
           container
-          sx={{ mr: 3, py: 3, borderBottom: "1px solid #E5E5E5" }}
+          sx={{ mr: 3, pb: 3, borderBottom: "1px solid #E5E5E5" }}
           alignItems="center"
-          justifyContent="space-between"
+          justifyContent="space-evenly"
         >
           <Typography sx={{ pr: 2, color: "gov.blue" }}>Filtres</Typography>
           <CategoriesSelect
@@ -99,8 +104,8 @@ export default function Home({ resources, categories, resourceTypes }) {
             categories={categories}
             value={activeFilter.categories}
           />
-          <ResourceTypeSelect
-            types={resourceTypes}
+          <DateSelect
+            types={["ce mois", "cette année"]}
             setActiveFilter={setActiveFilter}
             activeFilter={activeFilter}
           />
@@ -143,17 +148,19 @@ export default function Home({ resources, categories, resourceTypes }) {
 export async function getServerSideProps() {
   let resources = [];
   let categories = [];
-  let resourceTypes = [];
+  let localities = [];
 
   try {
     const fetchedResources = await apiService.getItems("resources");
     const fetchedCategories = await apiService.getItems("categories");
+    const fetchedLocalities = await apiService.getItems("zipcode");
 
     const rawResources = await fetchedResources.data.resources;
     resources = rawResources.filter((r) => r.validationStatus);
     categories = await fetchedCategories.data.categories;
+    localities = await fetchedLocalities.data.localities;
 
-    resourceTypes = indexResourceTypes(resources);
+    console.log(localities);
   } catch (err) {
     console.log(err);
   }
@@ -162,7 +169,7 @@ export async function getServerSideProps() {
     props: {
       resources,
       categories,
-      resourceTypes,
+      localities,
     },
   };
 }
