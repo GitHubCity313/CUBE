@@ -33,7 +33,7 @@ export default function comments(req, res) {
     }
   };
 
-<<<<<<< HEAD
+  
   const updateComment = async (db, res, comment, id) => {
     const itemId = new ObjectId(id);
     try {
@@ -42,10 +42,6 @@ export default function comments(req, res) {
         $set: {
           ...comment,
         },
-=======
-      const updatedResource = {
-        $set: resource,
->>>>>>> :bug: (API) La mise a jour des items se fait correctement
       };
       const updatedItem = await db
         .collection("comments")
@@ -54,36 +50,24 @@ export default function comments(req, res) {
     } catch (e) {
       console.log(e);
       return res.status(404).json({ e });
-  // const updateComment = async (id, db, resource, res) => {
-  //   const objectId = new ObjectId(id);
-  //   try {
-  //     const filter = { _id: objectId };
+      // const updateComment = async (id, db, resource, res) => {
+      //   const objectId = new ObjectId(id);
+      //   try {
+      //     const filter = { _id: objectId };
 
-  //     const updatedResource = {
-  //       $set: {
-  //         ...resource,
-  //       },
-  //     };
-  //     const update = await db
-  //       .collection("comments")
-  //       .updateOne(filter, updatedResource);
-  //     return res.status(204).json({ update });
-  //   } catch (err) {
-  //     return res.status(404).json({ err });
-  //   }
-  // };
-
-    }}
-
-  const deleteComment = async (id, db, res) => {
-    const objectId = new ObjectId(id);
-    try {
-      const resource = await db
-        .collection("comments")
-        .deleteOne({ _id: objectId });
-      return res.status(204).json({ resource });
-    } catch (err) {
-      return res.status(404).json({ err });
+      //     const updatedResource = {
+      //       $set: {
+      //         ...resource,
+      //       },
+      //     };
+      //     const update = await db
+      //       .collection("comments")
+      //       .updateOne(filter, updatedResource);
+      //     return res.status(204).json({ update });
+      //   } catch (err) {
+      //     return res.status(404).json({ err });
+      //   }
+      // };
     }
   };
 
@@ -99,20 +83,14 @@ export default function comments(req, res) {
       case "DELETE": {
         return await deleteComment(db, res, id);
       }
-<<<<<<< HEAD
       case "PUT": {
         delete comment._id;
         delete comment.relatedResource;
         delete comment.author;
         return await updateComment(db, res, comment, id);
-      // case "PUT": {
-      //   return await updateComment(id, db, req.body, res);
-       }
-=======
-      case "DELETE": {
-        return await deleteComment(id, db, res);
+        // case "PUT": {
+        //   return await updateComment(id, db, req.body, res);
       }
->>>>>>> :sparkles: (Admin) On peut effacer les items des tableaux
       default:
         return res.status(405).end(`Method ${req.method} Not Allowed`);
     }

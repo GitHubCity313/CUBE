@@ -4,9 +4,7 @@ import {
   Paper,
   Snackbar,
   Typography,
-  // IconButton,
 } from "@mui/material";
-// import { HighlightOffIcon, BorderColorIcon } from "@mui/icons-material";
 import Image from "next/image";
 import commentIcone from "../../public/icones/commentIcone.svg";
 import React, { useCallback, useContext, useState } from "react";
@@ -77,8 +75,6 @@ export default function Comment(props) {
         setTimeout(() => router.reload(), 800);
       }
     } catch (e) {
-      console.log("le commentaire n'a pas pu être signalé");
-      console.log(e);
       setSnackbar({
         open: true,
         message: "Erreur lors du signalement",
@@ -99,16 +95,16 @@ export default function Comment(props) {
         <Paper key={comment._id} elevation={6} sx={{ p: 2, mb: 2 }}>
           <Grid className={styles.buttonsRow}>
             <Image src={commentIcone} />
-            {isCreator() && (
-              <div className={styles.buttonsCol}>
+            <div className={styles.buttonsCol}>
+              {isCreator() && (
                 <Button variant="text" onClick={deleteComment}>
                   ❌ Supprimer
                 </Button>
-                <Button variant="text" onClick={reportComment}>
-                  ⚠️ Signaler
-                </Button>
-              </div>
-            )}
+              )}
+              <Button variant="text" onClick={reportComment}>
+                ⚠️ Signaler
+              </Button>
+            </div>
           </Grid>
           <Typography variant="h4" sx={{ mt: 1.4, mb: 0.8 }}>
             {comment.title}
