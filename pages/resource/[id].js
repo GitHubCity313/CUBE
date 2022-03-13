@@ -53,13 +53,14 @@ export default function Resource({
   const [isFavorite, setIsFavorite] = useState(false);
   const [currentLikes, setCurrentLikes] = useState(likes);
   const [userFavorite, setUserFavorite] = useState([]);
+  const [userEvents, setUserEvents] = useState([]);
 
   useEffect(() => {
     if (isAuthenticated) {
       const getLikes = async () => {
         const response = await fetchProfile();
-        console.log("jfezfklsdljfk", response);
         setUserFavorite(response?.likes);
+        setUserEvents(response.hasEvents);
       };
       getLikes();
     }
@@ -146,7 +147,7 @@ export default function Resource({
           message: "Votre ressource a bien ete supprimee",
           severity: "success",
         });
-        setTimeout(() => router.push("/"), 3000);
+        //setTimeout(() => router.push("/"), 3000);
       }
     } catch (err) {
       setSnackbar({
@@ -179,6 +180,31 @@ export default function Resource({
       { likes: currentLikes - 1 },
       token
     );
+  };
+
+  const handleUserParticipation = async (id) => {
+    try {
+      const updateUserEvents = await apiService.updateItem(
+        "users",
+        session.id,
+        { hasEvents: [...userEvents, id] },
+        token
+      );
+      if (updateUserEvents.status === 204) {
+        setSnackbar({
+          open: true,
+          message: "Participation enregistrée",
+          severity: "success",
+        });
+        setUserEvents([...userEvents, id]);
+      }
+    } catch (err) {
+      setSnackbar({
+        open: true,
+        message: "Erreur pendant l'enregistrement",
+        severity: "error",
+      });
+    }
   };
 
   return (
@@ -270,7 +296,21 @@ export default function Resource({
               </>
             )}
             {isAuthenticated && !isCreator() ? (
-              <Button variant="bleuBtn">+ Ajouter aux favoris</Button>
+              userEvents.includes(resource._id) ? (
+                <Button
+                  variant="redBtn"
+                  onClick={() => handleUserParticipation(resource._id)}
+                >
+                  Ne plus participer
+                </Button>
+              ) : (
+                <Button
+                  variant="bleuBtn"
+                  onClick={() => handleUserParticipation(resource._id)}
+                >
+                  Participer
+                </Button>
+              )
             ) : null}
           </Stack>
         </Grid>
