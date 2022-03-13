@@ -183,11 +183,18 @@ export default function Resource({
   };
 
   const handleUserParticipation = async (id) => {
+    let newEvents = userEvents;
+
+    if (userEvents.includes(id)) {
+      newEvents = userEvents.filter((e) => e !== id);
+    } else {
+      newEvents = [...userEvents, id];
+    }
     try {
       const updateUserEvents = await apiService.updateItem(
         "users",
         session.id,
-        { hasEvents: [...userEvents, id] },
+        { hasEvents: newEvents },
         token
       );
       if (updateUserEvents.status === 204) {
@@ -196,7 +203,7 @@ export default function Resource({
           message: "Participation enregistrée",
           severity: "success",
         });
-        setUserEvents([...userEvents, id]);
+        setUserEvents(newEvents);
       }
     } catch (err) {
       setSnackbar({
