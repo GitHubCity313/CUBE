@@ -45,7 +45,6 @@ export default function userId(req, res) {
 
   const updateUser = async (id, db, resource, res) => {
     const objectId = new ObjectId(id);
-    console.log(resource);
     try {
       const filter = { _id: objectId };
       const updatedResource = {
@@ -123,8 +122,6 @@ export default function userId(req, res) {
     const db = await connect();
     const user = req?.body ? req.body : null;
     const id = req.query.id.trim();
-
-    console.log("user", req.body);
 
     switch (req.method) {
       case "GET": {

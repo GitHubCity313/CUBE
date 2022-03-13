@@ -32,7 +32,6 @@ export default function Comment(props) {
         token
       );
       if (deleteItem.status === 204) {
-        console.log("le commentaire a bien été supprimé");
         setSnackbar({
           open: true,
           message: "Commentaire supprimé",
@@ -41,7 +40,6 @@ export default function Comment(props) {
         setTimeout(() => router.reload(), 800);
       }
     } catch (e) {
-      console.log(e);
       setSnackbar({
         open: true,
         message: "Erreur lors de la suppression",
@@ -59,7 +57,6 @@ export default function Comment(props) {
         token
       );
       if (reportedItem.status === 204) {
-        console.log("le commentaire a bien été signalé");
         setSnackbar({
           open: true,
           message: "Commentaire signalé",

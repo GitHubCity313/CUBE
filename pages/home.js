@@ -184,7 +184,6 @@ export async function getServerSideProps() {
     categories = await fetchedCategories.data.categories;
     localities = await fetchedLocalities.data.localities;
 
-    console.log(localities);
   } catch (err) {
     console.log(err);
   }

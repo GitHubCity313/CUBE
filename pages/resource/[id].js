@@ -54,7 +54,6 @@ export default function Resource({
   const [userEvents, setUserEvents] = useState([]);
 
   useEffect(() => {
-    console.log(resource);
     setCurrentLikes(resource.likes);
 
     if (isAuthenticated) {
@@ -240,7 +239,7 @@ export default function Resource({
   };
 
   return (
-    <Layout title={resource.title} withSidebar withFooter>
+    <Layout title={`Cube | ${resource.title}`} withSidebar withFooter>
       <Grid container flexDirection="column">
         <Grid container flexDirection="row" sx={{ mb: 3 }}>
           <Breadcrumbs aria-label="breadcrumb">
@@ -252,6 +251,16 @@ export default function Resource({
         </Grid>
         <Typography variant="h1" sx={{ color: "gov.blue" }}>
           {resource.title}
+        </Typography>
+        <Typography
+          variant="body1"
+          sx={{ color: "gov.lightCumulus", ml: 1, mb: 3 }}
+        >
+          {resource.startDate === resource.endDate
+            ? `Le ${formatDate(resource.startDate)}`
+            : `Du ${formatDate(resource.startDate)} au ${formatDate(
+                resource.startDate
+              )}`}
         </Typography>
         <Grid
           container

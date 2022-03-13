@@ -55,6 +55,7 @@ export default function ressources(req, res) {
       endDate,
       thumbnail,
       description,
+      place,
     } = resource;
 
     const date = new Date();
@@ -73,11 +74,7 @@ export default function ressources(req, res) {
       updatedAt: dateToIso,
       startDate,
       endDate,
-      place: {
-        city: "",
-        zipCode: "",
-        region: "",
-      },
+      place,
       likes: 0,
       thumbnail,
       description,

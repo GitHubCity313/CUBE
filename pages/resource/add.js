@@ -45,6 +45,10 @@ const AddArticle = ({ categories }) => {
     endDate: new Date(),
     resourceType: "event",
     categories: [],
+    place: {
+      city: "",
+      zipCode: "",
+    },
   });
 
   // Verifie que la ressource a un titre et des categories avant de permettre l'envoi
@@ -83,26 +87,25 @@ const AddArticle = ({ categories }) => {
     const thumbnail = createThumbnail();
     const description = getSummary();
 
-    const { endDate, startDate } = newResource;
+    const { endDate, startDate, place } = newResource;
 
     const resource = {
-      eventType: 'event',
+      eventType: "event",
       ...newResource,
       content,
       thumbnail,
       description,
       endDate: endDate,
       startDate: startDate,
+      place,
     };
 
     try {
-      const addItemToProfile = await apiService.updateItem("users", session.id);
       let createResource = await apiService.createItem(
         "resources",
         resource,
         token
       );
-
       if (createResource.status === 201) {
         const profile = await fetchProfile();
         const events = profile.hasEventsCreated;
@@ -122,6 +125,10 @@ const AddArticle = ({ categories }) => {
           endDate: new Date(),
           resourceType: "event",
           categories: [],
+          place: {
+            city: "",
+            zipCode: "",
+          },
         });
         setSnackbarSeverity("success");
 
@@ -160,17 +167,6 @@ const AddArticle = ({ categories }) => {
             >
               Ajouter une ressource
             </Typography>
-            {/* <TypeRadio
-              onChange={(e) =>
-                setNewResource({
-                  ...newResource,
-                  resourceType: e.target.value,
-                })
-              }
-              value={newResource.resourceType}
-              label=" Type de ressources"
-              isEvent={isEvent}
-            /> */}
           </Grid>
           <Grid item xs={12} m={2}>
             <Typography
@@ -249,6 +245,58 @@ const AddArticle = ({ categories }) => {
               />
             </Stack>
           </Grid>
+          <Grid item xs={12} md={2}>
+            <Typography
+              variant="body2"
+              sx={{
+                color: isEvent() ? "gov.blue" : "gov.mediumGlycine",
+                ml: 1,
+              }}
+            >
+              Code postal
+            </Typography>
+            <TextField
+              fullWidth
+              required
+              id="zipCode"
+              label=""
+              variant="standard"
+              type="text"
+              sx={{ maxWidth: "100px", ml: 1 }}
+              value={newResource.place.zipCode}
+              onChange={(e) =>
+                setNewResource({
+                  ...newResource,
+                  place: { ...newResource.place, zipCode: e.target.value },
+                })
+              }
+            />
+          </Grid>
+          <Grid item xs={12} md={6} sx={{ py: 4 }}>
+            <Typography
+              variant="body2"
+              sx={{ color: isEvent() ? "gov.blue" : "gov.mediumGlycine" }}
+            >
+              Lieu
+            </Typography>
+            <TextField
+              fullWidth
+              required
+              id="city"
+              label=""
+              variant="standard"
+              type="text"
+              value={newResource.place.city}
+              onChange={(e) =>
+                setNewResource({
+                  ...newResource,
+                  place: { ...newResource.place, city: e.target.value },
+                })
+              }
+            />
+          </Grid>
+          <Grid item md={4} xs={12}></Grid>
+
           <Grid item xs={12}>
             <Typography
               variant="body1"

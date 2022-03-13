@@ -15,7 +15,6 @@ const authService = {
       headers: { Authorization: token },
     }),
   getRole: (id, token) => {
-    console.log(id);
     return axiosInstance.post(
       `/auth/permissions`,
       { id: id },
