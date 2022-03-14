@@ -177,13 +177,10 @@ export async function getServerSideProps() {
   try {
     const fetchedResources = await apiService.getItems("resources");
     const fetchedCategories = await apiService.getItems("categories");
-    const fetchedLocalities = await apiService.getItems("zipcode");
 
     const rawResources = await fetchedResources.data.resources;
     resources = rawResources.filter((r) => r.validationStatus);
     categories = await fetchedCategories.data.categories;
-    localities = await fetchedLocalities.data.localities;
-
   } catch (err) {
     console.log(err);
   }

@@ -6,8 +6,9 @@ import { Box, Tab, Typography, CircularProgress } from "@mui/material";
 import { TabContext, TabList, TabPanel } from "@mui/lab";
 import DataTable from "../components/BackOffice/DataTable";
 import apiService from "../services/apiService";
+import StatsTab from "../components/BackOffice/StatsTab";
 
-export default function AdminPanel({ resources, comments, users }) {
+export default function AdminPanel({ resources, comments, users, chartData }) {
   const router = useRouter();
   const [value, setValue] = useState("0");
   const [isFetching, setIsFetching] = useState(false);
@@ -86,7 +87,9 @@ export default function AdminPanel({ resources, comments, users }) {
               type="users"
             />
           </TabPanel>
-          <TabPanel value="3">Staaaaats</TabPanel>
+          <TabPanel value="3">
+            <StatsTab chartData={chartData}/>
+          </TabPanel>
         </TabContext>
       </Box>
     </Layout>
@@ -97,15 +100,19 @@ export async function getServerSideProps() {
   let resources = [];
   let users = [];
   let comments = [];
+  let chartData = [];
 
   try {
     const fetchedResources = await apiService.getItems("resources");
     const fetchedUsers = await apiService.getItems("users");
     const fetchedComments = await apiService.getItems("comments");
+    const fetchedData = await apiService.getItems('stats');
 
     resources = await fetchedResources.data.resources;
     users = await fetchedUsers.data.users;
     comments = await fetchedComments.data.users;
+    chartData = await fetchedData.data
+
   } catch (err) {
     console.log(err);
   }
@@ -115,6 +122,7 @@ export async function getServerSideProps() {
       resources,
       users,
       comments,
+      chartData
     },
   };
 }
