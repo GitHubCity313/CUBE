@@ -117,7 +117,10 @@ const Header = (props) => {
         <Sidebar />
       </Drawer>
       {withSidebar && !isMobile && (
-        <Drawer variant="permanent" sx={{ backgroundColor: "transparent" }}>
+        <Drawer
+          variant="permanent"
+          sx={{ backgroundColor: "transparent", width: "20vw" }}
+        >
           <Sidebar />
         </Drawer>
       )}

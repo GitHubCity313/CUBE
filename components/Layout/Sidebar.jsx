@@ -23,6 +23,7 @@ export default function Sidebar() {
         alignItems: "center",
         justifyContent: "center",
         height: "100vh",
+        width: "20vw",
       }}
     >
       {isAuthenticated && (
