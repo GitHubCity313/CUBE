@@ -7,8 +7,7 @@ import { Bar } from "react-chartjs-2";
 const PieChart = (props) => {
   const { chartData, title } = props;
   const labels = chartData.map((l) => Object.keys(l));
-  const lol = chartData.map((i) => Object.values(i));
-  console.log(lol.flat());
+  const dataToDisplay = chartData.map((i) => Object.values(i));
 
   const options = {
     indexAxis: "y",
@@ -20,7 +19,7 @@ const PieChart = (props) => {
     responsive: true,
     plugins: {
       legend: {
-        position: "right",
+        position: "bottom",
       },
       title: {
         display: true,
@@ -40,7 +39,7 @@ const PieChart = (props) => {
     datasets: [
       {
         label: "Ressources crées",
-        data: lol.flat(),
+        data: dataToDisplay.flat(),
         backgroundColor: [
           "rgba(255, 99, 132, 0.2)",
           "rgba(54, 162, 235, 0.2)",
@@ -64,7 +63,7 @@ const PieChart = (props) => {
 
   return (
     <Box>
-      <h2>{title}</h2>
+      {/* <h2>{title}</h2> */}
       <Bar data={data} options={options} width={400} height={200} />
     </Box>
   );
