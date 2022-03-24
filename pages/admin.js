@@ -41,7 +41,7 @@ export default function AdminPanel({ resources, comments, users, chartData }) {
         const userTable = users.map((u) => {
           return {
             ...u,
-            title: u.lastName + " " + u.firstName,
+            title: u.email,
             createdAt: format(new Date(u.createdAt), "dd/MM/yyyy"),
           };
         });

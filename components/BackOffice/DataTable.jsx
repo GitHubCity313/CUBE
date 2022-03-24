@@ -12,8 +12,11 @@ import {
   Checkbox,
   Box,
   Table,
-  Stack,
+  IconButton,
   Typography,
+  Stack,
+  FormControlLabel,
+  Switch,
 } from "@mui/material";
 import PageviewIcon from "@mui/icons-material/Pageview";
 import DataTableHead from "./DataTableHead";
@@ -30,10 +33,15 @@ export default function DataTable({ title, data, type }) {
   useEffect(() => setDisplayedData(data), [data]);
   const { token } = useContext(AuthContext);
   const [isModalOpen, setIsModalOpen] = useState({
+    itemChange: false,
     itemValidation: false,
     itemView: false,
     itemDeletion: false,
     roleCustom: false,
+  });
+  const [status, setStatus] = useState({
+    isModerated: true,
+    isPublished: true,
   });
   const [snackbar, setSnackbar] = useState({
     open: false,
@@ -109,6 +117,11 @@ export default function DataTable({ title, data, type }) {
 
   const handleModalOpening = (id, modalItem) => {
     setTargetItem(id);
+    const item = data.find((i) => i._id === id);
+    setStatus({
+      isModerated: item.isModerated,
+      isPublished: item.validationStatus,
+    });
     setIsModalOpen({ ...isModalOpen, [modalItem]: true });
   };
 
@@ -130,25 +143,44 @@ export default function DataTable({ title, data, type }) {
   const emptyRows =
     page > 0 ? Math.max(0, (1 + page) * rowsPerPage - displayedData.length) : 0;
 
+  const handleModification = (field) =>
+    setStatus({ ...status, [field]: !status[field] });
+
   const handleChangeOnResource = async (id) => {
     try {
       const targetedItem = displayedData.filter((d) => d._id === id).shift();
       const updatedItem = await apiService.updateItem(
         type,
         id,
-        { validationStatus: !targetedItem.validationStatus },
+        {
+          validationStatus: status.isPublished,
+          isModerated: status.isModerated,
+          isReported: !status.isModerated,
+        },
         token
       );
       if (updatedItem.status === 204) {
         const newData = displayedData.map((d) => {
           if (d._id === targetedItem._id) {
-            return { ...d, validationStatus: !d.validationStatus };
+            console.log(status, d);
+            return {
+              ...d,
+              validationStatus: status.isPublished,
+              isModerated: status.isModerated,
+              isReported: !status.isModerated,
+            };
           } else {
             return d;
           }
         });
 
+        console.log(newData);
+
         setDisplayedData(newData);
+        setIsModalOpen({
+          ...isModalOpen,
+          itemChange: false,
+        });
         setSelected([]);
         setSnackbar({
           open: true,
@@ -266,7 +298,10 @@ export default function DataTable({ title, data, type }) {
                       </TableCell>
                       <TableCell align="left">{row.createdAt}</TableCell>
                       <TableCell align="left">
-                        <IconCell isValid={row.validationStatus} />
+                        <IconCell
+                          isValid={row.validationStatus}
+                          status={true}
+                        />
                       </TableCell>
                       <TableCell align={"left"}>
                         {type === "users" ? (
@@ -280,31 +315,35 @@ export default function DataTable({ title, data, type }) {
                       </TableCell>
                       <TableCell align={type !== "users" ? "left" : "right"}>
                         <Button
-                          variant="bleuBtn"
-                          sx={{
-                            width: "100px",
-                            border: "1px solid transparent",
-                            backgroundColor: row.validationStatus
-                              ? "gov.red"
-                              : "gov.lightMenthe",
-                          }}
-                          onClick={() => handleChangeOnResource(row._id)}
+                          sx={{ color: "gov.blue" }}
+                          onClick={() =>
+                            handleModalOpening(row._id, "itemChange")
+                          }
                         >
-                          {row.validationStatus ? "Suspendre" : "Publier"}
+                          Modifier
                         </Button>
                       </TableCell>
 
                       <TableCell align="left">
                         {type !== "users" && (
-                          <Button
-                            variant="bleuBtn"
-                            startIcon={<PageviewIcon />}
+                          <IconButton
                             onClick={(e) =>
                               handleModalOpening(row._id, "itemView")
                             }
+                            sx={{
+                              backgroundColor: "transparent",
+                              "&:hover": {
+                                backgroundColor: "transparent",
+                              },
+                            }}
                           >
-                            Aperçu
-                          </Button>
+                            <PageviewIcon
+                              sx={{
+                                fontSize: 30,
+                                color: "gov.blue",
+                              }}
+                            />
+                          </IconButton>
                         )}
                       </TableCell>
                     </TableRow>
@@ -360,6 +399,46 @@ export default function DataTable({ title, data, type }) {
           <Typography variant="body2">
             Donner à l'utilisateur le rôle {currentRole} ?
           </Typography>
+        }
+      />
+      <CustomDialog
+        id={"itemChange"}
+        open={isModalOpen.itemChange}
+        handleClose={() =>
+          setIsModalOpen({ ...isModalOpen, itemChange: false })
+        }
+        handleConfirmation={() => handleChangeOnResource(targetItem)}
+        title={"Modifier l'élément"}
+        children={
+          <>
+            <Stack
+              direction="row"
+              alignItems="center"
+              sx={{ minWidth: "25vw" }}
+            >
+              <Checkbox
+                checked={status.isModerated}
+                onChange={() => handleModification("isModerated")}
+              />
+              <Typography variant="body2">
+                Marquer l'élément comme modéré
+              </Typography>
+            </Stack>
+            <FormControlLabel
+              control={
+                <Switch
+                  checked={status.isPublished}
+                  onChange={() => handleModification("isPublished")}
+                />
+              }
+              label={
+                status.isPublished
+                  ? "Elément maintenu en ligne"
+                  : "Element retiré des publications"
+              }
+              sx={{ ml: 0.2, mt: 1 }}
+            />
+          </>
         }
       />
       <Snackbar
