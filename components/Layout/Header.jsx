@@ -85,7 +85,7 @@ const Header = (props) => {
           </Box>
 
           <Box sx={{ display: "flex", alignItems: "center" }}>
-            {isAuthenticated && session !== undefined && !isMobile && (
+            {isAuthenticated && user?.firstName !== undefined && !isMobile && (
               <>
                 <Typography
                   variant="body2"
