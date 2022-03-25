@@ -165,7 +165,7 @@ export default function ressources(req, res) {
  *         id:
  *           type: uuid
  *           description: l'id de la ressource.
- *           example: trouver un truc
+ *           example: 61e165463d88f191f3f4e0d4
  *         resourceType:
  *           type: string
  *           description: Le type de la ressource.

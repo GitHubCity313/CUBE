@@ -94,7 +94,7 @@ export default function users(req, res) {
  *         id:
  *           type: uuid
  *           description: l'id de l'utilisateur.
- *           example: trouver un truc
+ *           example: 61e165463d88f191f3f4e0d4
  *         lastName:
  *           type: string
  *           description: Le nom de l'utilisateur.

@@ -73,7 +73,7 @@ export default function Comment(props) {
     }
   };
 
-  if (!comment.isModerated) {
+  if (!comment.validatedStatus) {
     return (
       <>
         <Snackbar
@@ -110,6 +110,7 @@ export default function Comment(props) {
       </>
     );
   }
+  return null;
 }
 
 Comment.propTypes = {

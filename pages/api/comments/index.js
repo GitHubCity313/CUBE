@@ -130,7 +130,7 @@ export default function comments(req, res) {
  *         id:
  *           type: uuid
  *           description: l'id du commentaire.
- *           example: trouver un truc
+ *           example: 61e165463d88f191f3f4e0d4
  *         relatedResource:
  *           type: uuid
  *           description: La ressource associée au commentaire.

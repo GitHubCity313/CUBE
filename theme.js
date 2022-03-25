@@ -51,7 +51,7 @@ const theme = createTheme(
     },
     typography: {
       useNextVariants: true,
-      fontFamily: [ "Marianne", "Arial", "sans-serif"].join(","),
+      fontFamily: ["Marianne", "Arial", "sans-serif"].join(","),
     },
     components: {
       MuiCard: {
@@ -153,7 +153,7 @@ const theme = createTheme(
           root: {
             "@font-face": [marianne],
             fontFamily: "Marianne, Arial, sans-serif",
-            backgroundColor: "#A558A0",
+            backgroundColor: "#417DC4",
             color: "white",
           },
         },

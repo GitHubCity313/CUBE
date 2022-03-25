@@ -55,7 +55,7 @@ export default function categories(req, res) {
  *         id:
  *           type: uuid
  *           description: l'id de la categorie.
- *           example: trouver un truc
+ *           example: 61e165463d88f191f3f4e0d4
  *         name:
  *           type: string
  *           description: Le nom de la categorie.
@@ -104,7 +104,7 @@ export default function categories(req, res) {
  *       required: true
  *       content:
  *         application/json:
- *           schema: 
+ *           schema:
  *             $ref: '#/components/schemas/Category'
  *     responses:
  *       201:
