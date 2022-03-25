@@ -7,6 +7,7 @@ import {
   Toolbar,
   useMediaQuery,
   Avatar,
+  Stack,
 } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import Image from "next/image";
@@ -84,19 +85,23 @@ const Header = (props) => {
             )}
           </Box>
 
-          <Box sx={{ display: "flex", alignItems: "center" }}>
+          <Box
+            sx={{ display: "flex", alignItems: "center", cursor: "pointer" }}
+          >
             {isAuthenticated && user?.firstName !== undefined && !isMobile && (
-              <>
-                <Typography
-                  variant="body2"
-                  sx={{ color: "gov.blue" }}
-                >{`${user?.firstName} ${user?.lastName}`}</Typography>
-                <Avatar
-                  alt={`${user?.firstName}`}
-                  src={`${user?.profilePic}`}
-                  sx={{ mr: 2, ml: 2 }}
-                />{" "}
-              </>
+              <Link href="/profile">
+                <Stack direction="row" alignItems="center">
+                  <Typography
+                    variant="body2"
+                    sx={{ color: "gov.blue" }}
+                  >{`${user?.firstName} ${user?.lastName}`}</Typography>
+                  <Avatar
+                    alt={`${user?.firstName}`}
+                    src={`${user?.profilePic}`}
+                    sx={{ mr: 2, ml: 2 }}
+                  />
+                </Stack>
+              </Link>
             )}
             {isMobile && !isDrawerOpen && (
               <Menu
