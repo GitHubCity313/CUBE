@@ -162,7 +162,6 @@ export default function DataTable({ title, data, type }) {
       if (updatedItem.status === 204) {
         const newData = displayedData.map((d) => {
           if (d._id === targetedItem._id) {
-            console.log(status, d);
             return {
               ...d,
               validationStatus: status.isPublished,
@@ -173,8 +172,6 @@ export default function DataTable({ title, data, type }) {
             return d;
           }
         });
-
-        console.log(newData);
 
         setDisplayedData(newData);
         setIsModalOpen({

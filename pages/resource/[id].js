@@ -444,8 +444,6 @@ export async function getStaticProps({ params }) {
     comments = await commentsReq.data.comments.filter(
       (c) => c.validationStatus === true
     );
-
-    console.log(comments);
   } catch (e) {
     console.log(e);
   }
