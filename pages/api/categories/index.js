@@ -96,7 +96,7 @@ export default function categories(req, res) {
  *             schema:
  *               $ref: '#/components/schemas/Error'
  *             example:
- *               message: "fdkjsfjd"
+ *               message: "No category found"
  *   post:
  *     tags : [categories]
  *     description: Créé une nouvelle catégorie.
@@ -120,5 +120,5 @@ export default function categories(req, res) {
  *             schema:
  *               $ref: '#/components/schemas/Error'
  *             example:
- *               message: "fdkjsfjd"
+ *               message: "No category found"
  */

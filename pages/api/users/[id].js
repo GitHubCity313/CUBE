@@ -224,7 +224,7 @@ export default function userId(req, res) {
  *             schema:
  *               $ref: '#/components/schemas/Error'
  *             example:
- *               message: "fdkjsfjd"
+ *               message: "No user found"
  *   put:
  *     tags : [users]
  *     description: Modifie les informations d'un utilisateur.
@@ -248,7 +248,7 @@ export default function userId(req, res) {
  *             schema:
  *               $ref: '#/components/schemas/Error'
  *             example:
- *               message: "fdkjsfjd"
+ *               message: "No user found"
  *   delete:
  *     tags : [users]
  *     description: Supprime un utilisateur.
@@ -266,7 +266,7 @@ export default function userId(req, res) {
  *             schema:
  *               $ref: '#/components/schemas/Error'
  *             example:
- *               message: "fdkjsfjd"
+ *               message: "No user found"
  */
 
 /**
@@ -297,7 +297,7 @@ export default function userId(req, res) {
  *             schema:
  *               $ref: '#/components/schemas/Error'
  *             example:
- *               message: "fdkjsfjd"
+ *               message: "No user found"
  *       404:
  *         description: Echec de la requête.
  *         content:
@@ -305,5 +305,5 @@ export default function userId(req, res) {
  *             schema:
  *               $ref: '#/components/schemas/Error'
  *             example:
- *               message: "fdkjsfjd"
+ *               message: "No user found"
  */

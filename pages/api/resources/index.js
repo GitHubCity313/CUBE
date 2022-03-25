@@ -254,7 +254,7 @@ export default function ressources(req, res) {
  *             schema:
  *               $ref: '#/components/schemas/Error'
  *             example:
- *               message: "fdkjsfjd"
+ *               message: "No resource found"
  *   post:
  *     tags : [resources]
  *     description: Créé une nouvelle ressource.
@@ -278,5 +278,5 @@ export default function ressources(req, res) {
  *             schema:
  *               $ref: '#/components/schemas/Error'
  *             example:
- *               message: "fdkjsfjd"
+ *               message: "No resource found"
  */

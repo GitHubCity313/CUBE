@@ -179,7 +179,7 @@ export default function users(req, res) {
  *             schema:
  *               $ref: '#/components/schemas/Error'
  *             example:
- *               message: "fdkjsfjd"
+ *               message: "No user found"
  *   post:
  *     tags : [users]
  *     description: Créé une nouvel utilisateur.
@@ -203,5 +203,5 @@ export default function users(req, res) {
  *             schema:
  *               $ref: '#/components/schemas/Error'
  *             example:
- *               message: "fdkjsfjd"
+ *               message: "No user found"
  */
