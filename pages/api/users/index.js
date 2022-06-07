@@ -73,7 +73,7 @@ export default function users(req, res) {
  *         id:
  *           type: uuid
  *           description: la description de l'erreur retournée.
- *           example: uuid wanted
+ *           example: 61e165463d88f191f3f4e0d4
  *         createdAt:
  *           type: date
  *           description: La date de création de la ressource.
@@ -94,7 +94,7 @@ export default function users(req, res) {
  *         id:
  *           type: uuid
  *           description: l'id de l'utilisateur.
- *           example: trouver un truc
+ *           example: 61e165463d88f191f3f4e0d4
  *         lastName:
  *           type: string
  *           description: Le nom de l'utilisateur.
@@ -111,9 +111,9 @@ export default function users(req, res) {
  *           type: string
  *           description: Le hash du mot de passe.
  *           example: 8745de6abbc5a0b632fccdae08e53b3f
- *         enabled:
+ *         isReported:
  *           type: boolean
- *           description: L'utilisateur est actif.
+ *           description: L'utilisateur a été signalé comme problématiaue.
  *           example: true
  *         profilePic:
  *           type: string
@@ -122,24 +122,24 @@ export default function users(req, res) {
  *         seen:
  *           type: array
  *           description: Je sais pas ce que c'est.
- *           example: ["uuid wanted"]
+ *           example: ["61e165463d88f191f3f4e0d4"]
  *         hasEvents:
  *           type: array
  *           description: Les evenements auxquels l'utilisateur participe.
- *           example: ["uuid wanted"]
+ *           example: ["61e165463d88f191f3f4e0d4"]
  *         hasEventsCreated:
  *           type: array
  *           description: Les evenements crées par l'utilisateur.
- *           example: ["uuid wanted"]
+ *           example: ["61e165463d88f191f3f4e0d4"]
  *         likes:
  *           type: array
  *           description: Les ressources favorites de l'utilisateur.
- *           example: ["uuid wanted"]
+ *           example: ["61e165463d88f191f3f4e0d4"]
  *         role:
  *           type: string
  *           description: Le rôle de l'utilisateur.
  *           example: 8745de6abbc5a0b632fccdae08e53b3f
- *         isValidated:
+ *         validationStatus:
  *           type: boolean
  *           description: Le compte de l'utilisateur a été confirmé.
  *           example: true
@@ -154,7 +154,7 @@ export default function users(req, res) {
  *         confirmationCode:
  *           type: string
  *           description: le code de confirmation a l'inscription
- *           example: jfhgwsejhfgejshfgjhsegf
+ *           example: 61e165463d88f191f3f4e0d4
  */
 
 /**
@@ -179,7 +179,7 @@ export default function users(req, res) {
  *             schema:
  *               $ref: '#/components/schemas/Error'
  *             example:
- *               message: "fdkjsfjd"
+ *               message: "No user found"
  *   post:
  *     tags : [users]
  *     description: Créé une nouvel utilisateur.
@@ -203,5 +203,5 @@ export default function users(req, res) {
  *             schema:
  *               $ref: '#/components/schemas/Error'
  *             example:
- *               message: "fdkjsfjd"
+ *               message: "No user found"
  */

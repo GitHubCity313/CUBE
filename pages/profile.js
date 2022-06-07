@@ -40,7 +40,7 @@ export default function Profile() {
   });
 
   useEffect(async () => {
-    if (isAuthenticated === false) {
+    if (!isAuthenticated) {
       router.push("/");
     } else {
       try {
@@ -53,7 +53,14 @@ export default function Profile() {
         }
         if (profile.hasEvents.length > 0) {
           const events = await fetchEvents(profile.hasEvents);
-          setEvents(events);
+          const monthlyEvents = () =>
+            events.filter(
+              (e) =>
+                new Date(e.startDate).getMonth() ===
+                new Date(Date.now()).getMonth()
+            );
+
+          setEvents(monthlyEvents);
         }
         if (profile.hasEventsCreated.length > 0) {
           const events = await fetchCreatedEvents(profile.hasEventsCreated);
@@ -83,7 +90,7 @@ export default function Profile() {
           message: "Votre profil est bien mis à jour",
           severity: "success",
         });
-        setIsDialogOpen(false)
+        setIsDialogOpen(false);
       }
     } catch (err) {
       console.log(err);

@@ -1,13 +1,16 @@
-import React, { useContext, useEffect, useState } from "react";
-import { Box, Avatar, ListItem, ListItemText, Button } from "@mui/material";
+import React, { useContext } from "react";
+import { Box, ListItem, Button, useMediaQuery } from "@mui/material";
+import { useTheme } from "@mui/material/styles";
 import { useRouter } from "next/router";
 import SettingsIcon from "@mui/icons-material/Settings";
 import Link from "next/link";
 import AuthContext from "../../context/authContext";
 
 export default function Sidebar() {
-  const { isAuthenticated, signOut } = useContext(AuthContext);
+  const { isAuthenticated, signOut, role } = useContext(AuthContext);
   const router = useRouter();
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
 
   const handleDisconnexion = () => {
     signOut();
@@ -18,13 +21,12 @@ export default function Sidebar() {
     <Box
       sx={{
         mt: "126px",
-        backgroundColor: "transparent",
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
         justifyContent: "center",
         height: "100vh",
-        width: "20vw",
+        width: isMobile ? "100vw" : "20vw",
       }}
     >
       {isAuthenticated && (
@@ -46,9 +48,11 @@ export default function Sidebar() {
           </Link>
           <Link href="/admin">
             <ListItem>
-              <Button variant="textBtn" sx={{ color: "gov.red" }}>
-                Administration
-              </Button>
+              {(role === "admin" || role === "moderateur") && (
+                <Button variant="textBtn" sx={{ color: "gov.red" }}>
+                  Administration
+                </Button>
+              )}
             </ListItem>
           </Link>
         </Box>

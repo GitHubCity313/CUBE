@@ -1,4 +1,5 @@
 import React, { useContext, useEffect, useState, useCallback } from "react";
+import Layout from "../../components/Layout/Layout";
 import PropTypes from "prop-types";
 import AuthContext from "../../context/authContext";
 import {
@@ -12,38 +13,59 @@ import {
   Typography,
   Chip,
   capitalize,
+  IconButton,
 } from "@mui/material";
 import { useQuill } from "react-quilljs";
 import "react-quill/dist/quill.snow.css";
-import Image from "next/image";
 import { useRouter } from "next/router";
-import Layout from "../../components/Layout/Layout";
 import CommentForm from "../../components/Resource/CommentForm";
 import Snackbar from "../../components/Snackbar";
 import apiService from "../../services/apiService";
 import editorUtils from "../../utils/editorUtils";
 import Comment from "../../components/Resource/Comment";
 // import axiosInstance from "../../services/instance";
+import FavoriteIcon from "@mui/icons-material/Favorite";
+import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 
 export default function Resource({
   resource,
   comments,
   resourceAuthor,
+  likes,
+  idPost,
   authorId,
 }) {
-  const { session, isAuthenticated, token, signOut } = useContext(AuthContext);
+  const { session, isAuthenticated, token, fetchProfile } =
+    useContext(AuthContext);
   const router = useRouter();
+  const options = editorUtils.getEditorOptions();
+  const { quill, quillRef } = useQuill(options);
   const { createdAt, updatedAt } = resource;
   const [editingMode, setEditingMode] = useState(false);
   const [contents, setContents] = useState([]);
-  const options = editorUtils.getEditorOptions();
   const [snackbar, setSnackbar] = useState({
     open: false,
     message: "",
     severity: "success",
   });
+  const [isFavorite, setIsFavorite] = useState(false);
+  const [currentLikes, setCurrentLikes] = useState(likes);
+  const [userFavorite, setUserFavorite] = useState([]);
+  const [userEvents, setUserEvents] = useState([]);
 
-  const { quill, quillRef } = useQuill(options);
+  useEffect(() => {
+    setCurrentLikes(resource.likes);
+
+    if (isAuthenticated) {
+      const getLikes = async () => {
+        const response = await fetchProfile();
+        setIsFavorite(response?.likes.includes(resource._id));
+        setUserFavorite(response?.likes);
+        setUserEvents(response.hasEvents);
+      };
+      getLikes();
+    }
+  }, [resource]);
 
   useEffect(() => {
     if (quill) {
@@ -137,8 +159,87 @@ export default function Resource({
     }
   };
 
+  const handleUserLikes = async (id) => {
+    let newFavorites = userFavorite;
+    let newCount = currentLikes;
+
+    if (newFavorites.includes(id)) {
+      newFavorites = userEvents.filter((e) => e !== id);
+      newCount = currentLikes - 1;
+    } else {
+      newFavorites = [...newFavorites, id];
+      newCount = currentLikes + 1;
+    }
+    try {
+      const updateUserLikes = await apiService.updateItem(
+        "users",
+        session.id,
+        { likes: newFavorites },
+        token
+      );
+
+      const updateResource = await apiService.updateItem(
+        "resources",
+        resource._id,
+        { likes: newCount },
+        token
+      );
+      if (updateUserLikes.status === 204) {
+        setSnackbar({
+          open: true,
+          message: !isFavorite ? "Favori ajouté" : "Favori retiré",
+          severity: "success",
+        });
+        setUserFavorite(newFavorites);
+
+        !isFavorite
+          ? setCurrentLikes(currentLikes + 1)
+          : setCurrentLikes(currentLikes - 1);
+        setIsFavorite(!isFavorite);
+      }
+    } catch (err) {
+      setSnackbar({
+        open: true,
+        message: "Erreur pendant l'enregistrement",
+        severity: "error",
+      });
+    }
+  };
+
+  const handleUserParticipation = async (id) => {
+    let newEvents = userEvents;
+
+    if (userEvents.includes(id)) {
+      newEvents = userEvents.filter((e) => e !== id);
+    } else {
+      newEvents = [...userEvents, id];
+    }
+    try {
+      const updateUserEvents = await apiService.updateItem(
+        "users",
+        session.id,
+        { hasEvents: newEvents },
+        token
+      );
+      if (updateUserEvents.status === 204) {
+        setSnackbar({
+          open: true,
+          message: "Participation enregistrée",
+          severity: "success",
+        });
+        setUserEvents(newEvents);
+      }
+    } catch (err) {
+      setSnackbar({
+        open: true,
+        message: "Erreur pendant l'enregistrement",
+        severity: "error",
+      });
+    }
+  };
+
   return (
-    <Layout title={resource.title} withSidebar withFooter>
+    <Layout title={`Cube | ${resource.title}`} withSidebar withFooter>
       <Grid container flexDirection="column">
         <Grid container flexDirection="row" sx={{ mb: 3 }}>
           <Breadcrumbs aria-label="breadcrumb">
@@ -150,6 +251,17 @@ export default function Resource({
         </Grid>
         <Typography variant="h1" sx={{ color: "gov.blue" }}>
           {resource.title}
+        </Typography>
+        <Typography
+          variant="body1"
+          sx={{ color: "gov.lightCumulus", ml: 1, mb: 3 }}
+        >
+          {resource.startDate === resource.endDate
+            ? `Le ${formatDate(resource.startDate)}`
+            : `Du ${formatDate(resource.startDate)} au ${formatDate(
+                resource.startDate
+              )} `}
+          {` à ${resource.place.city} (${resource.place.zipCode})`}
         </Typography>
         <Grid
           container
@@ -176,7 +288,31 @@ export default function Resource({
               {` par ${resourceAuthor.firstName} ${resourceAuthor.lastName}`}
             </Typography>
           </Stack>
-
+          <Stack
+            direction="row"
+            justifyContent="center"
+            alignItems="center"
+            marginRight={3}
+          >
+            {isFavorite ? (
+              <IconButton
+                disabled={!isAuthenticated}
+                color="primary"
+                onClick={() => handleUserLikes(resource._id)}
+              >
+                <FavoriteIcon sx={{ color: "gov.red" }} />
+              </IconButton>
+            ) : (
+              <IconButton
+                disabled={!isAuthenticated}
+                color="primary"
+                onClick={() => handleUserLikes(resource._id)}
+              >
+                <FavoriteBorderIcon sx={{ color: "gov.red" }} />
+              </IconButton>
+            )}
+            <Typography variant="p">{currentLikes}</Typography>
+          </Stack>
           <Stack direction="row" spacing={2}>
             {isCreator() && (
               <>
@@ -202,7 +338,21 @@ export default function Resource({
               </>
             )}
             {isAuthenticated && !isCreator() ? (
-              <Button variant="bleuBtn">+ Ajouter aux favoris</Button>
+              userEvents.includes(resource._id) ? (
+                <Button
+                  variant="redBtn"
+                  onClick={() => handleUserParticipation(resource._id)}
+                >
+                  Ne plus participer
+                </Button>
+              ) : (
+                <Button
+                  variant="bleuBtn"
+                  onClick={() => handleUserParticipation(resource._id)}
+                >
+                  Participer
+                </Button>
+              )
             ) : null}
           </Stack>
         </Grid>
@@ -273,7 +423,10 @@ export async function getStaticProps({ params }) {
   let resourceAuthor = [];
   let authorId = "";
 
+  let likes = 0;
+  let idPost = params.id;
   try {
+    // RESOURCE GET
     const apiSResourceRequest = await apiService.getItem(
       "resources",
       params.id
@@ -285,8 +438,12 @@ export async function getStaticProps({ params }) {
     const userReq = await apiService.getItem("users", resource.author);
     resourceAuthor = await userReq.data.user[0];
 
+    likes = resource.likes;
+
     const commentsReq = await apiService.getItem("comments", resource._id);
-    comments = await commentsReq.data.comments;
+    comments = await commentsReq.data.comments.filter(
+      (c) => c.validationStatus === true
+    );
   } catch (e) {
     console.log(e);
   }
@@ -298,6 +455,8 @@ export async function getStaticProps({ params }) {
       comments,
       resourceAuthor,
       authorId,
+      likes,
+      idPost,
     },
   };
 }

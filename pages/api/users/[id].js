@@ -1,7 +1,6 @@
 import clientPromise from "../../../lib/mongodb";
 import { ObjectId } from "mongodb";
 import jwt from "jsonwebtoken";
-import CommandCursor from "mongodb/lib/command_cursor";
 
 export default function userId(req, res) {
   const connect = async () => {
@@ -35,7 +34,7 @@ export default function userId(req, res) {
       user.result.n > 0
         ? console.log(`[SUCCESS] deletion confirmed`)
         : console.log(`[WARNING] No item deleted. Bad userId ? (${id})`);
-      return res.status(200).json({ user });
+      return res.status(204).json({ user });
     } catch (err) {
       // [server_logs]
       console.log(`[FAILED] DELETE user with id : ${id} : `);
@@ -44,22 +43,18 @@ export default function userId(req, res) {
     }
   };
 
-  const updateUser = async (id, db, user, res) => {
+  const updateUser = async (id, db, resource, res) => {
     const objectId = new ObjectId(id);
     try {
       const filter = { _id: objectId };
-      const updatedUser = {
-        $set: {
-          ...user,
-        },
+      const updatedResource = {
+        $set: resource,
       };
       const update = await db
         .collection("users")
-        .updateOne(filter, updatedUser);
+        .updateOne(filter, updatedResource);
       return res.status(204).json({ update });
     } catch (err) {
-      console.log("error in updateUser");
-      console.log(err);
       return res.status(404).json({ err });
     }
   };
@@ -126,17 +121,18 @@ export default function userId(req, res) {
   const getRoute = async (req, res) => {
     const db = await connect();
     const user = req?.body ? req.body : null;
+    const id = req.query.id.trim();
 
     switch (req.method) {
       case "GET": {
-        const id = req.query.id.trim();
         return await getUser(id, db, res);
       }
       case "DELETE":
-        return await deleteUser(id.toString());
+        return await deleteUser(id);
       case "PUT":
-        const id = req.query.id.trim();
-        return await updateUser(id, db, user, res);
+        //const id = req.query.id.trim();
+        const body = req?.body ? req.body : null;
+        return await updateUser(id, db, body, res);
       case "POST":
         const query = req.query.data;
         const token = req.body.headers?.Authorization
@@ -228,7 +224,7 @@ export default function userId(req, res) {
  *             schema:
  *               $ref: '#/components/schemas/Error'
  *             example:
- *               message: "fdkjsfjd"
+ *               message: "No user found"
  *   put:
  *     tags : [users]
  *     description: Modifie les informations d'un utilisateur.
@@ -252,7 +248,7 @@ export default function userId(req, res) {
  *             schema:
  *               $ref: '#/components/schemas/Error'
  *             example:
- *               message: "fdkjsfjd"
+ *               message: "No user found"
  *   delete:
  *     tags : [users]
  *     description: Supprime un utilisateur.
@@ -270,7 +266,7 @@ export default function userId(req, res) {
  *             schema:
  *               $ref: '#/components/schemas/Error'
  *             example:
- *               message: "fdkjsfjd"
+ *               message: "No user found"
  */
 
 /**
@@ -301,7 +297,7 @@ export default function userId(req, res) {
  *             schema:
  *               $ref: '#/components/schemas/Error'
  *             example:
- *               message: "fdkjsfjd"
+ *               message: "No user found"
  *       404:
  *         description: Echec de la requête.
  *         content:
@@ -309,5 +305,5 @@ export default function userId(req, res) {
  *             schema:
  *               $ref: '#/components/schemas/Error'
  *             example:
- *               message: "fdkjsfjd"
+ *               message: "No user found"
  */

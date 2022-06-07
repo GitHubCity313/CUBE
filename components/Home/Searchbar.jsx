@@ -37,40 +37,42 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
   borderRadius: "0px",
   textAlign: "left",
   "& .MuiInputBase-input": {
-    padding: theme.spacing(1, 1, 1, 0),
+    padding: theme.spacing(1),
     // vertical padding + font size from searchIcon
-    paddingLeft: `calc(1em + ${theme.spacing(4)})`,
     transition: theme.transitions.create("width"),
-    width: "100%",
     [theme.breakpoints.up("sm")]: {
-      width: "12ch",
+      width: "18ch",
       "&:focus": {
-        width: "20ch",
+        width: "24ch",
       },
     },
   },
 }));
 
 const SearchBar = (props) => {
+  const { onChange } = props;
   return (
     <Search
       variant="searchHeader"
-      style={{
+      sx={{
         borderBottom: "2px solid #000091",
         display: "flex",
         flexDirection: "row-reverse",
-        justifyContent: "space-between",
         backgroundColor: "#EEEEEE",
-        width: "300px",
+        maxWidth: "300px",
+        paddingLeft: 2,
       }}
     >
       <SearchIconWrapper>
         <SearchIcon />
       </SearchIconWrapper>
       <StyledInputBase
-        placeholder="Rechercher"
-        inputProps={{ "aria-label": "search" }}
+        placeholder="ex : 65400, test"
+        inputProps={{ "aria-label": "search", sx: { fontSize: "12px" } }}
+        onChange={onChange}
       />
     </Search>
   );
 };
+
+export default SearchBar;

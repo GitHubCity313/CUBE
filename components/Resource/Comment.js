@@ -1,12 +1,4 @@
-import {
-  Button,
-  Grid,
-  Paper,
-  Snackbar,
-  Typography,
-  // IconButton,
-} from "@mui/material";
-// import { HighlightOffIcon, BorderColorIcon } from "@mui/icons-material";
+import { Button, Grid, Paper, Snackbar, Typography } from "@mui/material";
 import Image from "next/image";
 import commentIcone from "../../public/icones/commentIcone.svg";
 import React, { useCallback, useContext, useState } from "react";
@@ -40,7 +32,6 @@ export default function Comment(props) {
         token
       );
       if (deleteItem.status === 204) {
-        console.log("le commentaire a bien été supprimé");
         setSnackbar({
           open: true,
           message: "Commentaire supprimé",
@@ -49,7 +40,6 @@ export default function Comment(props) {
         setTimeout(() => router.reload(), 800);
       }
     } catch (e) {
-      console.log(e);
       setSnackbar({
         open: true,
         message: "Erreur lors de la suppression",
@@ -59,16 +49,14 @@ export default function Comment(props) {
   };
 
   const reportComment = async () => {
-    comment.isReported = true;
     try {
       const reportedItem = await apiService.updateItem(
         "comments",
         comment._id,
-        comment,
+        { isReported: true },
         token
       );
       if (reportedItem.status === 204) {
-        console.log("le commentaire a bien été signalé");
         setSnackbar({
           open: true,
           message: "Commentaire signalé",
@@ -77,17 +65,15 @@ export default function Comment(props) {
         setTimeout(() => router.reload(), 800);
       }
     } catch (e) {
-      console.log("le commentaire n'a pas pu être signalé");
-      console.log(e);
       setSnackbar({
         open: true,
         message: "Erreur lors du signalement",
-        severity: "success",
+        severity: "error",
       });
     }
   };
 
-  if (!comment.isModerated) {
+  if (!comment.validatedStatus) {
     return (
       <>
         <Snackbar
@@ -99,16 +85,16 @@ export default function Comment(props) {
         <Paper key={comment._id} elevation={6} sx={{ p: 2, mb: 2 }}>
           <Grid className={styles.buttonsRow}>
             <Image src={commentIcone} />
-            {isCreator() && (
-              <div className={styles.buttonsCol}>
+            <div className={styles.buttonsCol}>
+              {isCreator() && (
                 <Button variant="text" onClick={deleteComment}>
                   ❌ Supprimer
                 </Button>
-                <Button variant="text" onClick={reportComment}>
-                  ⚠️ Signaler
-                </Button>
-              </div>
-            )}
+              )}
+              <Button variant="text" onClick={reportComment}>
+                ⚠️ Signaler
+              </Button>
+            </div>
           </Grid>
           <Typography variant="h4" sx={{ mt: 1.4, mb: 0.8 }}>
             {comment.title}
@@ -124,6 +110,7 @@ export default function Comment(props) {
       </>
     );
   }
+  return null;
 }
 
 Comment.propTypes = {

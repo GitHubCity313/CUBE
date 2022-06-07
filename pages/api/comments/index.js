@@ -45,9 +45,6 @@ export default function comments(req, res) {
 
     //vérifier le token en amont pour récupérer le nom prénom si il est ok
     const user = await getUserFromToken(token);
-    console.log("user in getUserFromToken");
-    console.log(typeof user);
-    console.log(user);
 
     const newComment = {
       relatedResource: ObjectId(relatedResource),
@@ -56,7 +53,7 @@ export default function comments(req, res) {
       value,
       createdAt: dateToIso,
       isReported: false,
-      isModerated: false,
+      validationStatus: true,
       authorName: `${user.firstName} ${user.lastName}`,
     };
     return newComment;
@@ -66,14 +63,11 @@ export default function comments(req, res) {
     try {
       const newComment = await createCommentModel(comment, token);
       const validation = await validateComment(newComment);
-      console.log("in addComment - newComment:");
-      await console.log(newComment);
       const insertComment = await db
         .collection("comments")
         .insertOne(newComment);
       return res.status(201).json({ insertComment });
     } catch (e) {
-      console.log("COUCOU");
       console.log(e);
       return res.status(404).json({ e });
     }
@@ -88,6 +82,15 @@ export default function comments(req, res) {
     }
   };
 
+  const getAllComments = async (db, res) => {
+    try {
+      const users = await db.collection("comments").find({}).toArray();
+      return res.status(200).json({ users });
+    } catch (err) {
+      return res.status(404).json({ err });
+    }
+  };
+
   const getRoute = async (req, res) => {
     let bodyR;
     const db = await connect();
@@ -95,18 +98,22 @@ export default function comments(req, res) {
     //   ? req.body.headers.Authorization
     //   : null;
     switch (req.method) {
+      case "GET": {
+        bodyR = req.body;
+        const token = req.headers?.authorization
+          ? req.headers.authorization
+          : null;
+
+        return await getAllComments(db, res, token);
+      }
       case "POST": {
         bodyR = req.body;
         const token = req.headers?.authorization
           ? req.headers.authorization
           : null;
-        console.log("FROM API\n======");
-        console.log(req);
-        console.log(req.body);
-        console.log(token);
-        console.log("======");
         return await addComment(db, res, bodyR, token);
       }
+
       default:
         return res.status(405).end(`Method ${req.method} Not Allowed`);
     }
@@ -123,23 +130,23 @@ export default function comments(req, res) {
  *         id:
  *           type: uuid
  *           description: l'id du commentaire.
- *           example: trouver un truc
+ *           example: 61e165463d88f191f3f4e0d4
  *         relatedResource:
  *           type: uuid
  *           description: La ressource associée au commentaire.
- *           example: uuid wanted
+ *           example: 61e165463d88f191f3f4e0d4
  *         author:
  *           type: int
  *           description: L'id de l'auteur de la ressource.
- *           example: uuid wanted
+ *           example: 61e165463d88f191f3f4e0d4
  *         title:
  *           type: string
  *           description: Le titre de la ressource.
- *           example: uuid wanted
+ *           example: 61e165463d88f191f3f4e0d4
  *         value:
  *           type: string
  *           description: Le contenu du commentaire.
- *           example: uuid wanted
+ *           example: 61e165463d88f191f3f4e0d4
  *         createdAt:
  *           type: date
  *           description: La date de création de la ressource.
@@ -152,7 +159,7 @@ export default function comments(req, res) {
  *           type: boolean
  *           description: La ressource a été reportee comme problematique par un utilisateur.
  *           example: true
- *         isModerated:
+ *         validationStatus:
  *           type: boolean
  *           description: La ressource a été moderée par un administrateur.
  *           example: true

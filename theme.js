@@ -43,13 +43,16 @@ const theme = createTheme(
         mediumTuile: "#CE614A",
         lightTuile: "#FF9575",
         darkTuile: "#AD4847",
-        mediumGlycine: "#A558A0"
+        mediumGlycine: "#A558A0",
       },
       secondary: {
         main: "#EEEEEE",
       },
     },
-
+    typography: {
+      useNextVariants: true,
+      fontFamily: ["Marianne", "Arial", "sans-serif"].join(","),
+    },
     components: {
       MuiCard: {
         styleOverrides: {
@@ -89,7 +92,7 @@ const theme = createTheme(
               },
             },
           },
-           {
+          {
             props: { variant: "redBtn" },
             style: {
               backgroundColor: "#E1000F",
@@ -150,8 +153,8 @@ const theme = createTheme(
           root: {
             "@font-face": [marianne],
             fontFamily: "Marianne, Arial, sans-serif",
-            backgroundColor: "rgb(7, 0, 145)",
-            color: "white"
+            backgroundColor: "#417DC4",
+            color: "white",
           },
         },
       },

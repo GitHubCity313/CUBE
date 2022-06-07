@@ -1,93 +1,68 @@
 import * as React from "react";
-import {
-  Card,
-  CardContent,
-  CardMedia,
-  Typography,
-  Button,
-  CardActions,
-  CardActionArea,
-  Stack,
-} from "@mui/material";
+import { useTheme } from "@mui/material/styles";
 import Link from "next/link";
-import PropTypes from "prop-types";
+import { Box, Stack, Button, useMediaQuery } from "@mui/material";
+import Card from "@mui/material/Card";
+import CardContent from "@mui/material/CardContent";
+import CardMedia from "@mui/material/CardMedia";
+import Typography from "@mui/material/Typography";
 
-export default function MultiActionAreaCard({ resourceData }) {
+export default function MediaControlCard({ resourceData }) {
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+
   return (
-    <Card
-      sx={{
-        display: "flex",
-        justifyContent: "space-between",
-        alignItems: "center",
-        backgroundColor: "transparent",
-        height: "250px",
-      }}
-    >
-      <CardActionArea>
-        <Link href={`./resource/${resourceData._id}`}>
-          <CardMedia
-            variant="imageCard"
-            component="img"
-            src={resourceData?.thumbnail.url}
-            alt={resourceData?.thumbnail.alt}
-            sx={{
-              objectFit: "fill",
-              height: "100%",
-              padding: "0px",
-            }}
-          />
-        </Link>
-      </CardActionArea>
-      <CardContent
+    <Card sx={{ display: "flex" }}>
+      {resourceData?.thumbnail.url && (
+        <CardMedia
+          component="img"
+          sx={{ width: isMobile ? 125 : 250 }}
+          src={resourceData?.thumbnail.url}
+          alt={resourceData?.thumbnail.alt}
+        />
+      )}
+      <Box
         sx={{
           display: "flex",
           flexDirection: "column",
-          justifyContent: "center",
-          p: 2,
-          backgroundColor: "#f9f8f6",
         }}
       >
-        <Stack spacing={1} justifyContent="space-between" sx={{ mt: 2 }}>
-          <Stack spacing={1} direction="row" sx={{ mt: 2 }}>
-            {resourceData?.categories.map((resourceCategory) => {
-              return (
-                <Typography variant="categoryTypo">
-                  {resourceCategory}
-                </Typography>
-              );
-            })}
+        <CardContent sx={{ flex: "1 0 auto" }}>
+          <Stack spacing={1}>
+            <Typography gutterBottom variant="TitreCard" component="div">
+              {resourceData?.title}
+            </Typography>
+            <Stack direction="row" spacing={1}>
+              {resourceData?.categories.map((resourceCategory, index) => {
+                return (
+                  <Typography variant="categoryTypo" key={index}>
+                    {`${resourceCategory} `}
+                  </Typography>
+                );
+              })}
+            </Stack>
+            <Typography variant="DesCard">
+              {resourceData?.description}...
+            </Typography>
           </Stack>
-          <Typography gutterBottom variant="TitreCard" component="div">
-            {resourceData?.title}
-          </Typography>
-          <Typography variant="DesCard">
-            {resourceData?.description}...
-          </Typography>
-        </Stack>
-        <Stack spacing={2} justifyContent="space-evenly">
-          <CardActions
-            sx={{
-              display: "flex",
-              justifyContent: "space-between",
-              py: 4,
-              px: 0,
-            }}
-          >
-            <Button variant="bleuBtn" size="small" color="primary">
-              Suivre
+        </CardContent>
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "flex-end",
+            alignItems: "center",
+            mb: 2,
+            mr: 2,
+            flexGrow: 1,
+          }}
+        >
+          <Link href={`./resource/${resourceData._id}`}>
+            <Button variant="borderBtn" size="small" color="primary">
+              En savoir plus
             </Button>
-            <Link href={`./resource/${resourceData._id}`}>
-              <Button variant="borderBtn" size="small" color="primary">
-                En savoir plus
-              </Button>
-            </Link>
-          </CardActions>
-        </Stack>
-      </CardContent>
+          </Link>
+        </Box>
+      </Box>
     </Card>
   );
 }
-
-MultiActionAreaCard.propTypes = {
-  resourceData: PropTypes.object,
-};

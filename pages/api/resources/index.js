@@ -19,7 +19,6 @@ export default function ressources(req, res) {
       categories: Joi.array().items(Joi.string().trim()).min(1).required(),
       author: Joi.string().alphanum().required().trim(),
       hasParticipants: Joi.array().items(Joi.string()).required(),
-      moderationValidation: Joi.boolean(),
       publicationStatus: Joi.string()
         .valid("public", "private")
         .required()
@@ -42,6 +41,7 @@ export default function ressources(req, res) {
       }),
       description: Joi.string().required().trim(),
       validationStatus: Joi.boolean(),
+      isReported: Joi.boolean(),
     });
   };
 
@@ -55,6 +55,7 @@ export default function ressources(req, res) {
       endDate,
       thumbnail,
       description,
+      place,
     } = resource;
 
     const date = new Date();
@@ -65,7 +66,7 @@ export default function ressources(req, res) {
       categories,
       author: ObjectId(await getAuthor(token)),
       hasParticipants: [],
-      moderationValidation: false,
+      isModerated: false,
       publicationStatus: "public",
       title,
       content,
@@ -73,15 +74,12 @@ export default function ressources(req, res) {
       updatedAt: dateToIso,
       startDate,
       endDate,
-      place: {
-        city: "",
-        zipCode: "",
-        region: "",
-      },
+      place,
       likes: 0,
       thumbnail,
       description,
       validationStatus: false,
+      isReported: false,
     };
 
     return newUser;
@@ -157,7 +155,6 @@ export default function ressources(req, res) {
   return getRoute(req, res);
 }
 
-//! Detail de la structure de media, externalLink et place a faire + corriger les oneOf
 /**
  * @swagger
  * components:
@@ -168,7 +165,7 @@ export default function ressources(req, res) {
  *         id:
  *           type: uuid
  *           description: l'id de la ressource.
- *           example: trouver un truc
+ *           example: 61e165463d88f191f3f4e0d4
  *         resourceType:
  *           type: string
  *           description: Le type de la ressource.
@@ -178,18 +175,18 @@ export default function ressources(req, res) {
  *         categories:
  *           type: array
  *           description: Les categories de la ressource.
- *           example: ["uuid wanted"]
+ *           example: ["61e165463d88f191f3f4e0d4"]
  *         author:
  *           type: int
  *           description: L'id de l'auteur de la ressource.
- *           example: uuid wanted
+ *           example: 61e165463d88f191f3f4e0d4
  *         hasParticipants:
  *           type: array
  *           description: Les utilisateurs inscrits pour l'evenement.
- *           example: ["uuid wanted"]
- *         moderationValidation:
+ *           example: ["61e165463d88f191f3f4e0d4"]
+ *         isReported:
  *           type: boolean
- *           description: La ressource a été validée par un administrateur.
+ *           description: La ressource a été signalée comme problématiaue.
  *           example: true
  *         publicationStatus:
  *           type: string
@@ -202,13 +199,9 @@ export default function ressources(req, res) {
  *           description: Le titre de la ressource
  *           example: Distribution de fournitures scolaires pour la rentrée
  *         contentId:
- *           type: uuid
- *           description: Le contenu rattaché à la ressource
- *           example: "uuid wanted"
- *         externalLinks:
  *           type: array
- *           description: Les liens externes de la ressource.
- *           example: [{active: false, type: "twitter",link: "https://twitter.com/lillefrance/status/1409978077015388168?s=20"}]
+ *           description: Le contenu de la ressource.
+ *           example: [{insert: "Bonjour"}, {insert: "Ressources relationnelles"}]
  *         likes:
  *           type: int
  *           description: Le nombre de likes attachés à la publication.
@@ -233,10 +226,10 @@ export default function ressources(req, res) {
  *           type: object
  *           description: La localisation de la ressource.
  *           example: {"city": "Lille","zipCode": "59000","region": "Hauts-de-France"}
- *         media:
- *           type: array
- *           description: Les fichiers media attachées a la ressource.
- *           example: [url: "https://media.giphy.com/media/Lopx9eUi34rbq/giphy.gif"]
+ *         isModerated:
+ *           type: boolean
+ *           description: La ressource a été modérée.
+ *           example: true
  */
 
 /**
@@ -261,7 +254,7 @@ export default function ressources(req, res) {
  *             schema:
  *               $ref: '#/components/schemas/Error'
  *             example:
- *               message: "fdkjsfjd"
+ *               message: "No resource found"
  *   post:
  *     tags : [resources]
  *     description: Créé une nouvelle ressource.
@@ -285,5 +278,5 @@ export default function ressources(req, res) {
  *             schema:
  *               $ref: '#/components/schemas/Error'
  *             example:
- *               message: "fdkjsfjd"
+ *               message: "No resource found"
  */

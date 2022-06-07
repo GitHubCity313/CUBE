@@ -8,7 +8,6 @@ export default function categories(req, res) {
     return db;
   };
 
-
   const getCategory = async (id, db, res) => {
     try {
       const category = await db
@@ -75,75 +74,74 @@ export default function categories(req, res) {
   return getRoute(req, res);
 }
 
-
-  /**
-   * @swagger
-   * /categories/{id}:
-   *   parameters:
-   *     - in: path
-   *       name: id
-   *       required: true
-   *       description: L'id de la categorie demandée.
-   *       schema:
-   *         type: integer
-   *   get:
-   *     tags : [categories]
-   *     description: Retrouve une categorie selon l'id demande.
-   *     responses:
-   *       200:
-   *         description: La catégorie demandée
-   *         content:
-   *           application/json:
-   *             schema:
-   *               $ref: '#/components/schemas/Category'
-   *       404:
-   *         description: Echec de la requête.
-   *         content:
-   *           application/json:
-   *             schema:
-   *               $ref: '#/components/schemas/Error'
-   *             example:
-   *               message: "fdkjsfjd"
-   *   put:
-   *     tags : [categories]
-   *     description: Modifie les informations d'une catégorie.
-   *     requestBody:
-   *       required: true
-   *       content:
-   *         application/json:
-   *           schema: 
-   *             $ref: '#/components/schemas/Category'
-   *     responses:
-   *       200:
-   *         description: La catégorie avec les informations mises à jour
-   *         content:
-   *           application/json:
-   *             schema:
-   *               $ref: '#/components/schemas/Category'
-   *       404:
-   *         description: Echec de la requête.
-   *         content:
-   *           application/json:
-   *             schema:
-   *               $ref: '#/components/schemas/Error'
-   *             example:
-   *               message: "fdkjsfjd"
-   *   delete:
-   *     tags : [categories]
-   *     description: Supprime une categorie spécifique.
-   *     responses:
-   *       204:
-   *         description: 
-   *         content:
-   *           application/json:
-   *             schema:
-   *               $ref: '#/components/schemas/Category'
-   *       404:
-   *         description: Echec de la requête.
-   *         content:
-   *           application/json:
-   *             schema:
-   *               $ref: '#/components/schemas/Error'
-   *             example:
-   *               message: "fdkjsfjd"
-   */
+/**
+ * @swagger
+ * /categories/{id}:
+ *   parameters:
+ *     - in: path
+ *       name: id
+ *       required: true
+ *       description: L'id de la categorie demandée.
+ *       schema:
+ *         type: integer
+ *   get:
+ *     tags : [categories]
+ *     description: Retrouve une categorie selon l'id demande.
+ *     responses:
+ *       200:
+ *         description: La catégorie demandée
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Category'
+ *       404:
+ *         description: Echec de la requête.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *             example:
+ *               message: "No catégories found"
+ *   put:
+ *     tags : [categories]
+ *     description: Modifie les informations d'une catégorie.
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/Category'
+ *     responses:
+ *       200:
+ *         description: La catégorie avec les informations mises à jour
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Category'
+ *       404:
+ *         description: Echec de la requête.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *             example:
+ *               message: "No category found"
+ *   delete:
+ *     tags : [categories]
+ *     description: Supprime une categorie spécifique.
+ *     responses:
+ *       204:
+ *         description:
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Category'
+ *       404:
+ *         description: Echec de la requête.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *             example:
+ *               message: "No category found"
+ */

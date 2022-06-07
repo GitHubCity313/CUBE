@@ -14,6 +14,15 @@ const authService = {
     axiosInstance.post(`/auth/checkToken`, {
       headers: { Authorization: token },
     }),
+  getRole: (id, token) => {
+    return axiosInstance.post(
+      `/auth/permissions`,
+      { id: id },
+      {
+        headers: { Authorization: token },
+      }
+    );
+  },
   // Local storage
   store: (token) => localStorage.setItem("JWT", token),
   get: () => localStorage.getItem("JWT"),

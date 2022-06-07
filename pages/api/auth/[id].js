@@ -4,6 +4,7 @@ import { ObjectId } from "mongodb";
 import jwt from "jsonwebtoken";
 import { v4 as uuidv4 } from "uuid";
 import Joi from "joi";
+import { getPaperUtilityClass } from "@mui/material";
 
 export default function auth(req, res) {
   const connect = async () => {
@@ -22,7 +23,7 @@ export default function auth(req, res) {
         .find({ email, password })
         .toArray();
 
-      if (user.length !== 0 && user[0].isValidated) {
+      if (user.length !== 0 && user[0].validationStatus) {
         const { firstName, lastName, role, _id } = user.shift();
         const token = jwt.sign(
           { data: { id: _id, firstName, lastName, role } },
@@ -35,7 +36,7 @@ export default function auth(req, res) {
           token,
         });
       } else {
-        if (!user[0].isValidated) {
+        if (!user[0].validationStatus) {
           return res.status(401).json({
             message: "Vous devez vérifier votre compte avant de vous connecter",
           });
@@ -114,17 +115,17 @@ export default function auth(req, res) {
       firstName,
       email,
       password,
-      enabled: true,
       profilePic: "",
       seen: [],
       hasEvents: [],
       hasEventsCreated: [],
       likes: [],
       role: ObjectId("61e165463d88f191f3f4e0d4"),
-      isValidated: false,
+      validationStatus: false,
       createdAt: Date.now(),
       updatedAt: Date.now(),
       confirmationCode: generateConfimationCode(),
+      isReported: false,
     };
 
     return newUser;
@@ -138,7 +139,7 @@ export default function auth(req, res) {
       const updatedUser = {
         $set: {
           confirmationCode: "",
-          isValidated: true,
+          validationStatus: true,
           updatedAt: Date.now(),
         },
       };
@@ -170,6 +171,19 @@ export default function auth(req, res) {
     return res.status(200).json();
   };
 
+  const getPermissions = async (id) => {
+    try {
+      const db = await connect();
+      const userRole = await db
+        .collection("roles")
+        .find({ _id: ObjectId(id.trim()) })
+        .toArray();
+      return res.status(200).json({ userRole });
+    } catch (err) {
+      return res.status(404).json({ message: "Aucun rôle trouvé" });
+    }
+  };
+
   const getRoute = async (req, res) => {
     const id = req.query.id;
     const token = req.body.headers?.Authorization
@@ -188,6 +202,8 @@ export default function auth(req, res) {
       case "confirm":
         const code = req.query.code;
         return await confirmSignUp(code);
+      case "permissions":
+        return await getPermissions(req.body.id);
       default:
         return res.status(405).end(`Method ${req.method} Not Allowed`);
     }
@@ -241,7 +257,7 @@ export default function auth(req, res) {
  *             properties:
  *               credentials:
  *                 type: object
- *                 schema: 
+ *                 schema:
  *                 $ref: '#/components/schemas/Credentials'
  *               refetchInterval:
  *                 type: string
@@ -257,4 +273,35 @@ export default function auth(req, res) {
  *               $ref: '#/components/schemas/Error'
  *             example:
  *               message: "Adresse mail ou mot de passe incorrect"
+ * /auth/getPermissions:
+ *   post:
+ *     tags : [users, auth]
+ *     description: Permet à un utilisateur de se connecter
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               id:
+ *                 type: string
+ *                 example: "61e165463d88f191f3f4e0d4"
+ *     responses:
+ *       200:
+ *         description: Le rôle de l'utilisateur.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Role'
+ *       404:
+ *         description: Echec de la requête.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *             example:
+ *               message: "Aucun rôle n'a été trouvé"
+ *
+ *
  */
