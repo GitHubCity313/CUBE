@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { useRouter } from "next/router";
 import Layout from "../components/Layout/Layout";
 
-export default function Custom404({ resources, categories, resourceTypes }) {
+export default function Custom404() {
   const router = useRouter();
 
   useEffect(() => router.push("/home"));
