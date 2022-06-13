@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import PropTypes from "prop-types";
 import { Grid, Button, Stack } from "@mui/material";
 import PieChart from "./PieChart";
@@ -43,5 +43,9 @@ const StatsTab = (props) => {
       </Grid>
     </Grid>
   );
+};
+
+StatsTab.propTypes = {
+  chartData: PropTypes.array,
 };
 export default StatsTab;

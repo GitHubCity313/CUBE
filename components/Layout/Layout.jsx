@@ -33,10 +33,9 @@ const Layout = (props) => {
         <Grid item xs={withSidebar && !isMobile ? 9 : 12}>
           <Grid
             container
-            sx={{ width: "100%" }}
             flexDirection="column"
             justifyContent={withFooter ? "space-between" : "center"}
-            sx={{ minHeight: `calc(100vh - 20px)` }}
+            sx={{ width: "100%", minHeight: "calc(100vh - 20px)" }}
           >
             <Grid
               item
@@ -75,6 +74,7 @@ Layout.propTypes = {
   withSidebar: PropTypes.bool,
   withFooter: PropTypes.bool,
   title: PropTypes.string,
+  children: PropTypes.node.isRequired,
 };
 
 export default Layout;

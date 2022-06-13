@@ -6,11 +6,11 @@ import PropTypes from "prop-types";
 import AuthProvider from "./../context/authProvider";
 import theme from "../theme";
 
-function MyApp({ Component, ...rest }) {
+function MyApp({ Component, pageProps }) {
   return (
     <ThemeProvider theme={theme}>
       <AuthProvider refetchInterval={"1d"}>
-        <Component {...rest} />
+        <Component {...pageProps} />
       </AuthProvider>
     </ThemeProvider>
   );
@@ -18,6 +18,7 @@ function MyApp({ Component, ...rest }) {
 
 MyApp.propTypes = {
   Component: PropTypes.node.isRequired,
+  pageProps: PropTypes.object.isRequired
 };
 
 export default MyApp;

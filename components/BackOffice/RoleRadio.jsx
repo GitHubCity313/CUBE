@@ -2,7 +2,6 @@ import React from "react";
 import PropTypes from "prop-types";
 import {
   FormControl,
-  FormLabel,
   FormControlLabel,
   RadioGroup,
   Radio,
@@ -44,4 +43,5 @@ export default function RoleRadio({ currentRole, onChange }) {
 
 RoleRadio.propTypes = {
   currentRole: PropTypes.string.isRequired,
+  onChange: PropTypes.func.isRequired,
 };

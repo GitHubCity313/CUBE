@@ -52,10 +52,7 @@ const Login = () => {
             alignItems="center"
             pt={isMobile && 12}
           >
-            <Image
-              src={Logo}
-              alt="Gouv"
-            />
+            <Image src={Logo} alt="Gouv" />
           </Grid>
         </Grid>
         <Grid item xs={12} md={6}>
@@ -98,7 +95,7 @@ const Login = () => {
                   Se connecter
                 </Button>
                 <Typography variant="caption" sx={{ p: 0.5 }}>
-                  {`Pas de compte ? `}
+                  {"Pas de compte ? "}
                   <Link href="/signUp">
                     <a>S'inscrire </a>
                   </Link>

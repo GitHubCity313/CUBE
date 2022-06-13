@@ -1,11 +1,10 @@
 import React from "react";
+import PropTypes from "prop-types";
 import { Typography, TextField } from "@mui/material";
 import frLocale from "date-fns/locale/fr";
-import { getTime } from "date-fns";
 import { LocalizationProvider } from "@mui/lab";
 import AdapterDateFns from "@mui/lab/AdapterDateFns";
 import { DateTimePicker } from "@mui/lab";
-import PropTypes from "prop-types";
 
 const DatePicker = (props) => {
   const { onChange, value, minDate, label, pickerLabel, isEvent } = props;
@@ -28,7 +27,7 @@ const DatePicker = (props) => {
   );
 };
 
-DateTimePicker.propTypes = {
+DatePicker.propTypes = {
   onChange: PropTypes.func.isRequired,
   value: PropTypes.string.isRequired,
   minDate: PropTypes.string.isRequired,

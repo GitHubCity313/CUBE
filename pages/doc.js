@@ -1,9 +1,11 @@
-import { createSwaggerSpec } from "next-swagger-doc";
+
+import React from "react";
+import PropTypes from "prop-types";
+import { createSwaggerSpec } from "next-swagger-doc";"/"
 import config from "../swagger";
 import SwaggerUI from "swagger-ui-react";
 import "swagger-ui-react/swagger-ui.css";
 import Layout from "../components/Layout/Layout";
-import { Box } from "@mui/material";
 
 const ApiDoc = ({ spec }) => {
   return (
@@ -23,5 +25,9 @@ export const getStaticProps = () => {
     },
   };
 };
+
+ApiDoc.propTypes = {
+  spec : PropTypes.any
+}
 
 export default ApiDoc;

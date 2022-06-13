@@ -62,7 +62,7 @@ export default function comments(req, res) {
   const addComment = async (db, res, comment, token) => {
     try {
       const newComment = await createCommentModel(comment, token);
-      const validation = await validateComment(newComment);
+      await validateComment(newComment);
       const insertComment = await db
         .collection("comments")
         .insertOne(newComment);

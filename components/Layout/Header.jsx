@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
+import PropTypes from "prop-types";
 import {
   Drawer,
   AppBar,
@@ -32,7 +33,9 @@ const Header = (props) => {
       try {
         const profile = await fetchProfile(token);
         setUser(profile);
-      } catch (err) {}
+      } catch (err) {
+        console.log(err);
+      }
     };
 
     const onLoad = async () => await getProfile();
@@ -131,6 +134,10 @@ const Header = (props) => {
       )}
     </Box>
   );
+};
+
+Header.propTypes = {
+  withSidebar: PropTypes.bool.isRequired,
 };
 
 export default Header;

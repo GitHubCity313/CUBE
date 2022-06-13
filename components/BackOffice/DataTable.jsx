@@ -324,7 +324,7 @@ export default function DataTable({ title, data, type }) {
                       <TableCell align="left">
                         {type !== "users" && (
                           <IconButton
-                            onClick={(e) =>
+                            onClick={() =>
                               handleModalOpening(row._id, "itemView")
                             }
                             sx={{
@@ -374,16 +374,15 @@ export default function DataTable({ title, data, type }) {
         hasNoConfirmation
         handleClose={() => setIsModalOpen({ ...isModalOpen, itemView: false })}
         title={data.filter((d) => d._id === targetItem)[0]?.title}
-        children={
-          type === "resources" ? (
-            <Editor resource={data.filter((d) => d._id === targetItem)[0]} />
-          ) : (
-            <CommentView
-              comment={data.filter((d) => d._id === targetItem).shift()}
-            />
-          )
-        }
-      />
+      >
+        {type === "resources" ? (
+          <Editor resource={data.filter((d) => d._id === targetItem)[0]} />
+        ) : (
+          <CommentView
+            comment={data.filter((d) => d._id === targetItem).shift()}
+          />
+        )}
+      </CustomDialog>
       <CustomDialog
         id={"roleCustom"}
         open={isModalOpen.roleCustom}
@@ -392,12 +391,11 @@ export default function DataTable({ title, data, type }) {
         }
         handleConfirmation={handleChangeOnRoleUser}
         title={"Modification du rôle"}
-        children={
-          <Typography variant="body2">
-            Donner à l'utilisateur le rôle {currentRole} ?
-          </Typography>
-        }
-      />
+      >
+        <Typography variant="body2">
+          Donner à l'utilisateur le rôle {currentRole} ?
+        </Typography>
+      </CustomDialog>
       <CustomDialog
         id={"itemChange"}
         open={isModalOpen.itemChange}
@@ -406,38 +404,33 @@ export default function DataTable({ title, data, type }) {
         }
         handleConfirmation={() => handleChangeOnResource(targetItem)}
         title={"Modifier l'élément"}
-        children={
-          <>
-            <Stack
-              direction="row"
-              alignItems="center"
-              sx={{ minWidth: "25vw" }}
-            >
-              <Checkbox
-                checked={status.isModerated}
-                onChange={() => handleModification("isModerated")}
-              />
-              <Typography variant="body2">
-                Marquer l'élément comme modéré
-              </Typography>
-            </Stack>
-            <FormControlLabel
-              control={
-                <Switch
-                  checked={status.isPublished}
-                  onChange={() => handleModification("isPublished")}
-                />
-              }
-              label={
-                status.isPublished
-                  ? "Elément maintenu en ligne"
-                  : "Element retiré des publications"
-              }
-              sx={{ ml: 0.2, mt: 1 }}
+      >
+        <>
+          <Stack direction="row" alignItems="center" sx={{ minWidth: "25vw" }}>
+            <Checkbox
+              checked={status.isModerated}
+              onChange={() => handleModification("isModerated")}
             />
-          </>
-        }
-      />
+            <Typography variant="body2">
+              Marquer l'élément comme modéré
+            </Typography>
+          </Stack>
+          <FormControlLabel
+            control={
+              <Switch
+                checked={status.isPublished}
+                onChange={() => handleModification("isPublished")}
+              />
+            }
+            label={
+              status.isPublished
+                ? "Elément maintenu en ligne"
+                : "Element retiré des publications"
+            }
+            sx={{ ml: 0.2, mt: 1 }}
+          />
+        </>
+      </CustomDialog>
       <Snackbar
         open={snackbar.open}
         severity={snackbar.severity}
@@ -447,3 +440,9 @@ export default function DataTable({ title, data, type }) {
     </Box>
   );
 }
+
+DataTable.propTypes = {
+  title: PropTypes.string.isRequired,
+  type: PropTypes.string.isRequired,
+  data: PropTypes.array,
+};

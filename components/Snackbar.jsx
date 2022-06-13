@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 import { Typography, Alert, Snackbar } from "@mui/material";
 
 export default function CustomSnackbar(props) {
@@ -22,3 +23,10 @@ export default function CustomSnackbar(props) {
     </Snackbar>
   );
 }
+
+CustomSnackbar.propTypes = {
+  open: PropTypes.bool.isRequired,
+  onClick: PropTypes.func.isRequired,
+  message: PropTypes.string.isRequired,
+  severity: PropTypes.string.isRequired,
+};

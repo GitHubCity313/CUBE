@@ -10,7 +10,6 @@ import UserInfoCard from "../components/Profile/UserInfoCard";
 import UserEditDialog from "../components/Profile/UserEditDialog";
 import Snackbar from "../components/Snackbar";
 import apiService from "../services/apiService";
-import authService from "../services/authService";
 
 export default function Profile() {
   const {

@@ -32,7 +32,6 @@ export default function Resource({
   comments,
   resourceAuthor,
   likes,
-  idPost,
   authorId,
 }) {
   const { session, isAuthenticated, token, fetchProfile } =
@@ -133,8 +132,6 @@ export default function Resource({
   };
 
   const deleteResource = async () => {
-    const newContent = quill.getContents().ops;
-
     try {
       const deleteArticle = await apiService.deleteItem(
         "resources",
@@ -178,7 +175,7 @@ export default function Resource({
         token
       );
 
-      const updateResource = await apiService.updateItem(
+      await apiService.updateItem(
         "resources",
         resource._id,
         { likes: newCount },
@@ -424,7 +421,7 @@ export async function getStaticProps({ params }) {
   let authorId = "";
 
   let likes = 0;
-  let idPost = params.id;
+
   try {
     // RESOURCE GET
     const apiSResourceRequest = await apiService.getItem(
@@ -456,7 +453,6 @@ export async function getStaticProps({ params }) {
       resourceAuthor,
       authorId,
       likes,
-      idPost,
     },
   };
 }
@@ -487,4 +483,5 @@ Resource.propTypes = {
   comments: PropTypes.array,
   resourceAuthor: PropTypes.object,
   authorId: PropTypes.string,
+  likes : PropTypes.array
 };

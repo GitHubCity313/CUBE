@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React from "react";
 import PropTypes from "prop-types";
 import { Box } from "@mui/material";
 import "chart.js/auto";
@@ -69,12 +69,13 @@ const PieChart = (props) => {
   );
 };
 
-PieChart.Proptypes = {
+PieChart.propTypes = {
   chartData: PropTypes.arrayOf(
     PropTypes.shape({
       label: PropTypes.string,
       data: PropTypes.arrayOf(PropTypes.shape(PropTypes.string)),
     })
   ),
+  title: PropTypes.string.isRequired,
 };
 export default PieChart;

@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useCallback } from "react";
+import React, { useState, useMemo } from "react";
 import PropTypes from "prop-types";
 import { Grid, Typography, useMediaQuery } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
@@ -9,7 +9,7 @@ import Layout from "../components/Layout/Layout";
 import apiService from "../services/apiService";
 import Searchbar from "../components/Home/Searchbar";
 
-export default function Home({ resources, categories, localities }) {
+export default function Home({ resources, categories }) {
   const [activeFilter, setActiveFilter] = useState({
     date: "",
     categories: [],
@@ -172,7 +172,6 @@ export default function Home({ resources, categories, localities }) {
 export async function getServerSideProps() {
   let resources = [];
   let categories = [];
-  let localities = [];
 
   try {
     const fetchedResources = await apiService.getItems("resources");
@@ -189,7 +188,6 @@ export async function getServerSideProps() {
     props: {
       resources,
       categories,
-      localities,
     },
   };
 }

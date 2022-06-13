@@ -51,4 +51,5 @@ CustomDialog.propTypes = {
   handleClose: PropTypes.func.isRequired,
   handleConfirmation: PropTypes.func,
   hasNoConfirmation: PropTypes.bool,
+  children: PropTypes.node.isRequired,
 };

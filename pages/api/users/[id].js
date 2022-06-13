@@ -1,3 +1,4 @@
+/*eslint no-case-declarations: "error"*/
 import clientPromise from "../../../lib/mongodb";
 import { ObjectId } from "mongodb";
 import jwt from "jsonwebtoken";
@@ -28,12 +29,12 @@ export default function userId(req, res) {
       const user = await db.collection("users").deleteOne({
         _id: ObjectId(id),
       });
-      // [server_logs] confirm 200 from db
-      console.log(`[200] DELETE user with id : ${id}`);
-      // [server_logs] confirm if the item has been deleted ifnot show a warning
-      user.result.n > 0
-        ? console.log(`[SUCCESS] deletion confirmed`)
-        : console.log(`[WARNING] No item deleted. Bad userId ? (${id})`);
+      // // [server_logs] confirm 200 from db
+      // console.log(`[200] DELETE user with id : ${id}`);
+      // // [server_logs] confirm if the item has been deleted ifnot show a warning
+      // user.result.n > 0
+      //   ? console.log(`[SUCCESS] deletion confirmed`)
+      //   : console.log(`[WARNING] No item deleted. Bad userId ? (${id})`);
       return res.status(204).json({ user });
     } catch (err) {
       // [server_logs]
@@ -120,7 +121,6 @@ export default function userId(req, res) {
 
   const getRoute = async (req, res) => {
     const db = await connect();
-    const user = req?.body ? req.body : null;
     const id = req.query.id.trim();
 
     switch (req.method) {
@@ -129,11 +129,12 @@ export default function userId(req, res) {
       }
       case "DELETE":
         return await deleteUser(id);
-      case "PUT":
+      case "PUT": {
         //const id = req.query.id.trim();
         const body = req?.body ? req.body : null;
         return await updateUser(id, db, body, res);
-      case "POST":
+      }
+      case "POST": {
         const query = req.query.data;
         const token = req.body.headers?.Authorization
           ? req.body.headers.Authorization
@@ -172,9 +173,7 @@ export default function userId(req, res) {
         }
         if (query === "eventsCreation") {
           const body = req.body;
-          const reqToken = req.headers?.authorization
-            ? req.headers?.authorization
-            : null;
+
           return await getCreatedEvents(db, res, body);
         } else {
           try {
@@ -187,7 +186,7 @@ export default function userId(req, res) {
             });
           }
         }
-
+      }
       default:
         res.status(405).end("Method Not Allowed");
         break;
