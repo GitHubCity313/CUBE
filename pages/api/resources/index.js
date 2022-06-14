@@ -94,13 +94,15 @@ export default function ressources(req, res) {
     }
   };
 
+
+
   const addResource = async (db, res, resource, token) => {
     try {
       const newResource = await createResourceModel(resource, token);
-      const validation = await validateResource(newResource);
+      await validateResource(newResource);
       const add = await db
         .collection("resources")
-        .insertOne(validation._original);
+        .insertOne(newResource);
 
       return res.status(201).json({ add });
     } catch (err) {
@@ -198,7 +200,7 @@ export default function ressources(req, res) {
  *           type: string
  *           description: Le titre de la ressource
  *           example: Distribution de fournitures scolaires pour la rentrée
- *         contentId:
+ *         content:
  *           type: array
  *           description: Le contenu de la ressource.
  *           example: [{insert: "Bonjour"}, {insert: "Ressources relationnelles"}]
