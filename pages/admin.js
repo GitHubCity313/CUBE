@@ -95,10 +95,10 @@ export default function AdminPanel({ resources, comments, users, chartData }) {
 }
 
 AdminPanel.propTypes = {
-  resources: PropTypes.object,
+  resources: PropTypes.array,
   comments: PropTypes.array,
   users: PropTypes.array,
-  chartData: PropTypes.array,
+  chartData: PropTypes.object,
 };
 
 export async function getServerSideProps() {

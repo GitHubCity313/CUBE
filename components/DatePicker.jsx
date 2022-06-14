@@ -27,10 +27,12 @@ const DatePicker = (props) => {
   );
 };
 
+//TODO Correction sur minDate (nombre + Date) et value (string+number)
+
 DatePicker.propTypes = {
   onChange: PropTypes.func.isRequired,
-  value: PropTypes.string.isRequired,
-  minDate: PropTypes.string.isRequired,
+  value: PropTypes.number.isRequired,
+  minDate: PropTypes.instanceOf(Date),
   label: PropTypes.string.isRequired,
   pickerLabel: PropTypes.string.isRequired,
   isEvent: PropTypes.bool.isRequired,

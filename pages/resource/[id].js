@@ -483,5 +483,5 @@ Resource.propTypes = {
   comments: PropTypes.array,
   resourceAuthor: PropTypes.object,
   authorId: PropTypes.string,
-  likes : PropTypes.array
+  likes: PropTypes.number,
 };

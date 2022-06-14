@@ -53,10 +53,11 @@ export default function IconCell({ isValid, isReported, status }) {
 IconCell.defaultProps = {
   isValid: null,
   isReported: null,
+  status: null,
 };
 
 IconCell.propTypes = {
   isValid: PropTypes.bool,
   isReported: PropTypes.bool,
-  status: PropTypes.bool.isRequired,
+  status: PropTypes.bool,
 };

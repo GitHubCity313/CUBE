@@ -46,6 +46,6 @@ const StatsTab = (props) => {
 };
 
 StatsTab.propTypes = {
-  chartData: PropTypes.array,
+  chartData: PropTypes.object,
 };
 export default StatsTab;
