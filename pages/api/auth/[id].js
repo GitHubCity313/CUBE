@@ -4,7 +4,6 @@ import { ObjectId } from "mongodb";
 import jwt from "jsonwebtoken";
 import { v4 as uuidv4 } from "uuid";
 import Joi from "joi";
-import { getPaperUtilityClass } from "@mui/material";
 
 export default function auth(req, res) {
   const connect = async () => {
@@ -143,9 +142,7 @@ export default function auth(req, res) {
           updatedAt: Date.now(),
         },
       };
-      const update = await db
-        .collection("users")
-        .updateOne(filter, updatedUser);
+      await db.collection("users").updateOne(filter, updatedUser);
 
       res.writeHead(302, {
         Location: "/welcome",
@@ -191,17 +188,20 @@ export default function auth(req, res) {
       : null;
 
     switch (id) {
-      case "signIn":
+      case "signIn": {
         const { credentials, refetchInterval } = req.body;
         return await signIn(credentials, refetchInterval);
-      case "signUp":
+      }
+      case "signUp": {
         const { user } = req.body;
         return await signUp(user);
+      }
       case "checkToken":
         return await checkToken(token);
-      case "confirm":
+      case "confirm": {
         const code = req.query.code;
         return await confirmSignUp(code);
+      }
       case "permissions":
         return await getPermissions(req.body.id);
       default:

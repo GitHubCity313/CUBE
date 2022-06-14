@@ -1,21 +1,18 @@
 import * as React from "react";
+import PropTypes from "prop-types";
 import {
   Card,
   CardContent,
   Typography,
   Tooltip,
-  useMediaQuery,
   CardActionArea,
   Stack,
 } from "@mui/material";
-import { useTheme } from "@mui/material/styles";
 import { useRouter } from "next/router";
-import PropTypes from "prop-types";
 import TaskAltIcon from "@mui/icons-material/TaskAlt";
 import HourglassEmptyIcon from "@mui/icons-material/HourglassEmpty";
 
 export default function EventShortCard({ event }) {
-  const theme = useTheme();
   const router = useRouter();
   return (
     <Card sx={{ width: "100%", mt: 2 }}>
@@ -55,5 +52,5 @@ export default function EventShortCard({ event }) {
 }
 
 EventShortCard.propTypes = {
-  events: PropTypes.object,
+  event: PropTypes.object,
 };

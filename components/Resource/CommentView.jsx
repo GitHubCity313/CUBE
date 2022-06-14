@@ -11,7 +11,7 @@ export default function CommentView({ comment }) {
 }
 
 CommentView.propTypes = {
-  resource: PropTypes.shape({
+  comment: PropTypes.shape({
     _id: PropTypes.string.isRequired,
     relatedResource: PropTypes.string.isRequired,
     author: PropTypes.string.isRequired,

@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 import { styled, alpha } from "@mui/material/styles";
 import { InputBase } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
@@ -73,6 +74,10 @@ const SearchBar = (props) => {
       />
     </Search>
   );
+};
+
+SearchBar.propTypes = {
+  onChange: PropTypes.func.isRequired,
 };
 
 export default SearchBar;

@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
+import PropTypes from "prop-types";
 import { useTheme } from "@mui/material/styles";
 import OutlinedInput from "@mui/material/OutlinedInput";
 import InputLabel from "@mui/material/InputLabel";
@@ -78,4 +79,6 @@ export default function ResourceTypeSelect({
 
 ResourceTypeSelect.propTypes = {
   types: array,
+  setActiveFilter: PropTypes.func.isRequired,
+  activeFilter: PropTypes.object
 };

@@ -97,7 +97,7 @@ export default function ressources(req, res) {
   const addResource = async (db, res, resource, token) => {
     try {
       const newResource = await createResourceModel(resource, token);
-      const validation = await validateResource(newResource)
+      await validateResource(newResource)
         .then(async () => {
           const add = await db.collection("resources").insertOne(newResource);
           return res.status(201).json({ add });

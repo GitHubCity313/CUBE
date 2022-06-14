@@ -53,14 +53,11 @@ export default function IconCell({ isValid, isReported, status }) {
 IconCell.defaultProps = {
   isValid: null,
   isReported: null,
+  status: null,
 };
 
 IconCell.propTypes = {
-  numSelected: PropTypes.number.isRequired,
-  onRequestSort: PropTypes.func.isRequired,
-  onSelectAllClick: PropTypes.func.isRequired,
-  order: PropTypes.oneOf(["asc", "desc"]).isRequired,
-  orderBy: PropTypes.string.isRequired,
-  rowCount: PropTypes.number.isRequired,
-  type: PropTypes.string.isRequired,
+  isValid: PropTypes.bool,
+  isReported: PropTypes.bool,
+  status: PropTypes.bool,
 };

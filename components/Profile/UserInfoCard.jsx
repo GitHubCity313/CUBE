@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 import {
   Card,
   CardContent,
@@ -6,8 +7,6 @@ import {
   Box,
   Stack,
   Button,
-  CardActionArea,
-  CardMedia,
 } from "@mui/material";
 import EventShortCard from "./EventShortCard";
 
@@ -64,4 +63,13 @@ export default function UserInfoCard(props) {
 
 UserInfoCard.defaultProps = {
   hasActionButton: false,
+};
+
+UserInfoCard.propTypes = {
+  title: PropTypes.string.isRequired,
+  subtitle: PropTypes.string.isRequired,
+  isEmptyLabel: PropTypes.bool.isRequired,
+  list: PropTypes.array,
+  hasActionButton: PropTypes.bool,
+  actionButton: PropTypes.node.isRequired,
 };

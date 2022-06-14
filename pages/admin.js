@@ -1,19 +1,17 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState } from "react";
+import PropTypes from "prop-types";
 import { format } from "date-fns";
-import { useRouter } from "next/router";
 import Layout from "../components/Layout/Layout";
-import { Box, Tab, Typography, CircularProgress } from "@mui/material";
+import { Box, Tab, Typography } from "@mui/material";
 import { TabContext, TabList, TabPanel } from "@mui/lab";
 import DataTable from "../components/BackOffice/DataTable";
 import apiService from "../services/apiService";
 import StatsTab from "../components/BackOffice/StatsTab";
 
 export default function AdminPanel({ resources, comments, users, chartData }) {
-  const router = useRouter();
   const [value, setValue] = useState("0");
-  const [isFetching, setIsFetching] = useState(false);
 
-  const handleChange = (event, newValue) => {
+  const handleChange = (_, newValue) => {
     setValue(newValue);
   };
 
@@ -22,30 +20,30 @@ export default function AdminPanel({ resources, comments, users, chartData }) {
   const formatData = () => {
     switch (value) {
       case "0":
-        const resourceTable = resources.map((r) => {
+        return resources.map((r) => {
           return {
             ...r,
             createdAt: format(new Date(r.createdAt), "dd/MM/yyyy"),
           };
         });
-        return resourceTable;
+
       case "1":
-        const commentTable = comments.map((c) => {
+        return comments.map((c) => {
           return {
             ...c,
             createdAt: format(new Date(c.createdAt), "dd/MM/yyyy"),
           };
         });
-        return commentTable;
+
       case "2":
-        const userTable = users.map((u) => {
+        return users.map((u) => {
           return {
             ...u,
             title: u.email,
             createdAt: format(new Date(u.createdAt), "dd/MM/yyyy"),
           };
         });
-        return userTable;
+
       default:
         return [];
     }
@@ -88,13 +86,20 @@ export default function AdminPanel({ resources, comments, users, chartData }) {
             />
           </TabPanel>
           <TabPanel value="3">
-            <StatsTab chartData={chartData}/>
+            <StatsTab chartData={chartData} />
           </TabPanel>
         </TabContext>
       </Box>
     </Layout>
   );
 }
+
+AdminPanel.propTypes = {
+  resources: PropTypes.array,
+  comments: PropTypes.array,
+  users: PropTypes.array,
+  chartData: PropTypes.object,
+};
 
 export async function getServerSideProps() {
   let resources = [];
@@ -106,13 +111,12 @@ export async function getServerSideProps() {
     const fetchedResources = await apiService.getItems("resources");
     const fetchedUsers = await apiService.getItems("users");
     const fetchedComments = await apiService.getItems("comments");
-    const fetchedData = await apiService.getItems('stats');
+    const fetchedData = await apiService.getItems("stats");
 
     resources = await fetchedResources.data.resources;
     users = await fetchedUsers.data.users;
     comments = await fetchedComments.data.users;
-    chartData = await fetchedData.data
-
+    chartData = await fetchedData.data;
   } catch (err) {
     console.log(err);
   }
@@ -122,7 +126,7 @@ export async function getServerSideProps() {
       resources,
       users,
       comments,
-      chartData
+      chartData,
     },
   };
 }

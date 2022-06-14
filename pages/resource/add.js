@@ -1,4 +1,5 @@
 import React, { useState, useMemo, useContext } from "react";
+import PropTypes from "prop-types";
 import { getTime } from "date-fns";
 import { useTheme } from "@mui/material/styles";
 import { useQuill } from "react-quilljs";
@@ -68,8 +69,9 @@ const AddArticle = ({ categories }) => {
   const getSummary = () => shortenText(quill.getText(), 200);
   const createThumbnail = () => {
     const currentContent = quill.getContents();
-    const firstPic = currentContent.ops.find((i) =>
-      i.insert.hasOwnProperty("image")
+
+    const firstPic = currentContent.ops.find(
+      (i) => "image" in i.insert
     );
     return {
       url: firstPic !== undefined ? firstPic.insert.image : "",
@@ -342,12 +344,18 @@ const AddArticle = ({ categories }) => {
   );
 };
 
+AddArticle.propTypes = {
+  categories: PropTypes.array,
+};
+
 export async function getServerSideProps() {
   let categories = [];
   try {
     const fetchedCategories = await apiService.getItems("categories");
     categories = await fetchedCategories.data.categories;
-  } catch (err) {}
+  } catch (err) {
+    console.log(err);
+  }
   return {
     props: {
       categories,

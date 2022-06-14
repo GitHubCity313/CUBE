@@ -66,15 +66,12 @@ Editor.propTypes = {
     createdAt: PropTypes.string.isRequired,
     description: PropTypes.string.isRequired,
     endDate: PropTypes.string.isRequired,
-    hasParticipants: PropTypes.arrayOf(PropTypes.string).isRequired,
     likes: PropTypes.number.isRequired,
-    moderationValidation: PropTypes.bool.isRequired,
     place: PropTypes.shape({
       city: PropTypes.string.isRequired,
       zipCode: PropTypes.string.isRequired,
       region: PropTypes.string.isRequired,
     }).isRequired,
-    publicationStatus: PropTypes.string.isRequired,
     startDate: PropTypes.string.isRequired,
     thumbnail: PropTypes.shape({
       url: PropTypes.string.isRequired,

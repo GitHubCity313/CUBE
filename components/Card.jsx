@@ -1,4 +1,5 @@
 import * as React from "react";
+import PropTypes from "prop-types";
 import { useTheme } from "@mui/material/styles";
 import Link from "next/link";
 import { Box, Stack, Button, useMediaQuery } from "@mui/material";
@@ -66,3 +67,7 @@ export default function MediaControlCard({ resourceData }) {
     </Card>
   );
 }
+
+MediaControlCard.propTypes = {
+  resourceData: PropTypes.object,
+};

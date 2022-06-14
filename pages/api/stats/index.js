@@ -1,5 +1,4 @@
 import clientPromise from "../../../lib/mongodb";
-import { ObjectId } from "mongodb";
 
 export default function stats(req, res) {
   // Check token - ajouter
@@ -38,7 +37,7 @@ export default function stats(req, res) {
     return { startingDate, endDate };
   };
 
-  const getAppStats = async (db, res, token) => {
+  const getAppStats = async (db, res) => {
     try {
       const resources = ["users", "resources", "comments"];
       const categories = await db.collection("categories").find({}).toArray();
@@ -138,9 +137,6 @@ export default function stats(req, res) {
 
   const getRoute = async (req, res) => {
     const db = await connect();
-    const token = req.body.headers?.Authorization
-      ? req.body.headers.Authorization
-      : null;
 
     switch (req.method) {
       case "GET": {

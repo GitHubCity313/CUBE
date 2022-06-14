@@ -1,5 +1,4 @@
 import * as React from "react";
-import { useTheme } from "@mui/material/styles";
 import Box from "@mui/material/Box";
 import OutlinedInput from "@mui/material/OutlinedInput";
 import InputLabel from "@mui/material/InputLabel";
@@ -21,8 +20,6 @@ const MenuProps = {
 };
 
 export default function CategoriesSelect({ value, onChange, categories }) {
-  const theme = useTheme();
-
   return (
     <div>
       <FormControl sx={{ m: 1, width: 300 }}>

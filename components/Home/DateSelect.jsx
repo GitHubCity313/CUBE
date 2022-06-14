@@ -1,11 +1,10 @@
-import React, { useState, useEffect } from "react";
-import { useTheme } from "@mui/material/styles";
+import React, { useState } from "react";
+import PropTypes from "prop-types";
 import OutlinedInput from "@mui/material/OutlinedInput";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
-import { array } from "prop-types";
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -19,8 +18,7 @@ const MenuProps = {
 };
 
 export default function DateSelect({ types, setActiveFilter, activeFilter }) {
-  const theme = useTheme();
-  const [value, setValue] = useState("");
+  const [, setValue] = useState("");
 
   const handleChange = (event) => {
     const {
@@ -54,5 +52,7 @@ export default function DateSelect({ types, setActiveFilter, activeFilter }) {
 }
 
 DateSelect.propTypes = {
-  types: array,
+  types: PropTypes.array,
+  setActiveFilter: PropTypes.func.isRequired,
+  activeFilter: PropTypes.object,
 };
