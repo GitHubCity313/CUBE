@@ -70,9 +70,8 @@ const AddArticle = ({ categories }) => {
   const createThumbnail = () => {
     const currentContent = quill.getContents();
 
-    const firstPic = currentContent.ops.find(
-      (i) => "image" in i.insert
-    );
+    //const firstPic = currentContent.ops.find((i) => "image" in i.insert);
+    const firstPic = undefined;
     return {
       url: firstPic !== undefined ? firstPic.insert.image : "",
       alt: "cover-image",
@@ -108,6 +107,8 @@ const AddArticle = ({ categories }) => {
         resource,
         token
       );
+
+      console.log(createResource);
       if (createResource.status === 201) {
         const profile = await fetchProfile();
         const events = profile.hasEventsCreated;

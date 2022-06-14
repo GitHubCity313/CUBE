@@ -97,12 +97,12 @@ export default function ressources(req, res) {
   const addResource = async (db, res, resource, token) => {
     try {
       const newResource = await createResourceModel(resource, token);
-      await validateResource(newResource)
-        .then(async () => {
-          const add = await db.collection("resources").insertOne(newResource);
-          return res.status(201).json({ add });
-        })
-        .catch((err) => res.status(400).json({ err }));
+      const validation = await validateResource(newResource);
+      const add = await db
+        .collection("resources")
+        .insertOne(validation._original);
+
+      return res.status(201).json({ add });
     } catch (err) {
       return res.status(404).json({ err });
     }
