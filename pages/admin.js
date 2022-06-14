@@ -19,7 +19,7 @@ export default function AdminPanel({ resources, comments, users, chartData }) {
   // Essentiellement pour la gestion de l áffichage des dates
   const formatData = () => {
     switch (value) {
-      case 0:
+      case "0":
         return resources.map((r) => {
           return {
             ...r,
