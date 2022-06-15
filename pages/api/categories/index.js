@@ -30,7 +30,12 @@ export default function categories(req, res) {
         return await addCategory(req, res);
       }
       default:
-        return res.status(405).end(`Method ${req.method} Not Allowed`);
+        return res
+          .status(405)
+          .json({
+            err: "Method not allowed",
+          })
+          .end();
     }
   };
 
