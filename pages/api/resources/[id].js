@@ -70,3 +70,75 @@ export default function ressources(req, res) {
 
   return getRoute(req, res);
 }
+
+/**
+ * @swagger
+ * /resources/{id}:
+ *   parameters:
+ *     - in: path
+ *       name: id
+ *       required: true
+ *       description: L'id de la ressource demandée.
+ *       schema:
+ *         type: integer
+ *   get:
+ *     tags : [resources]
+ *     description: Retrouve une resource selon l'id demandé.
+ *     responses:
+ *       200:
+ *         description: La ressource demandée
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Resource'
+ *       404:
+ *         description: Echec de la requête.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *             example:
+ *               message: "No resource found"
+ *   put:
+ *     tags : [resources]
+ *     description: Modifie les informations d'une resource.
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/Resource'
+ *     responses:
+ *       200:
+ *         description: La ressource avec les informations mises à jour
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Resource'
+ *       404:
+ *         description: Echec de la requête.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *             example:
+ *               message: "No resource found"
+ *   delete:
+ *     tags : [resources]
+ *     description: Supprime une resource spécifique.
+ *     responses:
+ *       204:
+ *         description:
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Resource'
+ *       404:
+ *         description: Echec de la requête.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *             example:
+ *               message: "No resource found"
+ */
