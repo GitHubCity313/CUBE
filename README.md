@@ -11,7 +11,7 @@ Le Ministère des Solidarités et de la Cohésion Sociale envisage d'augmenter l
 - See HTML in the right
 - ✨Magic ✨
 
-## Features
+## Features !!!
 
 - Import a HTML file and watch it magically convert to Markdown
 - Drag and drop images (requires your Dropbox account be linked)
